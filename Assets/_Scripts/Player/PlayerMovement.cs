@@ -23,7 +23,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float swimSpeed = 3f;
     [SerializeField] private float swimSprintSpeed = 5f;
 
-    private float accumulated = 0f;
     private bool sloping = false; 
     private bool grounded = false; 
     private bool jumping = false; 

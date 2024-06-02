@@ -8,8 +8,13 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float sensitivity = 10f;
     private void Update()
     {
+        RotationInput();
+    }
+
+    private void RotationInput()
+    {
         float mouseX = Input.GetAxis("Mouse X");
-        if(mouseX != 0f)
+        if (mouseX != 0f)
         {
             cameraTarget.Rotate(0f, mouseX * Time.deltaTime * sensitivity, 0f);
         }
