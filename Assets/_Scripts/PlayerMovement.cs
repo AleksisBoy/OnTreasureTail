@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Terrain terrain = null;
     [SerializeField] private Animator animator = null;
+    [SerializeField] private PlayerCamera playerCamera = null;
     [Header("Grounded")]
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float runSpeed = 5f;
@@ -22,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float swimSpeed = 3f;
     [SerializeField] private float swimSprintSpeed = 5f;
 
+    private float accumulated = 0f;
     private bool sloping = false; 
     private bool grounded = false; 
     private bool jumping = false; 
@@ -41,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
             grounded = false;
         }
         animator.SetBool("Grounded", grounded);
+        animator.SetBool("Sloping", sloping);
     }
     [ContextMenu("Print Rotation")]
     public void PrintRotation()
@@ -55,7 +58,8 @@ public class PlayerMovement : MonoBehaviour
         if (JumpInput()) return;
 
         // Yaw rotation of player
-        if (horizontalInput != 0f || verticalInput != 0f) transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(new Vector3(horizontalInput, 0f, verticalInput), Vector3.up), Time.deltaTime * rotationSpeed);
+        Vector3 cameraDirection = playerCamera.transform.TransformDirection(new Vector3(horizontalInput, 0f, verticalInput));
+        if (horizontalInput != 0f || verticalInput != 0f) transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(new Vector3(cameraDirection.x, 0f, cameraDirection.z), Vector3.up), Time.deltaTime * rotationSpeed);
 
         // Get the speed depending on input
         float currentSpeed = GetCurrentSpeedInput();
@@ -67,10 +71,10 @@ public class PlayerMovement : MonoBehaviour
 
         // Getting the next position wanted
         Vector3 desiredPosition = new Vector3(
-            transform.position.x + horizontalInput * currentSpeed * Time.deltaTime * speedModifier,
+            transform.position.x + cameraDirection.x * currentSpeed * Time.deltaTime * speedModifier,
             0f,
-            transform.position.z + verticalInput * currentSpeed * Time.deltaTime * speedModifier);
-
+            transform.position.z + cameraDirection.z * currentSpeed * Time.deltaTime * speedModifier);
+        
         // Checking desiredPosition
         if(Physics.Raycast(desiredPosition + new Vector3(0f, transform.position.y + 0.1f, 0f), Vector3.down, out RaycastHit hit, 1f) && hit.point.y > 0f)
         {
@@ -106,6 +110,7 @@ public class PlayerMovement : MonoBehaviour
         // Update Animations
         animator.SetFloat("Speed", velocityFloat / maxSpeed);
         animator.SetBool("Grounded", grounded);
+        animator.SetBool("Sloping", sloping);
     }
     private bool JumpInput()
     {
@@ -114,6 +119,14 @@ public class PlayerMovement : MonoBehaviour
         {
             jumping = true;
             jump = 0f;
+            // check for collision
+            Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+            Vector3 jumpFinalPosition =  new Vector3(transform.position.x + direction.x * (1f /jumpSpeed)  * jumpDistance, 0f, transform.position.z + direction.z * (1f / jumpSpeed) * jumpDistance);
+            if (terrain.SampleHeight(jumpFinalPosition) + terrain.transform.position.y < 0f)
+            {
+                // jumped in water
+                animator.SetTrigger("JumpInWater");
+            }
         }
         if (jumping)
         {
@@ -125,6 +138,7 @@ public class PlayerMovement : MonoBehaviour
             if (jump > 1f)
             {
                 jumping = false;
+                Debug.Log(transform.position);
             }
         }
         return jumping;
