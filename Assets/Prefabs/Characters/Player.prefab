@@ -601,6 +601,7 @@ MonoBehaviour:
   slopeOffsetX: 30
   slopeModifier: 0.5
   slideSpeed: 6
+  glideModifier: 0.035
   jumpSpeed: 3.2
   jumpDistance: 7
   jumpHeight: 1.5

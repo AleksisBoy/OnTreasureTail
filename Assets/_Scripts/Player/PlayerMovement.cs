@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slopeOffsetX = 20f;
     [SerializeField] private float slopeModifier = 0.1f;
     [SerializeField] private float slideSpeed = 4f;
+    [SerializeField] private float glideModifier = 0.05f;
     [Header("Jump")]
     [SerializeField] private float jumpSpeed = 5f; 
     [SerializeField] private float jumpDistance = 2f; 
@@ -86,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
             // Setting grounded position for player with slope consideration
             if (!SlopeBehaviour(hit.normal))
             {
-                transform.position = desiredPosition;
+                transform.position = DesiredPositionWithCollision(desiredPosition);
             }
         }
         else
@@ -96,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
             maxSpeed = swimSprintSpeed;
             sloping = false;
             desiredPosition.y = 0f;
-            transform.position = desiredPosition;
+            transform.position = DesiredPositionWithCollision(desiredPosition);
         }
 
         // Set height of player position
@@ -114,17 +115,27 @@ public class PlayerMovement : MonoBehaviour
     private bool JumpInput()
     {
         // add in air slight movement
-        if (Input.GetKeyDown(KeyCode.Space) && !jumping && grounded)
+        if (Input.GetKeyDown(KeyCode.Space) && !jumping && grounded && velocityFloat > 0f)
         {
             jumping = true;
             jump = 0f;
             // check for collision
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
             Vector3 jumpFinalPosition =  new Vector3(transform.position.x + direction.x * (1f /jumpSpeed)  * jumpDistance, 0f, transform.position.z + direction.z * (1f / jumpSpeed) * jumpDistance);
-            if (terrain.SampleHeight(jumpFinalPosition) + terrain.transform.position.y < 0f)
+            jumpFinalPosition.y = terrain.SampleHeight(jumpFinalPosition) + terrain.transform.position.y;
+            if (jumpFinalPosition.y < 0f)
             {
                 // jumped in water
                 animator.SetTrigger("JumpInWater");
+            }
+            else
+            {
+                Collider[] colls = Physics.OverlapSphere(jumpFinalPosition, 0.25f, InternalSettings.Get.EnvironmentMask);
+                if(colls.Length > 0)
+                {
+                    Debug.Log("jumped on obstacle");
+                    jumping = false;
+                }
             }
         }
         if (jumping)
@@ -137,7 +148,6 @@ public class PlayerMovement : MonoBehaviour
             if (jump > 1f)
             {
                 jumping = false;
-                Debug.Log(transform.position);
             }
         }
         return jumping;
@@ -151,13 +161,48 @@ public class PlayerMovement : MonoBehaviour
             sloping = true;
             Vector3 direction = new Vector3(hitNormal.x, 0f, hitNormal.z);
             direction.Normalize();
-            transform.position += direction * Time.deltaTime * slideSpeed;
+            transform.position = DesiredPositionWithCollision(transform.position + direction * Time.deltaTime * slideSpeed);
         }
         else
         {
             sloping = false;
         }
         return sloping;
+    }
+    private Vector3 DesiredPositionWithCollision(Vector3 desiredPosition)
+    {
+        // Update new position with collision check
+        Vector3 direction = (desiredPosition - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, desiredPosition);
+        if (Physics.SphereCast(transform.position, 0.25f, direction, out RaycastHit mainHit, distance, InternalSettings.Get.EnvironmentMask))
+        {
+            // Get the value that indicates the facing to the collision (0 - facing in front, 1 - facing sideways)
+            float dot = 1f + Vector3.Dot(direction, mainHit.normal);
+
+            // Get the direction of the wall
+            Vector3 wallDirection = Vector3.Cross(Vector3.up, mainHit.normal);
+            Vector3 cross = Vector3.Cross(transform.forward, (mainHit.point - transform.position).normalized);
+            if(cross.y < 0f)
+            {
+                wallDirection = -wallDirection;
+            }
+
+            // Get the movement offset sliding on the wall
+            Vector3 sideOffset = wallDirection * dot * glideModifier;
+
+            // Check if side movement does not hit other obstacles
+            if (Physics.SphereCast(transform.position, 0.25f, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.EnvironmentMask))
+            {
+                // Do not move if there is an obstacle to the side
+                desiredPosition = transform.position;
+            }
+            else
+            {
+                // Move if no obstacles to the side
+                desiredPosition = transform.position + sideOffset;
+            }
+        }
+        return desiredPosition;
     }
     private float GetCurrentSpeedInput()
     {

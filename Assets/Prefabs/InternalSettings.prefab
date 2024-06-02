@@ -50,3 +50,6 @@ MonoBehaviour:
   defaultCameraMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  environmentMask:
+    serializedVersion: 2
+    m_Bits: 128
