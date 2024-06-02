@@ -173,4 +173,8 @@ public class PlayerMovement : MonoBehaviour
         }
         return currentSpeed;
     }
+    private void OnDisable()
+    {
+        animator.SetFloat("Speed", 0f);
+    }
 }

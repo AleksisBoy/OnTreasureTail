@@ -7,7 +7,7 @@ using UnityEngine;
 public static class UIManager
 {
     public static Stack<TailPanel> Current {  get; private set; } = new Stack<TailPanel>();
-
+    public static List<int> Blockers { get; private set; } = new List<int>();
     public static bool Open(TailPanel panel)
     {
         if(Current.Contains(panel))
@@ -79,5 +79,31 @@ public static class UIManager
         if (Current.Count != 1) return false;
 
         return Current.Peek() == panel;
+    }
+    public static void AddBlocker(GameObject blocker)
+    {
+        int instanceID = blocker.GetInstanceID();
+        if (Blockers.Contains(instanceID)) return;
+
+        Blockers.Add(instanceID);
+    }
+    public static void RemoveBlocker(GameObject blocker)
+    {
+        int instanceID = blocker.GetInstanceID();
+        if (!Blockers.Contains(instanceID)) return;
+
+        Blockers.Remove(instanceID);
+    }
+    public static bool Blocking
+    {
+        get
+        {
+            return Blockers.Count > 0;
+        }
+    }
+    public static void Clear()
+    {
+        Current.Clear();
+        Blockers.Clear();
     }
 }

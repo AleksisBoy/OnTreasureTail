@@ -5,7 +5,6 @@ using UnityEngine;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private TailPanel pauseMenu = null;
-    [SerializeField] private PlayerInteraction playerInteraction = null;
     private void Update()
     {
         UIInput();
@@ -13,17 +12,17 @@ public class UIController : MonoBehaviour
 
     private void UIInput()
     {
-        if (!Input.GetKeyDown(KeyCode.Escape)) return;
+        if (!Input.GetKeyDown(KeyCode.Escape) || UIManager.Blocking) return;
 
         if (UIManager.IsOpen()) UIManager.CloseLast();
         else
         {
             bool opened = UIManager.Open(pauseMenu, OnPauseMenuClose);
-            if (opened) playerInteraction.EnablePlayerComponents(false);
+            if (opened) PlayerInteraction.Instance.EnablePlayerComponents(false);
         }
     }
     private void OnPauseMenuClose()
     {
-        playerInteraction.EnablePlayerComponents(true);
+        PlayerInteraction.Instance.EnablePlayerComponents(true);
     }
 }

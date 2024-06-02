@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8967038635432326547}
   - component: {fileID: 3635182197610655796}
   - component: {fileID: 2953958396043337763}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: armLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 949580530754385373}
   - component: {fileID: 7122300808636582188}
   - component: {fileID: 8339931160787088259}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ GameObject:
   - component: {fileID: 5362550637095868722}
   - component: {fileID: 7428581694442738158}
   - component: {fileID: 5520447179713494174}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: armRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 7080275044555424373}
   - component: {fileID: 6596334097868266032}
   - component: {fileID: 3497306640856614930}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: legLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -348,7 +348,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1839551508568496196}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 7354695437716859712}
   - component: {fileID: 7170115074879490995}
   - component: {fileID: 1956779682027298383}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: legRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +471,7 @@ GameObject:
   - component: {fileID: 7031439686212297795}
   - component: {fileID: 3819225475097351330}
   - component: {fileID: 7211798064286315100}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -557,7 +557,7 @@ GameObject:
   - component: {fileID: 4043697657939580133}
   - component: {fileID: 7576676028293474202}
   - component: {fileID: 1552048286800219323}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -693,6 +693,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movement: {fileID: 4043697657939580133}
   view: {fileID: 0}
+  focusCamera: {fileID: 0}
   interactionDistance: 0.4
 --- !u!1 &7499727931088559446
 GameObject:
@@ -705,7 +706,7 @@ GameObject:
   - component: {fileID: 8369859858438103774}
   - component: {fileID: 7586540784053903287}
   - component: {fileID: 1323070738841774740}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hat
   m_TagString: Untagged
   m_Icon: {fileID: 0}

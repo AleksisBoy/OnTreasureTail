@@ -14,6 +14,7 @@ public class IslandManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        UIManager.Clear();
     }
     public bool AssignInteractable(IInteractable interactable)
     {
@@ -27,6 +28,8 @@ public class IslandManager : MonoBehaviour
         float closestDistance = 1000f;
         foreach(IInteractable interactable in interactables)
         {
+            if (!interactable.InteractionActive()) continue;
+
             float distance = Vector3.Distance(interactable.GetPosition(), position);
             if(distance < closestDistance)
             {
@@ -42,6 +45,8 @@ public class IslandManager : MonoBehaviour
         closestDistance = 1000f;
         foreach(IInteractable interactable in interactables)
         {
+            if (!interactable.InteractionActive()) continue;
+
             float distance = Vector3.Distance(interactable.GetPosition(), position);
             if(distance < closestDistance)
             {

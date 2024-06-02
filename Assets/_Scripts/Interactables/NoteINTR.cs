@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Note : MonoBehaviour, IInteractable
+public class NoteINTR : MonoBehaviour, IInteractable
 {
     [SerializeField] private TailPanel notePanel = null;
 
@@ -31,7 +31,7 @@ public class Note : MonoBehaviour, IInteractable
     }
     private void OnCloseNote()
     {
-        if (!UIManager.IsOpen()) FindObjectOfType<PlayerInteraction>().EnablePlayerComponents(true);
+        if (!UIManager.IsOpen()) PlayerInteraction.Instance.EnablePlayerComponents(true);
     }
     public bool InteractionActive()
     {
