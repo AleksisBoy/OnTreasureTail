@@ -30,7 +30,7 @@ public class IslandManager : MonoBehaviour
         {
             if (!interactable.InteractionActive()) continue;
 
-            float distance = Vector3.Distance(interactable.GetPosition(), position);
+            float distance = Vector3.Distance(interactable.GetInteractionPosition(), position);
             if(distance < closestDistance)
             {
                 closestDistance = distance;
@@ -47,7 +47,7 @@ public class IslandManager : MonoBehaviour
         {
             if (!interactable.InteractionActive()) continue;
 
-            float distance = Vector3.Distance(interactable.GetPosition(), position);
+            float distance = Vector3.Distance(interactable.GetInteractionPosition(), position);
             if(distance < closestDistance)
             {
                 closestDistance = distance;

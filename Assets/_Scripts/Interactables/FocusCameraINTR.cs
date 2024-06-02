@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FocusCameraINTR : MonoBehaviour, IInteractable
+public class FocusCameraINTR : Interactable, IInteractable
 {
+    [Header("Focus Camera")]
     [SerializeField] private Transform alignObject = null;
     [SerializeField] private float alignTime = 4f;
 
@@ -13,7 +14,6 @@ public class FocusCameraINTR : MonoBehaviour, IInteractable
     private float align = 0f;
     private Transform alignTarget = null;
 
-    private bool interacted = false;
     private void Start()
     {
         AssignToIslandManager();
@@ -83,9 +83,9 @@ public class FocusCameraINTR : MonoBehaviour, IInteractable
         IslandManager.Instance.AssignInteractable(this);
     }
 
-    public Vector3 GetPosition()
+    public Vector3 GetInteractionPosition()
     {
-        return transform.position;
+        return interactionPoint.position;
     }
 
     public bool HasInteracted()

@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoteINTR : MonoBehaviour, IInteractable
+public class NoteINTR : Interactable, IInteractable
 {
     [SerializeField] private TailPanel notePanel = null;
-
-    private bool interacted = false;
 
     private void Start()
     {
@@ -37,8 +35,8 @@ public class NoteINTR : MonoBehaviour, IInteractable
     {
         return gameObject.activeSelf;
     }
-    public Vector3 GetPosition()
+    public Vector3 GetInteractionPosition()
     {
-        return transform.position;
+        return interactionPoint.position;
     }
 }

@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slopeModifier = 0.1f;
     [SerializeField] private float slideSpeed = 4f;
     [SerializeField] private float glideModifier = 0.05f;
+    [SerializeField] private Vector3 collisionOffset = Vector3.zero;
     [Header("Jump")]
     [SerializeField] private float jumpSpeed = 5f; 
     [SerializeField] private float jumpDistance = 2f; 
@@ -174,7 +175,7 @@ public class PlayerMovement : MonoBehaviour
         // Update new position with collision check
         Vector3 direction = (desiredPosition - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, desiredPosition);
-        if (Physics.SphereCast(transform.position, 0.25f, direction, out RaycastHit mainHit, distance, InternalSettings.Get.EnvironmentMask))
+        if (Physics.SphereCast(transform.position + collisionOffset, 0.25f, direction, out RaycastHit mainHit, distance, InternalSettings.Get.EnvironmentMask))
         {
             // Get the value that indicates the facing to the collision (0 - facing in front, 1 - facing sideways)
             float dot = 1f + Vector3.Dot(direction, mainHit.normal);
@@ -191,7 +192,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 sideOffset = wallDirection * dot * glideModifier;
 
             // Check if side movement does not hit other obstacles
-            if (Physics.SphereCast(transform.position, 0.25f, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.EnvironmentMask))
+            if (Physics.SphereCast(transform.position + collisionOffset, 0.25f, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.EnvironmentMask))
             {
                 // Do not move if there is an obstacle to the side
                 desiredPosition = transform.position;
