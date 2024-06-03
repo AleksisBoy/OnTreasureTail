@@ -5,9 +5,14 @@ using UnityEngine;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private TailPanel pauseMenu = null;
+    [SerializeField] private TailPanel islandProgress = null;
     private void Update()
     {
         UIInput();
+
+        if (!Input.GetKeyDown(KeyCode.Tab) || UIManager.Blocking) return;
+
+        UIManager.Toggle(islandProgress);
     }
 
     private void UIInput()
@@ -17,12 +22,7 @@ public class UIController : MonoBehaviour
         if (UIManager.IsOpen()) UIManager.CloseLast();
         else
         {
-            bool opened = UIManager.Open(pauseMenu, OnPauseMenuClose);
-            if (opened) PlayerInteraction.Instance.EnablePlayerComponents(false);
+            UIManager.Open(pauseMenu);
         }
-    }
-    private void OnPauseMenuClose()
-    {
-        PlayerInteraction.Instance.EnablePlayerComponents(true);
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class IslandManager : MonoBehaviour
 {
+    [SerializeField] private InformationProgressBar informationBar = null;
+
+    private List<InfoSO> info = new List<InfoSO>();
     private List<IInteractable> interactables = new List<IInteractable>();
     public static IslandManager Instance { get; private set; } = null;
     private void Awake()
@@ -15,6 +18,18 @@ public class IslandManager : MonoBehaviour
             return;
         }
         UIManager.Clear();
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            string debug = "Currently open: ";
+            foreach( var panel in UIManager.Current)
+            {
+                debug += panel.name + "\n";
+            }
+            Debug.Log(debug);
+        }
     }
     public bool AssignInteractable(IInteractable interactable)
     {
@@ -55,6 +70,15 @@ public class IslandManager : MonoBehaviour
             }
         }
         return closestInteractable;
+    }
+    public void AddInfo(InfoSO newInfo)
+    {
+        if (info.Contains(newInfo))
+        {
+            Debug.LogWarning("Same info added " + newInfo.name);
+            return;
+        }
+        informationBar.AddInfoToBar(newInfo);
     }
     private void OnDestroy()
     {

@@ -10,15 +10,31 @@ public static class UIManager
     public static List<int> Blockers { get; private set; } = new List<int>();
     public static bool Open(TailPanel panel)
     {
-        if(Current.Contains(panel))
+        if (Current.Contains(panel))
         {
             Debug.LogWarning(panel.name + " already opened");
             return false;
         }
         panel.Open();
         Current.Push(panel);
+        UpdatePlayerBlocking();
         return true;
     }
+
+    private static void UpdatePlayerBlocking()
+    {
+        bool blockPlayer = false;
+        foreach (TailPanel openPanel in Current)
+        {
+            if (openPanel.BlockPlayer)
+            {
+                blockPlayer = true;
+                break;
+            }
+        }
+        PlayerInteraction.Instance.EnablePlayerComponents(!blockPlayer);
+    }
+
     public static bool Open(TailPanel panel, Action closeEvent)
     {
         if(Open(panel)) panel.AddOnClose(closeEvent);
@@ -46,10 +62,16 @@ public static class UIManager
         panel.Close();
         currentList.Remove(panel);
         Current.Clear();
-        for(int i = currentList.Count - 1; i > 0; i--)
+        for(int i = currentList.Count - 1; i >= 0; i--)
         {
             Current.Push(currentList[i]);
         }
+        UpdatePlayerBlocking();
+    }
+    public static void Toggle(TailPanel panel)
+    {
+        if (Current.Contains(panel)) Close(panel);
+        else Open(panel);
     }
     public static void CloseLast()
     {

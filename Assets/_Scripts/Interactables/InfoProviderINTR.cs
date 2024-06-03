@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoteINTR : Interactable, IInteractable
+public class InfoProviderINTR : Interactable, IInteractable
 {
-    [SerializeField] private TailPanel notePanel = null;
+    [Header("Info Provider")]
+    [SerializeField] private InfoSO infoProvided = null;
 
     private void Start()
     {
@@ -23,22 +24,29 @@ public class NoteINTR : Interactable, IInteractable
 
     public void Interact()
     {
-        UIManager.Open(notePanel, OnCloseNote);
-        interacted = true;
+        if (!interacted)
+        {
+            AcquireWords();
+            interacted = true;
+        }
     }
-    private void OnCloseNote()
+    private void AcquireWords()
     {
-        if (!UIManager.IsOpen()) PlayerInteraction.Instance.EnablePlayerComponents(true);
+        Debug.Log("acquired " + infoProvided.name);
+        IslandManager.Instance.AddInfo(infoProvided);
     }
-    // Getters
+
     public bool InteractionActive()
     {
         return gameObject.activeSelf;
     }
+
+    // Getters
     public Vector3 GetInteractionPosition()
     {
         return interactionPoint.position;
     }
+
     public float GetInteractionDistance()
     {
         return interactionDistance;

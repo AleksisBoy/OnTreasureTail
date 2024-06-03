@@ -6,6 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(Canvas))]
 public class TailPanel : MonoBehaviour
 {
+    [Header("Tail Panel")]
+    [SerializeField] private bool blockPlayer = false;
+
+    public bool BlockPlayer => blockPlayer;
     public List<TailPanel> children = new List<TailPanel>();
 
     private Action onClose = null;

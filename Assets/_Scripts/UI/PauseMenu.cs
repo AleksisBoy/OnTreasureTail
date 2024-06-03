@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PauseMenu : TailPanel
 {
+    [Header("Pause Menu")]
     [SerializeField] private TailPanel settingsPanel = null;
     public void Button_Continue()
     {
@@ -13,6 +14,7 @@ public class PauseMenu : TailPanel
     public void Button_Settings()
     {
         UIManager.Open(settingsPanel);
+        // add settings panel to children of this panel
     }
     public void Button_QuitToMenu()
     {

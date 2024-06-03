@@ -13,7 +13,7 @@ public interface IInteractable
     /// Interaction call
     /// </summary>
     /// <returns>True if pause needed</returns>
-    public bool Interact(); 
+    public void Interact(); 
     public bool HasInteracted();
     public bool InteractionActive();
     public Vector3 GetInteractionPosition();

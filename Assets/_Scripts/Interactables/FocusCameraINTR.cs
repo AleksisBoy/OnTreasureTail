@@ -83,17 +83,17 @@ public class FocusCameraINTR : Interactable, IInteractable
         IslandManager.Instance.AssignInteractable(this);
     }
 
-    public bool Interact()
+    public void Interact()
     {
         UIManager.AddBlocker(gameObject);
         align = 0f;
+        PlayerInteraction.Instance.EnablePlayerComponents(false);
         focusCamera = PlayerInteraction.Instance.GetFocusCamera();
         focusCamera.transform.gameObject.SetActive(true);
         initialPosition = focusCamera.transform.position;
         initialRotation = focusCamera.transform.rotation;
         alignTarget = alignObject;
         interacted = true;
-        return true;
     }
 
     // Getters
