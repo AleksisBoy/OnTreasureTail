@@ -17,4 +17,5 @@ public interface IInteractable
     public bool HasInteracted();
     public bool InteractionActive();
     public Vector3 GetInteractionPosition();
+    public float GetInteractionDistance();
 }

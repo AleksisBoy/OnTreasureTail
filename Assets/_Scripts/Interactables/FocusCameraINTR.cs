@@ -83,16 +83,6 @@ public class FocusCameraINTR : Interactable, IInteractable
         IslandManager.Instance.AssignInteractable(this);
     }
 
-    public Vector3 GetInteractionPosition()
-    {
-        return interactionPoint.position;
-    }
-
-    public bool HasInteracted()
-    {
-        return interacted;
-    }
-
     public bool Interact()
     {
         UIManager.AddBlocker(gameObject);
@@ -106,8 +96,23 @@ public class FocusCameraINTR : Interactable, IInteractable
         return true;
     }
 
+    // Getters
     public bool InteractionActive()
     {
         return gameObject.activeSelf;
+    }
+
+    public float GetInteractionDistance()
+    {
+        return interactionDistance;
+    }
+    public Vector3 GetInteractionPosition()
+    {
+        return interactionPoint.position;
+    }
+
+    public bool HasInteracted()
+    {
+        return interacted;
     }
 }

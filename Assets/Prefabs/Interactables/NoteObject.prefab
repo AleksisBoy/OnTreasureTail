@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 964f306c944478b468e55bdf487b9d47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactionPoint: {fileID: 0}
+  interactionDistance: 0.76
   notePanel: {fileID: 4131233970019855536}
 --- !u!1 &4079224170193931364
 GameObject:
@@ -353,6 +355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff297d55fc2dc0c4289e0c350fce16c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  children: []
 --- !u!1 &7117800487098388530
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,6 +31,7 @@ public class NoteINTR : Interactable, IInteractable
     {
         if (!UIManager.IsOpen()) PlayerInteraction.Instance.EnablePlayerComponents(true);
     }
+    // Getters
     public bool InteractionActive()
     {
         return gameObject.activeSelf;
@@ -38,5 +39,9 @@ public class NoteINTR : Interactable, IInteractable
     public Vector3 GetInteractionPosition()
     {
         return interactionPoint.position;
+    }
+    public float GetInteractionDistance()
+    {
+        return interactionDistance;
     }
 }

@@ -7,8 +7,8 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerMovement movement = null;
     [SerializeField] private PlayerCamera view = null;
     [SerializeField] private Camera focusCamera = null;
-    [SerializeField] private float interactionDistance = 0.4f;
 
+    private RideableBoat boat = null;
     public static PlayerInteraction Instance { get; private set; } = null;
     private void Awake()
     {
@@ -31,13 +31,20 @@ public class PlayerInteraction : MonoBehaviour
 
         IInteractable inter = IslandManager.Instance.GetClosestInteractable(transform.position, out float distance);
 
-        if (inter != null && distance < interactionDistance)
+        if (inter != null && distance < inter.GetInteractionDistance())
         {
             bool pause = inter.Interact();
             if (pause) EnablePlayerComponents(false);
         }
     }
+    public void RideBoat(RideableBoat boat)
+    {
+        this.boat = boat;
+        bool rideBoat = boat != null;
 
+        // movement should know about boat and become overriden by boat behaviour
+        movement.enabled = !rideBoat;
+    }
     public void EnablePlayerComponents(bool state)
     {
         movement.enabled = state;
