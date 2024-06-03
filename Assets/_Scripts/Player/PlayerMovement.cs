@@ -203,6 +203,13 @@ public class PlayerMovement : MonoBehaviour
                 desiredPosition = transform.position + sideOffset;
             }
         }
+        else
+        {
+            // Next position is inside environment object
+            Collider[] colls = Physics.OverlapSphere(desiredPosition, 0.25f, InternalSettings.Get.EnvironmentMask);
+
+            if (colls.Length > 0) desiredPosition = transform.position;
+        }
         return desiredPosition;
     }
     private float GetCurrentSpeedInput()
