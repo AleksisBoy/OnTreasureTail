@@ -51,6 +51,12 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.Log(transform.eulerAngles);
     }
+    public Vector3 GetCameraDirectionFromInput(float horizontalInput, float verticalInput)
+    {
+        Vector3 cameraDirection = playerCamera.transform.TransformDirection(new Vector3(horizontalInput, 0f, verticalInput));
+        cameraDirection.y = 0f;
+        return cameraDirection.normalized;
+    }
     private void Update()
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -59,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         if (JumpInput()) return;
 
         // Yaw rotation of player
-        Vector3 cameraDirection = playerCamera.transform.TransformDirection(new Vector3(horizontalInput, 0f, verticalInput));
+        Vector3 cameraDirection = GetCameraDirectionFromInput(horizontalInput, verticalInput);
         if (horizontalInput != 0f || verticalInput != 0f) transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(new Vector3(cameraDirection.x, 0f, cameraDirection.z), Vector3.up), Time.deltaTime * rotationSpeed);
 
         // Get the speed depending on input

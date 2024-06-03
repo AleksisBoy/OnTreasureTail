@@ -33,8 +33,7 @@ public class PlayerInteraction : MonoBehaviour
 
         if (inter != null && distance < inter.GetInteractionDistance())
         {
-            bool pause = inter.Interact();
-            if (pause) EnablePlayerComponents(false);
+            inter.Interact();
         }
     }
     public void RideBoat(RideableBoat boat)
@@ -42,7 +41,16 @@ public class PlayerInteraction : MonoBehaviour
         this.boat = boat;
         bool rideBoat = boat != null;
 
-        // movement should know about boat and become overriden by boat behaviour
+        if (rideBoat)
+        {
+            transform.SetParent(boat.SeatTransform, true);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            transform.SetParent(null, true);
+        }
         movement.enabled = !rideBoat;
     }
     public void EnablePlayerComponents(bool state)
@@ -59,4 +67,5 @@ public class PlayerInteraction : MonoBehaviour
     {
         return view;
     }
+    public PlayerMovement Movement => movement;
 }
