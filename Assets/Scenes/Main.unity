@@ -4959,6 +4959,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 258195075214548290, guid: 8f9356cd88e18ea44949aa6ac463dac8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -180
+      objectReference: {fileID: 0}
     - target: {fileID: 1552048286800219323, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: view
@@ -4977,17 +4982,17 @@ PrefabInstance:
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 37.6
+      value: 38.325
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.81
+      value: -0.060000002
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 27.68
+      value: 26.024
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
@@ -4997,17 +5002,17 @@ PrefabInstance:
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
@@ -5639,40 +5644,45 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1929285631481203315, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.051
+      objectReference: {fileID: 0}
+    - target: {fileID: 1929285631481203315, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1929285631481203315, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1929285631481203315, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1929285631481203315, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363953045788668348, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2852064054174816221, guid: a38ff297fc11cf545ac050fd0d665529,
         type: 3}
       propertyPath: m_Name
       value: RideableBoat
       objectReference: {fileID: 0}
-    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
+    - target: {fileID: 6490649130344566755, guid: a38ff297fc11cf545ac050fd0d665529,
         type: 3}
-      propertyPath: parkHeight
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
-        type: 3}
-      propertyPath: kickOffSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
-        type: 3}
-      propertyPath: rotationSpeed
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
-        type: 3}
-      propertyPath: parkedOffset.y
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
-        type: 3}
-      propertyPath: positionOffset.y
-      value: -0.32
-      objectReference: {fileID: 0}
-    - target: {fileID: 6989165610798129239, guid: a38ff297fc11cf545ac050fd0d665529,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.311
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7957992724399772634, guid: a38ff297fc11cf545ac050fd0d665529,
         type: 3}
@@ -5811,9 +5821,9 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 175559080}
   - {fileID: 1659309503}
+  - {fileID: 4771822063610300301}
   - {fileID: 277506570166918608}
   - {fileID: 8871641171269674535}
-  - {fileID: 4771822063610300301}
   - {fileID: 8007144063538006879}
   - {fileID: 6073986569165496839}
   - {fileID: 1894611993}

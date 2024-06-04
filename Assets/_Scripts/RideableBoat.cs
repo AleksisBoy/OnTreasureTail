@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class RideableBoat : Interactable, IInteractable
 {
+    // TODO: FIX COLLISION WHEN BOAT BECOMES UNRIDDEN AND IT STILL GOES INTO TERRAIN
+
     [Header("Boat")]
     [SerializeField] private Transform frontPosition = null;
     [SerializeField] private Transform rearPosition = null;
     [SerializeField] private Transform frontHullPosition = null;
     [SerializeField] private Transform seatTransform = null;
+    [SerializeField] private Transform leftPaddle = null;
+    [SerializeField] private Transform rightPaddle = null;
     [SerializeField] private AnimationCurve movePattern = null;
     [SerializeField] private float patternSeconds = 2f;
     [SerializeField] private float rowingSpeed = 4f;
@@ -63,10 +67,12 @@ public class RideableBoat : Interactable, IInteractable
             time01 += Time.deltaTime;
             if (time01 > 1f) time01 = 0f;
             velocity = transform.forward * rowingSpeed * movePattern.Evaluate(time01);
+            PlayerInteraction.Instance.Animator.SetFloat("Rowing", Mathf.Abs(1f - movePattern.Evaluate(time01)));
         }
         else
         {
             time01 = 0f;
+            PlayerInteraction.Instance.Animator.SetFloat("Rowing", 0f);
         }
 
         if (kickOff) BreakKickOffCheck();
@@ -143,6 +149,25 @@ public class RideableBoat : Interactable, IInteractable
         kickOff = true;
         velocity = kickoffVelocity;
     }
+    private void SetPaddleParent(PlayerInteraction player)
+    {
+        if (player)
+        {
+            leftPaddle.SetParent(player.LeftHand, false);
+            leftPaddle.transform.localPosition = Vector3.zero;
+            leftPaddle.Rotate(20f, -100f, 0f);
+            rightPaddle.SetParent(player.RightHand, false);
+            rightPaddle.transform.localPosition = Vector3.zero;
+            rightPaddle.Rotate(20f, 100f, 0f);
+        }
+        else
+        {
+            leftPaddle.SetParent(transform.parent, false);
+            rightPaddle.SetParent(transform.parent, false);
+            leftPaddle.rotation = Quaternion.identity;
+            rightPaddle.rotation = Quaternion.identity;
+        }
+    }
     // IInteractable calls
     public void AssignToIslandManager()
     {
@@ -161,10 +186,13 @@ public class RideableBoat : Interactable, IInteractable
 
     public void Interact()
     {
+        if (kickOff) return;
+
         if (ridden)
         {
             // go off the boat
             PlayerInteraction.Instance.RideBoat(null);
+            SetPaddleParent(null);
             ridden = false;
         }
         else
@@ -175,6 +203,7 @@ public class RideableBoat : Interactable, IInteractable
                 Unpark();
             }
             PlayerInteraction.Instance.RideBoat(this);
+            SetPaddleParent(PlayerInteraction.Instance);
             ridden = true;
         }
     }

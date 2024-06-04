@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Animator animator = null;
     [SerializeField] private PlayerCamera playerCamera = null;
     [Header("Grounded")]
     [SerializeField] private float walkSpeed = 3f;
@@ -24,16 +23,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float swimSpeed = 3f;
     [SerializeField] private float swimSprintSpeed = 5f;
 
+    private Animator animator;
     private Terrain terrain;
+
     private bool sloping = false; 
     private bool grounded = false; 
     private bool jumping = false; 
     private float jump = 0f; 
     private Vector3 lastPosition = Vector3.zero;
     public float velocityFloat = 0f;
-    public void Set(Terrain terrain)
+    public void Set(Terrain terrain, Animator animator)
     {
         this.terrain = terrain;
+        this.animator = animator;
     }
     private void Start()
     {

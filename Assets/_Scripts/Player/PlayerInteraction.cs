@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    [SerializeField] private Transform rightHandTransform = null;
+    [SerializeField] private Transform leftHandTransform = null;
+    [SerializeField] private Animator animator = null;
     [SerializeField] private Terrain terrain = null;
     [SerializeField] private PlayerMovement movement = null;
     [SerializeField] private PlayerCamera view = null;
@@ -20,7 +23,7 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
         focusCamera.gameObject.SetActive(false);
-        movement.Set(terrain);
+        movement.Set(terrain, animator);
     }
     private void Update()
     {
@@ -48,10 +51,14 @@ public class PlayerInteraction : MonoBehaviour
             transform.SetParent(boat.SeatTransform, true);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
+            animator.SetLayerWeight(2, 1f);
+            animator.SetLayerWeight(0, 0f);
         }
         else
         {
             transform.SetParent(null, true);
+            animator.SetLayerWeight(2, 0f);
+            animator.SetLayerWeight(0, 1f);
         }
         movement.enabled = !rideBoat;
     }
@@ -71,4 +78,7 @@ public class PlayerInteraction : MonoBehaviour
     }
     public PlayerMovement Movement => movement;
     public Terrain Terrain => terrain;
+    public Animator Animator => animator;
+    public Transform RightHand => rightHandTransform;
+    public Transform LeftHand => leftHandTransform;
 }
