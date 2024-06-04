@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Terrain terrain = null;
     [SerializeField] private Animator animator = null;
     [SerializeField] private PlayerCamera playerCamera = null;
     [Header("Grounded")]
@@ -25,12 +24,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float swimSpeed = 3f;
     [SerializeField] private float swimSprintSpeed = 5f;
 
+    private Terrain terrain;
     private bool sloping = false; 
     private bool grounded = false; 
     private bool jumping = false; 
     private float jump = 0f; 
     private Vector3 lastPosition = Vector3.zero;
-    public float velocityFloat = 0f; 
+    public float velocityFloat = 0f;
+    public void Set(Terrain terrain)
+    {
+        this.terrain = terrain;
+    }
     private void Start()
     {
         lastPosition = transform.position;
@@ -45,11 +49,6 @@ public class PlayerMovement : MonoBehaviour
         }
         animator.SetBool("Grounded", grounded);
         animator.SetBool("Sloping", sloping);
-    }
-    [ContextMenu("Print Rotation")]
-    public void PrintRotation()
-    {
-        Debug.Log(transform.eulerAngles);
     }
     public Vector3 GetCameraDirectionFromInput(float horizontalInput, float verticalInput)
     {

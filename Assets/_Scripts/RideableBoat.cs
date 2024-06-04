@@ -5,43 +5,143 @@ using UnityEngine;
 public class RideableBoat : Interactable, IInteractable
 {
     [Header("Boat")]
+    [SerializeField] private Transform frontPosition = null;
+    [SerializeField] private Transform rearPosition = null;
+    [SerializeField] private Transform frontHullPosition = null;
     [SerializeField] private Transform seatTransform = null;
     [SerializeField] private AnimationCurve movePattern = null;
     [SerializeField] private float patternSeconds = 2f;
     [SerializeField] private float rowingSpeed = 4f;
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private float decelerationRate = 10f;
+    [SerializeField] private float kickOffSpeed = 5f;
+    [SerializeField] private float parkHeight = 0.05f;
+    [SerializeField] private float parkedRotationX = -5f;
+    [SerializeField] private Vector3 parkedOffset = Vector3.zero;
 
     public Transform SeatTransform => seatTransform;
     private Vector3 velocity = Vector3.zero;
     private float time01 = 0f;
     private bool ridden = false;
+    private bool parked = false;
+    private bool kickOff = false;
     private void Start()
     {
         AssignToIslandManager();
+        Park();
     }
     private void Update()
+    {
+        RiddenInput();
+
+        UpdateVelocityPosition();
+    }
+
+    private void UpdateVelocityPosition()
+    {
+        if (velocity != Vector3.zero)
+        {
+            transform.position = transform.position + velocity * Time.deltaTime;
+            velocity = Vector3.Lerp(velocity, Vector3.zero, decelerationRate * Time.deltaTime);
+        }
+    }
+
+    private void RiddenInput()
     {
         if (!ridden) return;
 
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
 
-        Vector3 cameraDirection = PlayerInteraction.Instance.Movement.GetCameraDirectionFromInput(horizontalInput, verticalInput);
-        if (horizontalInput != 0f || verticalInput != 0f)
+        if (horizontalInput != 0f && !parked)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(new Vector3(cameraDirection.x, 0f, cameraDirection.z), Vector3.up), Time.deltaTime * rotationSpeed);
+            transform.Rotate(0f, horizontalInput * rotationSpeed * Time.deltaTime, 0f);
+        }
+
+        if (verticalInput > 0f && !kickOff && !parked)
+        {
             time01 += Time.deltaTime;
             if (time01 > 1f) time01 = 0f;
-            float speedModifier = horizontalInput != 0f && verticalInput != 0f ? 0.71f : 1f;
-            velocity = transform.forward * rowingSpeed * movePattern.Evaluate(time01) * speedModifier;
+            velocity = transform.forward * rowingSpeed * movePattern.Evaluate(time01);
         }
         else
         {
             time01 = 0f;
-            velocity = Vector3.Lerp(velocity, Vector3.zero, decelerationRate * Time.deltaTime);
         }
-        transform.position += velocity * Time.deltaTime;
+
+        if (kickOff) BreakKickOffCheck();
+
+        if (parked)
+        {
+            if (!kickOff && verticalInput < 0f) Unpark();
+            return;
+        }
+
+        TerrainCollisionCheck();
+    }
+
+    private void BreakKickOffCheck()
+    {
+        float velocityMagnitude = velocity.magnitude;
+        if (velocityMagnitude < 1f)
+        {
+            kickOff = false;
+            parked = false;
+        }
+    }
+
+    private void TerrainCollisionCheck()
+    {
+        Vector3 moveOffset = velocity * Time.deltaTime;
+        Terrain terrain = PlayerInteraction.Instance.Terrain;
+
+        // Kick off if hit the back of the boat
+        float rearHeight = terrain.SampleHeight(rearPosition.position + moveOffset) + terrain.transform.position.y;
+        if (rearHeight > 0f)
+        {
+            KickOff(transform.forward * kickOffSpeed);
+            return;
+        }
+
+        // Get the height of terrain on front hull position
+        float groundHeight = terrain.SampleHeight(frontHullPosition.position + moveOffset) + terrain.transform.position.y;
+
+        // Update the height of terrain with front position if hull was hit on terrain
+        if (groundHeight > 0f) groundHeight = terrain.SampleHeight(frontPosition.position + moveOffset) + terrain.transform.position.y;
+        else return;
+
+        if (groundHeight > 0f && groundHeight <= parkHeight)
+        {
+            Park();
+        }
+        else if (groundHeight > parkHeight)
+        {
+            KickOff(-velocity);
+        }
+    }
+
+    private void Park()
+    {
+        parked = true;
+        transform.Rotate(parkedRotationX, 0f, 0f);
+        transform.position += parkedOffset;
+        velocity = Vector3.zero;
+    }
+    private void Unpark()
+    {
+        transform.Rotate(-parkedRotationX, 0f, 0f);
+        transform.position -= parkedOffset;
+        KickOff();
+    }
+    private void KickOff()
+    {
+        kickOff = true;
+        velocity = -transform.forward * kickOffSpeed;
+    }
+    private void KickOff(Vector3 kickoffVelocity)
+    {
+        kickOff = true;
+        velocity = kickoffVelocity;
     }
     // IInteractable calls
     public void AssignToIslandManager()
@@ -65,15 +165,19 @@ public class RideableBoat : Interactable, IInteractable
         {
             // go off the boat
             PlayerInteraction.Instance.RideBoat(null);
+            ridden = false;
         }
         else
         {
             // enter boat
+            if (parked)
+            {
+                Unpark();
+            }
             PlayerInteraction.Instance.RideBoat(this);
+            ridden = true;
         }
-        ridden = !ridden;
     }
-
     public bool InteractionActive()
     {
         return gameObject.activeSelf;

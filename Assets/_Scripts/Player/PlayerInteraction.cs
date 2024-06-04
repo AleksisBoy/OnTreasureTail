@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
+    [SerializeField] private Terrain terrain = null;
     [SerializeField] private PlayerMovement movement = null;
     [SerializeField] private PlayerCamera view = null;
     [SerializeField] private Camera focusCamera = null;
@@ -19,6 +20,7 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
         focusCamera.gameObject.SetActive(false);
+        movement.Set(terrain);
     }
     private void Update()
     {
@@ -68,4 +70,5 @@ public class PlayerInteraction : MonoBehaviour
         return view;
     }
     public PlayerMovement Movement => movement;
+    public Terrain Terrain => terrain;
 }

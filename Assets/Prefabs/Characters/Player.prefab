@@ -592,13 +592,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f4c0329905656f40b8bdeb6c1855755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain: {fileID: 0}
   animator: {fileID: 7576676028293474202}
   playerCamera: {fileID: 0}
   walkSpeed: 3
   runSpeed: 5
   rotationSpeed: 15
-  slopeOffsetX: 30
+  slopeOffsetX: 40
   slopeModifier: 0.5
   slideSpeed: 6
   glideModifier: 0.035
@@ -693,10 +692,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c3d1edc0d47ebf488f3e41bb1e37c00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  terrain: {fileID: 0}
   movement: {fileID: 4043697657939580133}
   view: {fileID: 0}
   focusCamera: {fileID: 0}
-  interactionDistance: 0.4
 --- !u!1 &7499727931088559446
 GameObject:
   m_ObjectHideFlags: 0

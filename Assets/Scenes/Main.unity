@@ -450,7 +450,7 @@ GameObject:
   - component: {fileID: 175559080}
   - component: {fileID: 175559079}
   - component: {fileID: 175559078}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Terrain_Island00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3965,17 +3965,17 @@ PrefabInstance:
     - target: {fileID: 1537141795494614623, guid: 15d2d855ed479c449a972b313ae0b23c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.400791
+      value: -4.37
       objectReference: {fileID: 0}
     - target: {fileID: 1537141795494614623, guid: 15d2d855ed479c449a972b313ae0b23c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.49847183
+      value: -0.19
       objectReference: {fileID: 0}
     - target: {fileID: 1537141795494614623, guid: 15d2d855ed479c449a972b313ae0b23c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.7665787
+      value: -6.62
       objectReference: {fileID: 0}
     - target: {fileID: 1537141795494614623, guid: 15d2d855ed479c449a972b313ae0b23c,
         type: 3}
@@ -4966,6 +4966,11 @@ PrefabInstance:
       objectReference: {fileID: 330585548}
     - target: {fileID: 1552048286800219323, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
+      propertyPath: terrain
+      value: 
+      objectReference: {fileID: 175559079}
+    - target: {fileID: 1552048286800219323, guid: 8f9356cd88e18ea44949aa6ac463dac8,
+        type: 3}
       propertyPath: focusCamera
       value: 
       objectReference: {fileID: 622095523}
@@ -5639,6 +5644,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: RideableBoat
       objectReference: {fileID: 0}
+    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: parkHeight
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: kickOffSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: parkedOffset.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323858675257432900, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: positionOffset.y
+      value: -0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 6989165610798129239, guid: a38ff297fc11cf545ac050fd0d665529,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.311
+      objectReference: {fileID: 0}
     - target: {fileID: 7957992724399772634, guid: a38ff297fc11cf545ac050fd0d665529,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5652,7 +5687,7 @@ PrefabInstance:
     - target: {fileID: 7957992724399772634, guid: a38ff297fc11cf545ac050fd0d665529,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 27.04
+      value: 26.66
       objectReference: {fileID: 0}
     - target: {fileID: 7957992724399772634, guid: a38ff297fc11cf545ac050fd0d665529,
         type: 3}

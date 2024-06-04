@@ -53,3 +53,6 @@ MonoBehaviour:
   environmentMask:
     serializedVersion: 2
     m_Bits: 128
+  terrainMask:
+    serializedVersion: 2
+    m_Bits: 256

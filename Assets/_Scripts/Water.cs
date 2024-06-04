@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MaterialOffsetUpdate : MonoBehaviour
+public class Water : MonoBehaviour
 {
     [SerializeField] private Vector2 direction;
     [SerializeField] private float speed;
 
     private Material mat;
-    private void OnEnable()
+    private void Awake()
     {
         mat = GetComponent<MeshRenderer>().sharedMaterial;
     }
@@ -19,5 +19,9 @@ public class MaterialOffsetUpdate : MonoBehaviour
     private void Update()
     {
         mat.mainTextureOffset += direction * speed * Time.deltaTime;
+    }
+    private void OnDestroy()
+    {
+        mat.mainTextureOffset = new Vector2(0f, 0f);
     }
 }
