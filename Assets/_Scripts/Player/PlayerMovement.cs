@@ -36,9 +36,7 @@ public class PlayerMovement : MonoBehaviour
     {
         this.terrain = terrain;
         this.animator = animator;
-    }
-    private void Start()
-    {
+
         lastPosition = transform.position;
 
         if (Physics.Raycast(transform.position + new Vector3(0f, 0.1f, 0f), Vector3.down, 1f))
@@ -60,6 +58,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
+        if (animator.GetBool("Dig")) return;
+
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
 

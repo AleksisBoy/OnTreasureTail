@@ -758,10 +758,12 @@ MonoBehaviour:
   rightHandTransform: {fileID: 258195075214548290}
   leftHandTransform: {fileID: 3676117500577174641}
   animator: {fileID: 7576676028293474202}
-  terrain: {fileID: 0}
   movement: {fileID: 4043697657939580133}
   view: {fileID: 0}
   focusCamera: {fileID: 0}
+  diggingRadius: 0.5
+  diggingHeightDelta: -0.00025
+  diggingForwardModifier: 0.6
 --- !u!1 &7499727931088559446
 GameObject:
   m_ObjectHideFlags: 0

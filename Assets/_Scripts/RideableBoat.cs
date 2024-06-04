@@ -99,7 +99,7 @@ public class RideableBoat : Interactable, IInteractable
     private void TerrainCollisionCheck()
     {
         Vector3 moveOffset = velocity * Time.deltaTime;
-        Terrain terrain = PlayerInteraction.Instance.Terrain;
+        Terrain terrain = IslandManager.Instance.Terrain;
 
         // Kick off if hit the back of the boat
         float rearHeight = terrain.SampleHeight(rearPosition.position + moveOffset) + terrain.transform.position.y;
@@ -125,7 +125,6 @@ public class RideableBoat : Interactable, IInteractable
             KickOff(-velocity);
         }
     }
-
     private void Park()
     {
         parked = true;

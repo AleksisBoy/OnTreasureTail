@@ -4,20 +4,59 @@ using UnityEngine;
 
 public class IslandManager : MonoBehaviour
 {
+    [SerializeField] private Terrain islandTerrain = null;
+    [SerializeField] private float diggingDistanceRestrictionModifier = 4f;
+    [SerializeField] private int sandLayerIndex = 1;
     [SerializeField] private InformationProgressBar informationBar = null;
+
+    private List<Vector3> diggingPositions = new List<Vector3>();
+    private TerrainData initialTerrainData = null;
+    public int SandLayerIndex => sandLayerIndex;
+    public Terrain Terrain => islandTerrain;
 
     private List<InfoSO> info = new List<InfoSO>();
     private List<IInteractable> interactables = new List<IInteractable>();
     public static IslandManager Instance { get; private set; } = null;
     private void Awake()
     {
-        if(Instance == null) Instance = this;
+        if (Instance == null) Instance = this;
         else
         {
             Destroy(gameObject);
             return;
         }
         UIManager.Clear();
+
+        TerrainDataSetup();
+    }
+
+    private void TerrainDataSetup()
+    {
+        initialTerrainData = islandTerrain.terrainData;
+        TerrainData clonedData = InternalSettings.CloneTerrainData(initialTerrainData);
+
+        islandTerrain.terrainData = clonedData;
+        islandTerrain.GetComponent<TerrainCollider>().terrainData = clonedData;
+    }
+    public bool DigIslandTerrain(Vector3 worldPos, float diggingRadius, float diggingHeightDelta)
+    {
+        InternalSettings.LowerTerrainSmooth(islandTerrain, worldPos, diggingRadius, diggingHeightDelta);
+        diggingPositions.Add(worldPos);
+
+        return true;
+    }
+    public bool CanDigAt(Vector3 worldPos, float diggingRadius)
+    {
+        foreach (Vector3 pos in diggingPositions)
+        {
+            float distance = Vector3.Distance(worldPos, pos);
+            if (distance < diggingRadius * diggingDistanceRestrictionModifier)
+            {
+                Debug.Log("Too close to digged position");
+                return false;
+            }
+        }
+        return true;
     }
     private void Update()
     {

@@ -4637,6 +4637,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1322362272396937709, guid: 30acd2ba93f1ab14baa850bf51e222d3,
         type: 3}
+      propertyPath: islandTerrain
+      value: 
+      objectReference: {fileID: 175559079}
+    - target: {fileID: 1322362272396937709, guid: 30acd2ba93f1ab14baa850bf51e222d3,
+        type: 3}
       propertyPath: informationBar
       value: 
       objectReference: {fileID: 974998254}
@@ -4982,17 +4987,17 @@ PrefabInstance:
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 38.325
+      value: 36.03
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.060000002
+      value: 0.71
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 26.024
+      value: 29.575
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
@@ -5816,10 +5821,11 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 2878191793928479499}
+  - {fileID: 175559080}
   - {fileID: 681065560}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 175559080}
   - {fileID: 1659309503}
   - {fileID: 4771822063610300301}
   - {fileID: 277506570166918608}
@@ -5832,7 +5838,6 @@ SceneRoots:
   - {fileID: 596234880}
   - {fileID: 4912405572106783838}
   - {fileID: 6582383404723072515}
-  - {fileID: 2878191793928479499}
   - {fileID: 4676773053384056975}
   - {fileID: 1322002850644655318}
   - {fileID: 115202671}

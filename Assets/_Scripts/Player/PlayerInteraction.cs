@@ -7,11 +7,15 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private Transform rightHandTransform = null;
     [SerializeField] private Transform leftHandTransform = null;
     [SerializeField] private Animator animator = null;
-    [SerializeField] private Terrain terrain = null;
     [SerializeField] private PlayerMovement movement = null;
     [SerializeField] private PlayerCamera view = null;
     [SerializeField] private Camera focusCamera = null;
+    [Header("Digging")]
+    [SerializeField] private float diggingRadius = 0.5f;
+    [SerializeField] private float diggingHeightDelta = -0.0001f;
+    [SerializeField] private float diggingForwardModifier = 0.3f;
 
+    private Terrain terrain = null;
     private RideableBoat boat = null;
     public static PlayerInteraction Instance { get; private set; } = null;
     private void Awake()
@@ -23,11 +27,48 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
         focusCamera.gameObject.SetActive(false);
+    }
+    private void Start()
+    {
+        terrain = IslandManager.Instance.Terrain;
         movement.Set(terrain, animator);
     }
     private void Update()
     {
         InteractionInput();
+        DiggingInput();
+    }
+
+    private void DiggingInput()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            int terrainLayer = InternalSettings.GetMainTexture(terrain, transform.position);
+            if (terrainLayer == IslandManager.Instance.SandLayerIndex)
+            {
+                DigInFront();
+            }
+        }
+    }
+
+    private void DigInFront()
+    {
+        Vector3 diggingPos = transform.position + transform.forward * diggingForwardModifier;
+        Collider[] colls = Physics.OverlapSphere(diggingPos, diggingRadius, InternalSettings.Get.EnvironmentMask);
+        if(colls.Length > 0 )
+        {
+            Debug.Log("Blocking digging");
+            return;
+        }
+        if (IslandManager.Instance.CanDigAt(diggingPos, diggingRadius))
+        {
+            animator.SetBool("Dig", true);
+        }
+    }
+    public void AnimationEvent_DigImpact()
+    {
+        Vector3 diggingPos = transform.position + transform.forward * diggingForwardModifier;
+        IslandManager.Instance.DigIslandTerrain(diggingPos, diggingRadius, diggingHeightDelta);
     }
 
     private void InteractionInput()
@@ -77,7 +118,6 @@ public class PlayerInteraction : MonoBehaviour
         return view;
     }
     public PlayerMovement Movement => movement;
-    public Terrain Terrain => terrain;
     public Animator Animator => animator;
     public Transform RightHand => rightHandTransform;
     public Transform LeftHand => leftHandTransform;
