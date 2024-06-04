@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private PlayerCamera playerCamera = null;
+    [SerializeField] private float playerRadius = 0.25f;
     [Header("Grounded")]
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float runSpeed = 5f;
@@ -90,7 +91,8 @@ public class PlayerMovement : MonoBehaviour
             grounded = true;
             maxSpeed = runSpeed;
 
-            desiredPosition.y = terrain.SampleHeight(desiredPosition) + terrain.transform.position.y;
+            desiredPosition.y = hit.point.y;
+            //desiredPosition.y = terrain.SampleHeight(desiredPosition) + terrain.transform.position.y;
 
             // Setting grounded position for player with slope consideration
             if (!SlopeBehaviour(hit.normal))
@@ -138,8 +140,8 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                Collider[] colls = Physics.OverlapSphere(jumpFinalPosition, 0.25f, InternalSettings.Get.EnvironmentMask);
-                if(colls.Length > 0)
+                Collider[] colls = Physics.OverlapSphere(jumpFinalPosition, playerRadius, InternalSettings.Get.EnvironmentMask);
+                if (colls.Length > 0)
                 {
                     Debug.Log("jumped on obstacle");
                     jumping = false;
@@ -182,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
         // Update new position with collision check
         Vector3 direction = (desiredPosition - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, desiredPosition);
-        if (Physics.SphereCast(transform.position + collisionOffset, 0.25f, direction, out RaycastHit mainHit, distance, InternalSettings.Get.EnvironmentMask))
+        if (Physics.SphereCast(transform.position + new Vector3(0f, playerRadius, 0f), playerRadius, direction, out RaycastHit mainHit, distance, InternalSettings.Get.EnvironmentMask))
         {
             // Get the value that indicates the facing to the collision (0 - facing in front, 1 - facing sideways)
             float dot = 1f + Vector3.Dot(direction, mainHit.normal);
@@ -199,7 +201,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 sideOffset = wallDirection * dot * glideModifier;
 
             // Check if side movement does not hit other obstacles
-            if (Physics.SphereCast(transform.position + collisionOffset, 0.25f, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.EnvironmentMask))
+            if (Physics.SphereCast(transform.position + collisionOffset, playerRadius, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.EnvironmentMask))
             {
                 // Do not move if there is an obstacle to the side
                 desiredPosition = transform.position;
@@ -213,7 +215,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Next position is inside environment object
-            Collider[] colls = Physics.OverlapSphere(desiredPosition, 0.25f, InternalSettings.Get.EnvironmentMask);
+            Collider[] colls = Physics.OverlapSphere(desiredPosition, playerRadius, InternalSettings.Get.EnvironmentMask);
 
             if (colls.Length > 0) desiredPosition = transform.position;
         }
@@ -236,5 +238,10 @@ public class PlayerMovement : MonoBehaviour
     private void OnDisable()
     {
         animator.SetFloat("Speed", 0f);
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, playerRadius);
     }
 }

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   focusedCameraMask:
     serializedVersion: 2
-    m_Bits: 183
+    m_Bits: 439
   defaultCameraMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -56,3 +56,6 @@ MonoBehaviour:
   terrainMask:
     serializedVersion: 2
     m_Bits: 256
+  walkableMask:
+    serializedVersion: 2
+    m_Bits: 512
