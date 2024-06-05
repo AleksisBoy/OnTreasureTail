@@ -75,7 +75,8 @@ public class PlayerMovement : MonoBehaviour
         float maxSpeed;
 
         // Create modifier for limiting movement speed in case of both inputs active or sloping active
-        float speedModifier = horizontalInput != 0f && verticalInput != 0f ? 0.71f : 1f;
+        //float speedModifier = horizontalInput != 0f && verticalInput != 0f ? 0.71f : 1f;
+        float speedModifier = 1f;
         if (sloping) speedModifier *= slopeModifier;
 
         // Getting the next position wanted

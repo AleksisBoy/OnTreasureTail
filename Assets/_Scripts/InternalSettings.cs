@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class InternalSettings : MonoBehaviour
 {
+    [Header("Layers")]
     [SerializeField] private LayerMask focusedCameraMask;
     [SerializeField] private LayerMask defaultCameraMask;
     [SerializeField] private LayerMask environmentMask;
     [SerializeField] private LayerMask terrainMask;
     [SerializeField] private LayerMask walkableMask;
+    [Header("UI")]
+    [SerializeField] private Color selectedCellColor = Color.white;
+    [SerializeField] private Color defaultCellColor = Color.white;
+
     public static InternalSettings Get { get; private set; } = null;
     private void Awake()
     {
@@ -25,6 +30,10 @@ public class InternalSettings : MonoBehaviour
     public LayerMask EnvironmentMask => environmentMask;
     public LayerMask TerrainMask => terrainMask;
     public LayerMask WalkableMask => walkableMask;
+
+
+    public Color SelectedCellColor => selectedCellColor;
+    public Color DefaultCellColor => defaultCellColor;
 
     public static void CreateDebugSphere(Vector3 position, float scale)
     {

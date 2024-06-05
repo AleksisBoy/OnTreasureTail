@@ -59,3 +59,5 @@ MonoBehaviour:
   walkableMask:
     serializedVersion: 2
     m_Bits: 512
+  selectedCellColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
+  defaultCellColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}

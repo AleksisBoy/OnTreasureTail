@@ -9,7 +9,7 @@ public class IslandManager : MonoBehaviour
     [SerializeField] private Terrain islandTerrain = null;
     [SerializeField] private float diggingDistanceRestrictionModifier = 4f;
     [SerializeField] private int sandLayerIndex = 1;
-    [SerializeField] private InformationProgressBar informationBar = null;
+    [SerializeField] private InformationBar informationBar = null;
 
     private List<Vector3> diggingPositions = new List<Vector3>();
     private TerrainData initialTerrainData = null;
@@ -30,6 +30,10 @@ public class IslandManager : MonoBehaviour
         UIManager.Clear();
 
         TerrainDataSetup();
+    }
+    private void Start()
+    {
+        informationBar.BuildGridViewport();
     }
 
     private void TerrainDataSetup()

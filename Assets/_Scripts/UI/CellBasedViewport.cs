@@ -5,24 +5,52 @@ using UnityEngine;
 
 public class CellBasedViewport : MonoBehaviour
 {
-    [SerializeField] private Vector3 insidepos;
-    [SerializeField] private RectTransform placeholderPrefab = null;
+    [SerializeField] private CellUI cellPrefab = null;
+    [SerializeField] private InfoTextCelledUI infoTextPrefab = null;
     [SerializeField] private Vector2 cellSize = new Vector2(25, 25);
 
     public Vector2 CellSize => cellSize;
     private List<Cell> cells = new List<Cell>();
+    private List<CellUI> cellsUI = new List<CellUI>();
     public List<Cell> Cells => cells;
     private List<InfoCelled> celledInfo = new List<InfoCelled>();
     public List<InfoCelled> CelledInfo => celledInfo;
     private RectTransform RT { get { return (RectTransform)transform; } }
-    private void Awake()
+    private CellUI currentSelected = null;
+    private void Update()
     {
-        CalculateGrid();
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        CellUI selected = InsideCellUI(Input.mousePosition);
+        if(selected == null) return;
+
+        if (currentSelected && currentSelected != selected) currentSelected.Unselect();
+
+        if (selected.Cell.occupied)
+        {
+            Debug.Log(selected.Cell.coordinates + " occupied");
+        }
+        else
+        {
+            currentSelected = selected;
+        }
+        
+    }
+    [ContextMenu("DestroyCellsUI")]
+    private void DestroyCellsUI()
+    {
+        foreach(var cell in cellsUI)
+        {
+            DestroyImmediate(cell.gameObject);
+        }
+        cellsUI.Clear();
+        cells.Clear();
     }
     [ContextMenu("Calculate")]
-    private void CalculateGrid()
+    public void BuildGrid()
     {
         cells.Clear();
+        cellsUI.Clear();
         Vector2 pivotOffset = new Vector2(RT.rect.size.x * RT.pivot.x, RT.rect.size.y * RT.pivot.y);
 
         Vector3 worldCornerLeft = RT.TransformPoint(new Vector3(-pivotOffset.x, -pivotOffset.y, 0));
@@ -37,7 +65,12 @@ public class CellBasedViewport : MonoBehaviour
                 if (cellCornerEnd.x > worldCornerRight.x) continue;
                 if (cellCornerEnd.y > worldCornerRight.y) continue;
 
-                cells.Add(new Cell(new Vector2(x, y), cellCornerEnd, new Vector2Int(xINT, yINT)));
+                Cell cell = new Cell(new Vector2(x, y), cellCornerEnd, new Vector2Int(xINT, yINT));
+                CellUI cellUI = Instantiate(cellPrefab, transform);
+
+                cellUI.Set(cell);
+                cellsUI.Add(cellUI);
+                cells.Add(cell);
                 xINT++;
             }
             yINT++;
@@ -57,6 +90,17 @@ public class CellBasedViewport : MonoBehaviour
         if(cellsSorted.Count != 1) return null;
         
         return cellsSorted[0];
+    }
+    public CellUI InsideCellUI(Vector3 pixelPosition)
+    {
+        List<Cell> cellsXSorted = cells.Where(cell => cell.cornerEnd.x > pixelPosition.x && cell.cornerStart.x <= pixelPosition.x).ToList();
+        List<Cell> cellsSorted = cellsXSorted.Where(cell => cell.cornerEnd.y > pixelPosition.y && cell.cornerStart.y <= pixelPosition.y).ToList();
+
+        if(cellsSorted.Count != 1) return null;
+
+        CellUI cellUI = cellsUI.FirstOrDefault(cellUI => cellUI.Cell == cellsSorted[0]);
+
+        return cellUI;
     }
     public bool TryAddTextToViewport(Vector2Int[] objectSize, InfoTextSO text)
     {
@@ -85,6 +129,8 @@ public class CellBasedViewport : MonoBehaviour
             Debug.Log(cell);
         }
         InfoCelled infoCelled = new InfoCelled(text, cellList);
+        InfoTextCelledUI infoCelledUI = Instantiate(infoTextPrefab, transform);
+        infoCelledUI.Set(infoCelled);
         celledInfo.Add(infoCelled);
         return true;
     }

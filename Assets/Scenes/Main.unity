@@ -1334,18 +1334,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15d2d855ed479c449a972b313ae0b23c, type: 3}
---- !u!114 &974998254 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2450848895409487751, guid: e01a791092b908b4ca254748a87388a3,
-    type: 3}
-  m_PrefabInstance: {fileID: 5747548774307468569}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4d884315860f9c4a9d9bd77b48435f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1159645748
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1561,6 +1549,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15d2d855ed479c449a972b313ae0b23c, type: 3}
+--- !u!114 &1246458694 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4208142268546299990, guid: e01a791092b908b4ca254748a87388a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 5747548774307468569}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff6c099124f52e04fb9a375945774724, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1353246633 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1537141795494614623, guid: 15d2d855ed479c449a972b313ae0b23c,
@@ -1927,6 +1927,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1891385579}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1642623151 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1105904864237712542, guid: e01a791092b908b4ca254748a87388a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 5747548774307468569}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be08012f366427d4589c1a4bdb5c1ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!23 &1656885089
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4749,7 +4761,7 @@ PrefabInstance:
         type: 3}
       propertyPath: informationBar
       value: 
-      objectReference: {fileID: 974998254}
+      objectReference: {fileID: 1642623151}
     - target: {fileID: 2873071904314612007, guid: 30acd2ba93f1ab14baa850bf51e222d3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5245,6 +5257,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1105904864237712542, guid: e01a791092b908b4ca254748a87388a3,
+        type: 3}
+      propertyPath: viewport
+      value: 
+      objectReference: {fileID: 1246458694}
     - target: {fileID: 2052785680147109880, guid: e01a791092b908b4ca254748a87388a3,
         type: 3}
       propertyPath: m_Pivot.x
