@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   infoID: 3396ba1c-9ed6-4a4e-8c3b-667c929a8e51
   objectSize:
+  - {x: -1, y: 0}
   - {x: 0, y: 0}
   - {x: 1, y: 0}
-  - {x: 2, y: 0}
   text: Robby Williams

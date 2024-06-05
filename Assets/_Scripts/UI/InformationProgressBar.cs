@@ -30,7 +30,7 @@ public class InformationProgressBar : MonoBehaviour, IPointerMoveHandler
         foreach (Cell cell in viewport.Cells)
         {
             if (cell.occupied) continue;
-            GUI.Box(new Rect(new Vector2(cell.cornerStart.x, Mathf.Abs(cell.cornerEnd.y - Screen.height)), viewport.CellSize),"", cellStyle);
+            GUI.Box(new Rect(new Vector2(cell.positionRect.start.x, Mathf.Abs(cell.positionRect.end.y - Screen.height)), viewport.CellSize),"", cellStyle);
 
         }
         GUI.color = Color.blue;
@@ -44,7 +44,7 @@ public class InformationProgressBar : MonoBehaviour, IPointerMoveHandler
                     break;
                 }
             }
-            GUI.Box(new Rect(new Vector2(infoCelled.cornerStart.x, Mathf.Abs(infoCelled.cornerEnd.y - Screen.height)), infoCelled.GetSize()), "INFO", infoStyle);
+            GUI.Box(new Rect(new Vector2(infoCelled.positionRect.start.x, Mathf.Abs(infoCelled.positionRect.end.y - Screen.height)), infoCelled.GetSize()), "INFO", infoStyle);
 
             GUI.color = Color.blue;
         }

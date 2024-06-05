@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,24 +16,56 @@ public class CellBasedViewport : MonoBehaviour
     public List<Cell> Cells => cells;
     private List<InfoCelled> celledInfo = new List<InfoCelled>();
     public List<InfoCelled> CelledInfo => celledInfo;
+    private List<InfoCelledUI> celledInfoUI = new List<InfoCelledUI>();
     private RectTransform RT { get { return (RectTransform)transform; } }
-    private CellUI currentSelected = null;
+    private InfoCelledUI currentDragged = null;
+    private Vector2Int[] Directions = new Vector2Int[4]
+    {
+        new Vector2Int(1, 0), new Vector2Int(-1, 0),
+        new Vector2Int(-1, 0), new Vector2Int(0, 1)
+    };
+    private void Start()
+    {
+        currentDragged = null;
+    }
     private void Update()
     {
-        if (!Input.GetMouseButtonDown(0)) return;
-
-        CellUI selected = InsideCellUI(Input.mousePosition);
-        if(selected == null) return;
-
-        if (currentSelected && currentSelected != selected) currentSelected.Unselect();
-
-        if (selected.Cell.occupied)
+        if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log(selected.Cell.coordinates + " occupied");
+            InfoCelledUI cellOnMouse = InsideInfoCellUI(Input.mousePosition);
+            if(cellOnMouse)
+            {
+                currentDragged = cellOnMouse;
+                currentDragged.transform.SetAsLastSibling();
+            }
         }
-        else
+        else if (Input.GetMouseButton(0) && currentDragged)
         {
-            currentSelected = selected;
+            currentDragged.RT.position = Input.mousePosition;
+        }
+        else if (Input.GetMouseButtonUp(0) && currentDragged)
+        {
+            if(InsideCell(Input.mousePosition) != null)
+            {
+                foreach (Cell cell in currentDragged.InfoCelled.cells)
+                {
+                    cell.occupied = false;
+                }
+                List<Cell> cellList = GetFitCellsNearest(InsideCell(Input.mousePosition), currentDragged.InfoCelled.info.ObjectSize);
+                foreach (Cell cell in cellList)
+                {
+                    cell.occupied = true;
+                    Debug.Log(cell.coordinates);
+                }
+
+                currentDragged.UpdateInfoCells(cellList);
+                currentDragged.PlaceOnBasePosition();
+            }
+            else
+            {
+                currentDragged.PlaceOnBasePosition();
+            }
+            currentDragged = null;
         }
         
     }
@@ -84,8 +117,8 @@ public class CellBasedViewport : MonoBehaviour
     }
     public Cell InsideCell(Vector3 pixelPosition)
     {
-        List<Cell> cellsXSorted = cells.Where(cell => cell.cornerEnd.x > pixelPosition.x && cell.cornerStart.x <= pixelPosition.x).ToList();
-        List<Cell> cellsSorted = cellsXSorted.Where(cell => cell.cornerEnd.y > pixelPosition.y && cell.cornerStart.y <= pixelPosition.y).ToList();
+        List<Cell> cellsXSorted = cells.Where(cell => cell.positionRect.end.x > pixelPosition.x && cell.positionRect.start.x <= pixelPosition.x).ToList();
+        List<Cell> cellsSorted = cellsXSorted.Where(cell => cell.positionRect.end.y > pixelPosition.y && cell.positionRect.start.y <= pixelPosition.y).ToList();
 
         if(cellsSorted.Count != 1) return null;
         
@@ -93,8 +126,8 @@ public class CellBasedViewport : MonoBehaviour
     }
     public CellUI InsideCellUI(Vector3 pixelPosition)
     {
-        List<Cell> cellsXSorted = cells.Where(cell => cell.cornerEnd.x > pixelPosition.x && cell.cornerStart.x <= pixelPosition.x).ToList();
-        List<Cell> cellsSorted = cellsXSorted.Where(cell => cell.cornerEnd.y > pixelPosition.y && cell.cornerStart.y <= pixelPosition.y).ToList();
+        List<Cell> cellsXSorted = cells.Where(cell => cell.positionRect.end.x > pixelPosition.x && cell.positionRect.start.x <= pixelPosition.x).ToList();
+        List<Cell> cellsSorted = cellsXSorted.Where(cell => cell.positionRect.end.y > pixelPosition.y && cell.positionRect.start.y <= pixelPosition.y).ToList();
 
         if(cellsSorted.Count != 1) return null;
 
@@ -102,7 +135,35 @@ public class CellBasedViewport : MonoBehaviour
 
         return cellUI;
     }
+    public InfoCelledUI InsideInfoCellUI(Vector3 pixelPosition)
+    {
+        Debug.Log(celledInfoUI.Count);
+        List<InfoCelledUI> cellsXSorted = celledInfoUI.Where(cell => cell.InfoCelled.positionRect.end.x > pixelPosition.x && cell.InfoCelled.positionRect.start.x <= pixelPosition.x).ToList();
+        List<InfoCelledUI> cellsSorted = cellsXSorted.Where(cell => cell.InfoCelled.positionRect.end.y > pixelPosition.y && cell.InfoCelled.positionRect.start.y <= pixelPosition.y).ToList();
+
+        if(cellsSorted.Count != 1) return null;
+
+        InfoCelledUI cellUI = celledInfoUI.FirstOrDefault(cellUI => cellUI == cellsSorted[0]);
+
+        return cellUI;
+    }
     public bool TryAddTextToViewport(Vector2Int[] objectSize, InfoTextSO text)
+    {
+        List<Cell> cellList = GetFitCellsFromBase(objectSize);
+        foreach (Cell cell in cellList)
+        {
+            cell.occupied = true;
+            Debug.Log(cell);
+        }
+        InfoCelled infoCelled = new InfoCelled(text, cellList);
+        InfoTextCelledUI infoCelledUI = Instantiate(infoTextPrefab, transform);
+        infoCelledUI.Set(infoCelled);
+        celledInfoUI.Add(infoCelledUI);
+        celledInfo.Add(infoCelled);
+        return true;
+    }
+
+    private List<Cell> GetFitCellsFromBase(Vector2Int[] objectSize)
     {
         int i = 0;
         List<Cell> cellList = new List<Cell>();
@@ -123,17 +184,58 @@ public class CellBasedViewport : MonoBehaviour
                 break;
             }
         }
-        foreach(Cell cell in cellList)
-        {
-            cell.occupied = true;
-            Debug.Log(cell);
-        }
-        InfoCelled infoCelled = new InfoCelled(text, cellList);
-        InfoTextCelledUI infoCelledUI = Instantiate(infoTextPrefab, transform);
-        infoCelledUI.Set(infoCelled);
-        celledInfo.Add(infoCelled);
-        return true;
+
+        return cellList;
     }
+    private List<Cell> GetFitCellsNearest(Cell startCell, Vector2Int[] objectSize)
+    {
+        Queue<Cell> search = new Queue<Cell>();
+
+        List<Cell> cellList = new List<Cell>();
+
+        foreach (var coor in objectSize)
+        {
+            Cell cell = GetCell(startCell.coordinates + coor);
+            if (cell == null || cell.occupied) break;
+
+            cellList.Add(cell);
+        }
+        if (cellList.Count != objectSize.Length)
+        {
+            cellList.Clear();
+            search.Enqueue(startCell);
+        }
+        while (search.Count > 0)
+        {
+            Cell checkedCell = search.Dequeue();
+            for(int i = 0; i < 4; i++)
+            {
+                Cell adjCell = GetCell(checkedCell.coordinates + Directions[i]);
+                if (adjCell == null) continue;
+
+                foreach (var coor in objectSize)
+                {
+                    Cell cell = GetCell(adjCell.coordinates + coor);
+                    if (cell == null || cell.occupied) break;
+
+                    cellList.Add(cell);
+                }
+                if (cellList.Count != objectSize.Length)
+                {
+                    cellList.Clear();
+                    search.Enqueue(adjCell);
+                }
+                else
+                {
+                    search.Clear();
+                    break;
+                }
+            }
+        }
+
+        return cellList;
+    }
+
     private Cell GetCell(Vector2Int coordinates)
     {
         return cells.FirstOrDefault(cell => cell.coordinates == coordinates);
@@ -143,20 +245,19 @@ public class Cell
 {
     public bool occupied = false;
     public Vector2Int coordinates;
-    public Vector2 cornerStart;
-    public Vector2 cornerEnd;
+    public Vector2Range positionRect;
     public Cell(Vector2 corner1, Vector2 corner2, Vector2Int coordinates)
     {
-        cornerStart = corner1;
-        cornerEnd = corner2;
+        positionRect = new Vector2Range();
+        positionRect.start = corner1;
+        positionRect.end = corner2;
         this.coordinates = coordinates;
         occupied = false;
     }
 }
 public class InfoCelled
 {
-    public Vector2 cornerStart;
-    public Vector2 cornerEnd;
+    public Vector2Range positionRect;
     public InfoSO info = null;
     public List<Cell> cells = new List<Cell>();
     public InfoCelled(InfoSO info, List<Cell> cells)
@@ -167,30 +268,37 @@ public class InfoCelled
     }
     private void UpdateCorners()
     {
-        cornerStart = cells[0].cornerStart;
-        cornerEnd = cells[0].cornerEnd;
+        positionRect = new Vector2Range();
+        positionRect.start = cells[0].positionRect.start;
+        positionRect.end = cells[0].positionRect.end;
         foreach (Cell cell in cells)
         {
-            if(cornerStart.x > cell.cornerStart.x)
+            if(positionRect.start.x > cell.positionRect.start.x)
             {
-                cornerStart.x = cell.cornerStart.x;
+                positionRect.start.x = cell.positionRect.start.x;
             }
-            else if(cornerEnd.x < cell.cornerEnd.x)
+            else if(positionRect.end.x < cell.positionRect.end.x)
             {
-                cornerEnd.x = cell.cornerEnd.x;
+                positionRect.end.x = cell.positionRect.end.x;
             }
-            if(cornerStart.y > cell.cornerStart.y)
+            if(positionRect.start.y > cell.positionRect.start.y)
             {
-                cornerStart.y = cell.cornerStart.y;
+                positionRect.start.y = cell.positionRect.start.y;
             }
-            else if(cornerEnd.y < cell.cornerEnd.y)
+            else if(positionRect.end.y < cell.positionRect.end.y)
             {
-                cornerEnd.y = cell.cornerEnd.y;
+                positionRect.end.y = cell.positionRect.end.y;
             }
         }
     }
     public Vector2 GetSize()
     {
-        return new Vector2(cornerEnd.x - cornerStart.x, cornerEnd.y - cornerStart.y);
+        return new Vector2(positionRect.end.x - positionRect.start.x, positionRect.end.y - positionRect.start.y);
     }
+}
+[Serializable]
+public struct Vector2Range
+{
+    public Vector2 start;
+    public Vector2 end;
 }

@@ -10,12 +10,12 @@ public class CellUI : MonoBehaviour
     private Cell cell = null;
 
     public Cell Cell => cell;
-    private RectTransform RT { get { return (RectTransform)transform; } }
+    public RectTransform RT { get { return (RectTransform)transform; } }
     public void Set(Cell cell)
     {
         this.cell = cell;
-        RT.sizeDelta = new Vector2(cell.cornerEnd.x - cell.cornerStart.x, cell.cornerEnd.y - cell.cornerStart.y);
-        RT.position = cell.cornerStart + new Vector2(RT.sizeDelta.x / 2, RT.sizeDelta.y / 2);
+        RT.sizeDelta = new Vector2(cell.positionRect.end.x - cell.positionRect.start.x, cell.positionRect.end.y - cell.positionRect.start.y);
+        RT.position = cell.positionRect.start + new Vector2(RT.sizeDelta.x / 2, RT.sizeDelta.y / 2);
         Unselect();
     }
     public void Select()
