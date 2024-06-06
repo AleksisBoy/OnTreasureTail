@@ -167,7 +167,6 @@ public class CellBasedViewport : MonoBehaviour
     }
     public InfoCelledUI InsideInfoCellUI(Vector3 pixelPosition)
     {
-        Debug.Log(celledInfoUI.Count);
         List<InfoCelledUI> cellsXSorted = celledInfoUI.Where(cell => cell.InfoCelled.positionRect.end.x > pixelPosition.x && cell.InfoCelled.positionRect.start.x <= pixelPosition.x).ToList();
         List<InfoCelledUI> cellsSorted = cellsXSorted.Where(cell => cell.InfoCelled.positionRect.end.y > pixelPosition.y && cell.InfoCelled.positionRect.start.y <= pixelPosition.y).ToList();
 

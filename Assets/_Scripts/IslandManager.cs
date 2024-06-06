@@ -7,9 +7,13 @@ using UnityEngine;
 public class IslandManager : MonoBehaviour
 {
     [SerializeField] private Terrain islandTerrain = null;
-    [SerializeField] private float diggingDistanceRestrictionModifier = 4f;
     [SerializeField] private int sandLayerIndex = 1;
     [SerializeField] private InformationBar informationBar = null;
+    [Header("Digging")]
+    [SerializeField] private GameObject diggedNothingPrefab = null;
+    [SerializeField] private Vector3 diggedObjectOffset = Vector3.zero;
+    [SerializeField] private Transform[] buriedObjects = null;
+    [SerializeField] private float diggingDistanceRestrictionModifier = 4f;
 
     private List<Vector3> diggingPositions = new List<Vector3>();
     private TerrainData initialTerrainData = null;
@@ -34,6 +38,11 @@ public class IslandManager : MonoBehaviour
     private void Start()
     {
         informationBar.BuildGridViewport();
+
+        foreach(Transform buried in buriedObjects)
+        {
+            buried.position = new Vector3(buried.position.x, 0f, buried.position.z);
+        }
     }
 
     private void TerrainDataSetup()
@@ -49,8 +58,36 @@ public class IslandManager : MonoBehaviour
         InternalSettings.LowerTerrainSmooth(islandTerrain, worldPos, diggingRadius, diggingHeightDelta);
         diggingPositions.Add(worldPos);
 
+        DiggingImpactOnTerrain(worldPos, diggingRadius);
+
         return true;
     }
+
+    private void DiggingImpactOnTerrain(Vector3 worldPos, float diggingRadius)
+    {
+        float terrainHeight = islandTerrain.SampleHeight(worldPos) + islandTerrain.transform.position.y;
+        Vector3 diggedPosition = new Vector3(worldPos.x, terrainHeight, worldPos.z);
+        bool diggedBuried = false;
+        foreach (Transform buried in buriedObjects)
+        {
+            if (buried.gameObject.activeSelf) continue;
+
+            float distance = Vector3.Distance(new Vector3(worldPos.x, 0f, worldPos.z), new Vector3(buried.position.x, 0f, buried.position.z));
+            if (distance < diggingRadius * diggingDistanceRestrictionModifier)
+            {
+                // Activate buried object on digging pos
+                diggedBuried = true;
+                buried.position = diggedPosition + diggedObjectOffset;
+                buried.gameObject.SetActive(true);
+            }
+        }
+        // Create object on nothing digged
+        if (!diggedBuried)
+        {
+            GameObject diggedNothing = Instantiate(diggedNothingPrefab, diggedPosition, Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f));
+        }
+    }
+
     public bool CanDigAt(Vector3 worldPos, float diggingRadius)
     {
         foreach (Vector3 pos in diggingPositions)

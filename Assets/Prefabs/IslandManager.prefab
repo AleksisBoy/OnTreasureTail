@@ -44,3 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e3d2212dc3d8d04e858bb848cc6598f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  islandTerrain: {fileID: 0}
+  diggedNothingPrefab: {fileID: 3986377353734567161, guid: eba696d9b9ac10348acfbb5282318ae8,
+    type: 3}
+  diggedObjectOffset: {x: 0, y: 0.05, z: 0}
+  buriedObjects: []
+  diggingDistanceRestrictionModifier: 4
+  sandLayerIndex: 1
+  informationBar: {fileID: 0}
