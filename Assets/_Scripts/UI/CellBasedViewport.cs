@@ -18,7 +18,12 @@ public class CellBasedViewport : MonoBehaviour
     public List<InfoCelled> CelledInfo => celledInfo;
     private List<InfoCelledUI> celledInfoUI = new List<InfoCelledUI>();
     private RectTransform RT { get { return (RectTransform)transform; } }
+
+    // Dragging
     private InfoCelledUI currentDragged = null;
+    private Vector3 mouseDrag = Vector3.zero;
+    private Vector3 lastMousePos = Vector3.zero;
+
     private Vector2Int[] Directions = new Vector2Int[4]
     {
         new Vector2Int(1, 0), new Vector2Int(-1, 0),
@@ -30,45 +35,70 @@ public class CellBasedViewport : MonoBehaviour
     }
     private void Update()
     {
+        DraggingInput();
+    }
+    private void DraggingInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
-            InfoCelledUI cellOnMouse = InsideInfoCellUI(Input.mousePosition);
-            if(cellOnMouse)
-            {
-                currentDragged = cellOnMouse;
-                currentDragged.transform.SetAsLastSibling();
-            }
+            OnCellDragStart();
         }
         else if (Input.GetMouseButton(0) && currentDragged)
         {
-            currentDragged.RT.position = Input.mousePosition;
+            OnCellDrag();
         }
         else if (Input.GetMouseButtonUp(0) && currentDragged)
         {
-            if(InsideCell(Input.mousePosition) != null)
-            {
-                foreach (Cell cell in currentDragged.InfoCelled.cells)
-                {
-                    cell.occupied = false;
-                }
-                List<Cell> cellList = GetFitCellsNearest(InsideCell(Input.mousePosition), currentDragged.InfoCelled.info.ObjectSize);
-                foreach (Cell cell in cellList)
-                {
-                    cell.occupied = true;
-                    Debug.Log(cell.coordinates);
-                }
-
-                currentDragged.UpdateInfoCells(cellList);
-                currentDragged.PlaceOnBasePosition();
-            }
-            else
-            {
-                currentDragged.PlaceOnBasePosition();
-            }
-            currentDragged = null;
+            OnCellDragUp();
         }
-        
     }
+
+    private void OnCellDragStart()
+    {
+        InfoCelledUI cellOnMouse = InsideInfoCellUI(Input.mousePosition);
+        if (cellOnMouse)
+        {
+            currentDragged = cellOnMouse;
+            currentDragged.transform.SetAsLastSibling();
+            mouseDrag = Vector3.zero;
+            lastMousePos = Input.mousePosition;
+        }
+    }
+
+    private void OnCellDrag()
+    {
+        Vector3 mouseDelta = Input.mousePosition - lastMousePos;
+        mouseDrag += mouseDelta;
+        currentDragged.RT.position += mouseDelta;
+        lastMousePos = Input.mousePosition;
+    }
+
+    private void OnCellDragUp()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        if (InsideCell(mousePos) != null)
+        {
+            foreach (Cell cell in currentDragged.InfoCelled.cells)
+            {
+                cell.occupied = false;
+            }
+            List<Cell> cellList = GetFitCellsNearest(InsideCell(currentDragged.InfoCelled.MiddlePos + mouseDrag), currentDragged.InfoCelled.info.ObjectSize);
+            foreach (Cell cell in cellList)
+            {
+                cell.occupied = true;
+            }
+
+            currentDragged.UpdateInfoCells(cellList);
+            currentDragged.PlaceOnBasePosition();
+        }
+        else
+        {
+            currentDragged.PlaceOnBasePosition();
+            // if is over gap text try put it inside
+        }
+        currentDragged = null;
+    }
+
     [ContextMenu("DestroyCellsUI")]
     private void DestroyCellsUI()
     {
@@ -291,9 +321,13 @@ public class InfoCelled
             }
         }
     }
-    public Vector2 GetSize()
+    public Vector3 MiddlePos
     {
-        return new Vector2(positionRect.end.x - positionRect.start.x, positionRect.end.y - positionRect.start.y);
+        get { return new Vector3((positionRect.end.x + positionRect.start.x) / 2f, (positionRect.end.y + positionRect.start.y) / 2f); }
+    }
+    public Vector2 Size
+    {
+        get { return new Vector2(positionRect.end.x - positionRect.start.x, positionRect.end.y - positionRect.start.y); }
     }
 }
 [Serializable]

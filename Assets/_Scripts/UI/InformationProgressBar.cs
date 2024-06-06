@@ -44,7 +44,7 @@ public class InformationProgressBar : MonoBehaviour, IPointerMoveHandler
                     break;
                 }
             }
-            GUI.Box(new Rect(new Vector2(infoCelled.positionRect.start.x, Mathf.Abs(infoCelled.positionRect.end.y - Screen.height)), infoCelled.GetSize()), "INFO", infoStyle);
+            GUI.Box(new Rect(new Vector2(infoCelled.positionRect.start.x, Mathf.Abs(infoCelled.positionRect.end.y - Screen.height)), infoCelled.Size), "INFO", infoStyle);
 
             GUI.color = Color.blue;
         }
