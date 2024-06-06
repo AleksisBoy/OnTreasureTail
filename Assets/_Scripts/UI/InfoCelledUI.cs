@@ -4,14 +4,16 @@ using UnityEngine;
 
 public abstract class InfoCelledUI : MonoBehaviour
 {
-    protected Vector2 offsetPosition = Vector2.zero;
     protected InfoCelled infoCelled = null;
+    private bool isLocked = false;
     public RectTransform RT { get { return (RectTransform)transform; } }
     public InfoCelled InfoCelled => infoCelled;
+    public bool IsLocked => isLocked;
 
     public virtual void Set(InfoCelled infoCelled)
     {
         this.infoCelled = infoCelled;
+        name = "InfoCelledUI_" + infoCelled.info.name;
 
         RT.sizeDelta = new Vector2(infoCelled.positionRect.end.x - infoCelled.positionRect.start.x, infoCelled.positionRect.end.y - infoCelled.positionRect.start.y);
         PlaceOnBasePosition();
@@ -20,12 +22,13 @@ public abstract class InfoCelledUI : MonoBehaviour
     {
         RT.position = infoCelled.positionRect.start + new Vector2(RT.sizeDelta.x / 2, RT.sizeDelta.y / 2);
     }
-    public void UpdateInfoCelledPosition(Vector3 worldPos)
+    public void SetPositionRect(Vector3 worldPos)
     {
+        Debug.Log("new pos " + name);
         infoCelled.positionRect.start = (Vector2)worldPos - RT.sizeDelta / 2f;
         infoCelled.positionRect.end = (Vector2)worldPos + RT.sizeDelta / 2f;
     }
-    public void UpdateInfoCells(List<Cell> cells)
+    public void UpdateCells(List<Cell> cells)
     {
         if (cells.Count != infoCelled.info.ObjectSize.Length) return;
 
@@ -51,5 +54,12 @@ public abstract class InfoCelledUI : MonoBehaviour
         }
         infoCelled.cells = cells;
         InfoCelled.positionRect = positionRect;
+    }
+    public void Lock(Vector3 worldPos)
+    {
+        isLocked = true;
+        SetPositionRect(worldPos);
+        PlaceOnBasePosition();
+        gameObject.SetActive(false);
     }
 }

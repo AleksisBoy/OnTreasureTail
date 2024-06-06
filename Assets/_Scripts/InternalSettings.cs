@@ -13,6 +13,11 @@ public class InternalSettings : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Color selectedCellColor = Color.white;
     [SerializeField] private Color defaultCellColor = Color.white;
+    [Header("Progress Piece Status UI")]
+    [SerializeField] private string statusNotAcquired = string.Empty;
+    [SerializeField] private string statusCompletedWrong = string.Empty;
+    [SerializeField] private string statusCompletedCorrect = string.Empty;
+    [SerializeField] private string statusEmptyGaps = string.Empty;
 
     public static InternalSettings Get { get; private set; } = null;
     private void Awake()
@@ -34,6 +39,11 @@ public class InternalSettings : MonoBehaviour
 
     public Color SelectedCellColor => selectedCellColor;
     public Color DefaultCellColor => defaultCellColor;
+
+    public string StatusText_NotAcquired => statusNotAcquired;
+    public string StatusText_EmptyGaps => statusEmptyGaps;
+    public string StatusText_CompletedWrong => statusCompletedWrong;
+    public string StatusText_CompletedCorrect => statusCompletedCorrect;
 
     public static void CreateDebugSphere(Vector3 position, float scale)
     {

@@ -14,7 +14,7 @@ public class TailPanel : MonoBehaviour
 
     private Action onClose = null;
     private Canvas canvas;
-    private void Awake()
+    protected virtual void Awake()
     {
         canvas = GetComponent<Canvas>();
         gameObject.SetActive(false);

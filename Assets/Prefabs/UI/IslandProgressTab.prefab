@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8654632478014344951}
+  - component: {fileID: 6120025147446300423}
   m_Layer: 5
   m_Name: ProgressPiece_Story
   m_TagString: Untagged
@@ -38,6 +39,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.000015258789}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6120025147446300423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945774548180966982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5764dbe28ce77344b0eea70f5a1b6a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statusText: {fileID: 7293546668082219886}
+  gapTexts:
+  - {fileID: 4634306044464228}
+  - {fileID: 3846944570732521382}
 --- !u!1 &1135987775450489514
 GameObject:
   m_ObjectHideFlags: 0
@@ -1412,8 +1429,8 @@ MonoBehaviour:
   blockPlayer: 1
   children: []
   progressPieces:
-  - {fileID: 0}
-  informationBar: {fileID: 0}
+  - {fileID: 6120025147446300423}
+  informationBar: {fileID: 1105904864237712542}
 --- !u!1 &7417584161267243232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1660,6 +1677,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a15aec3076a4c294c862f8fe51031c49, type: 3}
+--- !u!114 &4634306044464228 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6327268471523334430, guid: a15aec3076a4c294c862f8fe51031c49,
+    type: 3}
+  m_PrefabInstance: {fileID: 6331656209885746554}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f9986a8a3b8b8e4c90629a0b45bbec5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8116039606530751294 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2846126269448777284, guid: a15aec3076a4c294c862f8fe51031c49,
@@ -1784,6 +1813,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a15aec3076a4c294c862f8fe51031c49, type: 3}
+--- !u!114 &3846944570732521382 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6327268471523334430, guid: a15aec3076a4c294c862f8fe51031c49,
+    type: 3}
+  m_PrefabInstance: {fileID: 7110601698771238584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f9986a8a3b8b8e4c90629a0b45bbec5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5031249010357866748 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2846126269448777284, guid: a15aec3076a4c294c862f8fe51031c49,

@@ -5624,6 +5624,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4634306044464228, guid: e01a791092b908b4ca254748a87388a3, type: 3}
+      propertyPath: infoID
+      value: 8ec9f600-c242-4c6f-b114-a95f4d9fafee
+      objectReference: {fileID: 0}
     - target: {fileID: 1399467594206666281, guid: e01a791092b908b4ca254748a87388a3,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -5643,6 +5647,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1927874826955845415, guid: e01a791092b908b4ca254748a87388a3,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4292762413
       objectReference: {fileID: 0}
     - target: {fileID: 2052785680147109880, guid: e01a791092b908b4ca254748a87388a3,
         type: 3}
@@ -5850,6 +5859,11 @@ PrefabInstance:
       propertyPath: infoStyle.m_Normal.m_Background
       value: 
       objectReference: {fileID: 2800000, guid: da9f5af35293b5b45a841008a5c7d0eb, type: 3}
+    - target: {fileID: 3846944570732521382, guid: e01a791092b908b4ca254748a87388a3,
+        type: 3}
+      propertyPath: infoID
+      value: 3396ba1c-9ed6-4a4e-8c3b-667c929a8e51
+      objectReference: {fileID: 0}
     - target: {fileID: 4208142268546299990, guid: e01a791092b908b4ca254748a87388a3,
         type: 3}
       propertyPath: cellSize.y

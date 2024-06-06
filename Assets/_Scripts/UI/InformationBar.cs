@@ -21,4 +21,8 @@ public class InformationBar : MonoBehaviour
     {
         viewport.BuildGrid();
     }
+    public void SetViewportDragObjects(ICellDragEnd[] objects)
+    {
+        viewport.SetDragEndObjects(objects);
+    }
 }

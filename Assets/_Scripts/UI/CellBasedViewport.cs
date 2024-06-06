@@ -23,6 +23,7 @@ public class CellBasedViewport : MonoBehaviour
     private InfoCelledUI currentDragged = null;
     private Vector3 mouseDrag = Vector3.zero;
     private Vector3 lastMousePos = Vector3.zero;
+    private ICellDragEnd[] dragEndObjects = null;
 
     private Vector2Int[] Directions = new Vector2Int[4]
     {
@@ -76,7 +77,7 @@ public class CellBasedViewport : MonoBehaviour
     private void OnCellDragUp()
     {
         Vector3 mousePos = Input.mousePosition;
-        if (InsideCell(mousePos) != null)
+        if (InsideCell(mousePos) != null && !currentDragged.IsLocked)
         {
             foreach (Cell cell in currentDragged.InfoCelled.cells)
             {
@@ -88,13 +89,21 @@ public class CellBasedViewport : MonoBehaviour
                 cell.occupied = true;
             }
 
-            currentDragged.UpdateInfoCells(cellList);
+            currentDragged.UpdateCells(cellList);
             currentDragged.PlaceOnBasePosition();
         }
         else
         {
+            foreach(ICellDragEnd dragEnd in dragEndObjects)
+            {
+                if (!dragEnd.IsOverObject(mousePos)) continue;
+
+                bool success = dragEnd.TryDragEnd(currentDragged);
+
+                break;
+            }
+
             currentDragged.PlaceOnBasePosition();
-            // if is over gap text try put it inside
         }
         currentDragged = null;
     }
@@ -182,7 +191,6 @@ public class CellBasedViewport : MonoBehaviour
         foreach (Cell cell in cellList)
         {
             cell.occupied = true;
-            Debug.Log(cell);
         }
         InfoCelled infoCelled = new InfoCelled(text, cellList);
         InfoTextCelledUI infoCelledUI = Instantiate(infoTextPrefab, transform);
@@ -264,10 +272,21 @@ public class CellBasedViewport : MonoBehaviour
 
         return cellList;
     }
+    public void Debug_SetCurrentDragged(InfoCelledUI infoCelledUI)
+    {
+        currentDragged = infoCelledUI;
+        currentDragged.transform.SetAsLastSibling();
+        mouseDrag = Vector3.zero;
+        lastMousePos = Input.mousePosition;
+    }
 
     private Cell GetCell(Vector2Int coordinates)
     {
         return cells.FirstOrDefault(cell => cell.coordinates == coordinates);
+    }
+    public void SetDragEndObjects(ICellDragEnd[] objects)
+    {
+        dragEndObjects = objects;
     }
 }
 public class Cell
