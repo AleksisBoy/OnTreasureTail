@@ -44,9 +44,13 @@ public class PlayerInteraction : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             int terrainLayer = InternalSettings.GetMainTexture(terrain, transform.position);
-            if (terrainLayer == IslandManager.Instance.SandLayerIndex)
+            foreach(int layer in IslandManager.Instance.SandLayerIndex)
             {
-                DigInFront();
+                if (terrainLayer == layer)
+                {
+                    DigInFront();
+                    return;
+                }
             }
         }
     }

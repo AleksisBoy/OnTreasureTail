@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: Digging something out
+// TODO: 
 // Walkable areas
 public class IslandManager : MonoBehaviour
 {
     [SerializeField] private Terrain islandTerrain = null;
-    [SerializeField] private int sandLayerIndex = 1;
+    [SerializeField] private int[] sandLayerIndex = new int[1] { 1 };
     [SerializeField] private InformationBar informationBar = null;
     [Header("Digging")]
     [SerializeField] private GameObject diggedNothingPrefab = null;
@@ -17,7 +17,7 @@ public class IslandManager : MonoBehaviour
 
     private List<Vector3> diggingPositions = new List<Vector3>();
     private TerrainData initialTerrainData = null;
-    public int SandLayerIndex => sandLayerIndex;
+    public int[] SandLayerIndex => sandLayerIndex;
     public Terrain Terrain => islandTerrain;
 
     private List<InfoSO> info = new List<InfoSO>();
