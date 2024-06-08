@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Swimming")]
     [SerializeField] private float swimSpeed = 3f;
     [SerializeField] private float swimSprintSpeed = 5f;
+    [SerializeField] private float waterLevel = 0f;
 
     private Animator animator;
     private Terrain terrain;
@@ -86,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
             transform.position.z + cameraDirection.z * currentSpeed * Time.deltaTime * speedModifier);
         
         // Checking desiredPosition
-        if(Physics.Raycast(desiredPosition + new Vector3(0f, transform.position.y + 0.1f, 0f), Vector3.down, out RaycastHit hit, 1f) && hit.point.y > 0f)
+        if(Physics.Raycast(desiredPosition + new Vector3(0f, transform.position.y + 0.1f, 0f), Vector3.down, out RaycastHit hit, 1f) && hit.point.y > waterLevel)
         {
             // Desired to be on ground
             grounded = true;
@@ -134,7 +135,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
             Vector3 jumpFinalPosition =  new Vector3(transform.position.x + direction.x * (1f /jumpSpeed)  * jumpDistance, 0f, transform.position.z + direction.z * (1f / jumpSpeed) * jumpDistance);
             jumpFinalPosition.y = terrain.SampleHeight(jumpFinalPosition) + terrain.transform.position.y;
-            if (jumpFinalPosition.y < 0f)
+            if (jumpFinalPosition.y < waterLevel)
             {
                 // jumped in water
                 animator.SetTrigger("JumpInWater");

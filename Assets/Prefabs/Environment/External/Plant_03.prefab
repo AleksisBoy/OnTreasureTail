@@ -73,7 +73,6 @@ GameObject:
   - component: {fileID: 3136785017931803411}
   - component: {fileID: 4389496523408942647}
   - component: {fileID: 4013752043217575137}
-  - component: {fileID: 6343145277861482412}
   m_Layer: 7
   m_Name: Plant_03_LOD2
   m_TagString: Untagged
@@ -146,27 +145,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6343145277861482412
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5438571873910828624}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.9607886, y: 0.2683005, z: 0.85820305}
-  m_Center: {x: -0.024086133, y: 0.13365345, z: -0.01364322}
 --- !u!1 &5516155810651593987
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,7 +156,6 @@ GameObject:
   - component: {fileID: 7035233211600787331}
   - component: {fileID: 5712356934885536499}
   - component: {fileID: 2206514153131213425}
-  - component: {fileID: 8938256242839549226}
   m_Layer: 7
   m_Name: Plant_03_LOD0
   m_TagString: Untagged
@@ -251,27 +228,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8938256242839549226
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5516155810651593987}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.9610614, y: 0.26528662, z: 0.8590143}
-  m_Center: {x: -0.024261147, y: 0.13240233, z: -0.013219222}
 --- !u!1 &5746703710772311696
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,7 +239,6 @@ GameObject:
   - component: {fileID: 8839056860507532856}
   - component: {fileID: 7831744735579503972}
   - component: {fileID: 1791985481302880832}
-  - component: {fileID: 1484294155621773569}
   m_Layer: 7
   m_Name: Plant_03_LOD1
   m_TagString: Untagged
@@ -356,24 +311,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1484294155621773569
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5746703710772311696}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.9610614, y: 0.26528662, z: 0.8590143}
-  m_Center: {x: -0.024261147, y: 0.13240233, z: -0.013219222}

@@ -1,5 +1,60 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &171325910501247305
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5015950201311364975}
+  - component: {fileID: 8048256716384132969}
+  m_Layer: 7
+  m_Name: Collider (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5015950201311364975
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171325910501247305}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.000000003259629, w: 1}
+  m_LocalPosition: {x: -0.68, y: 1.23, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5139762926587082929}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &8048256716384132969
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171325910501247305}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.32
+  m_Height: 2.06
+  m_Direction: 1
+  m_Center: {x: -0.18, y: 0.75, z: 0}
 --- !u!1 &4238506228146238265
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,6 +88,7 @@ Transform:
   - {fileID: 3437063085250888122}
   - {fileID: 2403701048416121300}
   - {fileID: 1199710668910112034}
+  - {fileID: 5139762926587082929}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!205 &770710422796976479
@@ -73,7 +129,6 @@ GameObject:
   - component: {fileID: 2403701048416121300}
   - component: {fileID: 7718707179521055481}
   - component: {fileID: 3814913842395271606}
-  - component: {fileID: 8209222041628214501}
   m_Layer: 7
   m_Name: Palm_02_LOD1
   m_TagString: Untagged
@@ -146,29 +201,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &8209222041628214501
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5389715271521703359}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.59
-  m_Height: 7.3787594
-  m_Direction: 1
-  m_Center: {x: -0.23, y: 3.6893725, z: 0.02}
 --- !u!1 &7430396338250797614
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,7 +212,6 @@ GameObject:
   - component: {fileID: 1199710668910112034}
   - component: {fileID: 3043138459637390597}
   - component: {fileID: 7552716451622635677}
-  - component: {fileID: 3877404954919080138}
   m_Layer: 7
   m_Name: Palm_02_LOD2
   m_TagString: Untagged
@@ -253,29 +284,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &3877404954919080138
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7430396338250797614}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.59
-  m_Height: 7.3787594
-  m_Direction: 1
-  m_Center: {x: -0.23, y: 3.6893725, z: 0.02}
 --- !u!1 &8276403837870468954
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,7 +295,6 @@ GameObject:
   - component: {fileID: 3437063085250888122}
   - component: {fileID: 5009038132183110257}
   - component: {fileID: 6887744944827253969}
-  - component: {fileID: 819019088944204805}
   m_Layer: 7
   m_Name: Palm_02_LOD0
   m_TagString: Untagged
@@ -360,13 +367,46 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &819019088944204805
+--- !u!1 &8531701561457821893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5139762926587082929}
+  - component: {fileID: 8278826141236952609}
+  m_Layer: 7
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5139762926587082929
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8531701561457821893}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5015950201311364975}
+  m_Father: {fileID: 1537141795494614623}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &8278826141236952609
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8276403837870468954}
+  m_GameObject: {fileID: 8531701561457821893}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -379,7 +419,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.59
-  m_Height: 7.3787594
+  m_Radius: 0.44
+  m_Height: 1.38
   m_Direction: 1
-  m_Center: {x: -0.23, y: 3.6893725, z: 0.02}
+  m_Center: {x: -0.12, y: 0.26, z: 0}

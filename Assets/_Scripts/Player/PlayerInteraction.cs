@@ -10,10 +10,8 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerMovement movement = null;
     [SerializeField] private PlayerCamera view = null;
     [SerializeField] private Camera focusCamera = null;
-    [Header("Digging")]
-    [SerializeField] private float diggingRadius = 0.5f;
-    [SerializeField] private float diggingHeightDelta = -0.0001f;
-    [SerializeField] private float diggingForwardModifier = 0.3f;
+    [SerializeField] private PlayerSubinteraction[] subinteractions = null;
+    [SerializeField] private PlayerEquipment equipment = null;
 
     private Terrain terrain = null;
     private RideableBoat boat = null;
@@ -27,6 +25,27 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
         focusCamera.gameObject.SetActive(false);
+
+        foreach(var sub in subinteractions)
+        {
+            sub.enabled = false; ;
+        }
+        equipment.AssignOnEquippedChanged(OnEqippedChanged);
+    }
+    private void OnEqippedChanged(PlayerEquipment.Item item)
+    {
+        foreach(PlayerSubinteraction sub in subinteractions)
+        {
+            if (item != null && sub.ItemName == item.ItemName && !sub.enabled)
+            {
+                sub.enabled = true;
+                item.meshObject.transform.SetParent(rightHandTransform, false);
+            }
+            else if((item == null && sub.enabled) || (sub.ItemName != item.ItemName && sub.enabled))
+            {
+                sub.enabled = false;
+            }
+        }
     }
     private void Start()
     {
@@ -36,43 +55,6 @@ public class PlayerInteraction : MonoBehaviour
     private void Update()
     {
         InteractionInput();
-        DiggingInput();
-    }
-
-    private void DiggingInput()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            int terrainLayer = InternalSettings.GetMainTexture(terrain, transform.position);
-            foreach(int layer in IslandManager.Instance.SandLayerIndex)
-            {
-                if (terrainLayer == layer)
-                {
-                    DigInFront();
-                    return;
-                }
-            }
-        }
-    }
-
-    private void DigInFront()
-    {
-        Vector3 diggingPos = transform.position + transform.forward * diggingForwardModifier;
-        Collider[] colls = Physics.OverlapSphere(diggingPos, diggingRadius, InternalSettings.Get.EnvironmentMask);
-        if(colls.Length > 0 )
-        {
-            Debug.Log("Blocking digging");
-            return;
-        }
-        if (IslandManager.Instance.CanDigAt(diggingPos, diggingRadius))
-        {
-            animator.SetBool("Dig", true);
-        }
-    }
-    public void AnimationEvent_DigImpact()
-    {
-        Vector3 diggingPos = transform.position + transform.forward * diggingForwardModifier;
-        IslandManager.Instance.DigIslandTerrain(diggingPos, diggingRadius, diggingHeightDelta);
     }
 
     private void InteractionInput()

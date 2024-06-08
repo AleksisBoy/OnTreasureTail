@@ -287,7 +287,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5362550637095868722}
-  m_LocalEulerAnglesHint: {x: 111.978, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 111.978, y: 0, z: -180}
 --- !u!1 &1617468444729501157
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,7 +554,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.4065601, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8688708049746453848}
   m_Father: {fileID: 1839551508568496196}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3819225475097351330
@@ -609,6 +610,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &5778154968018421953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8688708049746453848}
+  m_Layer: 6
+  m_Name: InventorySlot1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8688708049746453848
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778154968018421953}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.088, y: 0.28, z: 0.128}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7031439686212297795}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6416394642961204579
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,6 +653,8 @@ GameObject:
   - component: {fileID: 4043697657939580133}
   - component: {fileID: 7576676028293474202}
   - component: {fileID: 1552048286800219323}
+  - component: {fileID: 8868799578893869142}
+  - component: {fileID: 3225385572864564303}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -657,6 +691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 0}
+  playerRadius: 0.25
   walkSpeed: 3
   runSpeed: 5
   rotationSpeed: 15
@@ -721,6 +756,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   swimSpeed: 2
   swimSprintSpeed: 4
+  waterLevel: -0.1
   velocityFloat: 0
 --- !u!95 &7576676028293474202
 Animator:
@@ -761,6 +797,41 @@ MonoBehaviour:
   movement: {fileID: 4043697657939580133}
   view: {fileID: 0}
   focusCamera: {fileID: 0}
+  subinteractions:
+  - {fileID: 3225385572864564303}
+  equipment: {fileID: 8868799578893869142}
+--- !u!114 &8868799578893869142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416394642961204579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e72d490fbabfccc4f825fffaa884b089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventorySize: 2
+  starterItems: []
+  inventoryAnchors:
+  - {fileID: 8688708049746453848}
+--- !u!114 &3225385572864564303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416394642961204579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9feac0899e469b2408c5da6a78f018dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemDependantName: Shovel
+  animator: {fileID: 7576676028293474202}
+  animatorLayerIndex: 3
+  digInput: 102
   diggingRadius: 0.5
   diggingHeightDelta: -0.00025
   diggingForwardModifier: 0.6
