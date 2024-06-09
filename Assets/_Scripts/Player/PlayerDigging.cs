@@ -11,9 +11,22 @@ public class PlayerDigging : PlayerSubinteraction
 
     private Terrain terrain = null;
 
+    // Set properties
+    private PlayerMovement movement = null;
+
     private void Start()
     {
         terrain = IslandManager.Instance.Terrain;
+    }
+    public override void Set(params object[] setList)
+    {
+        foreach (var item in setList)
+        {
+            if(item as PlayerMovement)
+            {
+                movement = (PlayerMovement)item;
+            }
+        }
     }
     protected override void OnEnable()
     {
@@ -29,7 +42,7 @@ public class PlayerDigging : PlayerSubinteraction
     }
     private void DiggingInput()
     {
-        if (Input.GetKeyDown(digInput))
+        if (movement.Grounded && Input.GetKeyDown(digInput))
         {
             int terrainLayer = InternalSettings.GetMainTexture(terrain, transform.position);
             foreach (int layer in IslandManager.Instance.SandLayerIndex)

@@ -9,6 +9,10 @@ public abstract class PlayerSubinteraction : MonoBehaviour
     [SerializeField] private int animatorLayerIndex = -1;
 
     public string ItemName => itemDependantName;
+    public virtual void Set(params object[] setList)
+    {
+
+    }
     protected virtual void OnEnable()
     {
         animator.SetLayerWeight(animatorLayerIndex, 1f);

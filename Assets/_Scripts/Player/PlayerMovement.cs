@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     private float jump = 0f; 
     private Vector3 lastPosition = Vector3.zero;
     public float velocityFloat = 0f;
+    public bool Grounded => grounded;
     public void Set(Terrain terrain, Animator animator)
     {
         this.terrain = terrain;

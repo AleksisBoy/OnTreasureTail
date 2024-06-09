@@ -28,7 +28,8 @@ public class PlayerInteraction : MonoBehaviour
 
         foreach(var sub in subinteractions)
         {
-            sub.enabled = false; ;
+            sub.enabled = false;
+            sub.Set(movement);
         }
         equipment.AssignOnEquippedChanged(OnEqippedChanged);
     }
