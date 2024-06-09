@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   focusedCameraMask:
     serializedVersion: 2
-    m_Bits: 439
+    m_Bits: 1463
   defaultCameraMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -59,8 +59,14 @@ MonoBehaviour:
   walkableMask:
     serializedVersion: 2
     m_Bits: 512
+  playerMask:
+    serializedVersion: 2
+    m_Bits: 64
   selectedCellColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
   defaultCellColor: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 1}
+  infoActiveColor: {r: 1, g: 0.9843137, b: 0.61960787, a: 1}
+  infoGainedColor: {r: 0.94509804, g: 0.94509804, b: 0.94509804, a: 1}
+  selectedInfoColor: {r: 1, g: 0.9843138, b: 0.847, a: 1}
   statusNotAcquired: Investigate the area for clues...
   statusCompletedWrong: Contains incorrect fields...
   statusCompletedCorrect: Completed correctly!

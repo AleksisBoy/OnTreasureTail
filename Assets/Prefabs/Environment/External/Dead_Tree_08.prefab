@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6564259939737632392}
   - component: {fileID: 7196443015618544126}
   - component: {fileID: 4913797362706346394}
-  - component: {fileID: 3071648617568261055}
   m_Layer: 7
   m_Name: Dead_Tree_08_LOD1
   m_TagString: Untagged
@@ -84,29 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &3071648617568261055
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3343249084640122456}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.45
-  m_Height: 3.817318
-  m_Direction: 1
-  m_Center: {x: 0.11, y: 1.9086535, z: 0}
 --- !u!1 &5535124781878055993
 GameObject:
   m_ObjectHideFlags: 0
@@ -180,7 +156,6 @@ GameObject:
   - component: {fileID: 9059764127094510495}
   - component: {fileID: 2808349311411920622}
   - component: {fileID: 8035178326519255321}
-  - component: {fileID: 5699903882941815682}
   m_Layer: 7
   m_Name: Dead_Tree_08_LOD0
   m_TagString: Untagged
@@ -253,29 +228,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &5699903882941815682
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5781732487678751691}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.45
-  m_Height: 3.817318
-  m_Direction: 1
-  m_Center: {x: 0.11, y: 1.9086535, z: 0}
 --- !u!1 &8828024532683624289
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,7 +239,6 @@ GameObject:
   - component: {fileID: 901910374286779568}
   - component: {fileID: 1726097778933936336}
   - component: {fileID: 5552489604119278869}
-  - component: {fileID: 6769894144617886085}
   m_Layer: 7
   m_Name: Dead_Tree_08_LOD2
   m_TagString: Untagged
@@ -360,26 +311,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &6769894144617886085
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8828024532683624289}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.45
-  m_Height: 3.817318
-  m_Direction: 1
-  m_Center: {x: 0.11, y: 1.9086535, z: 0}

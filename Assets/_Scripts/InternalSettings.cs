@@ -10,9 +10,14 @@ public class InternalSettings : MonoBehaviour
     [SerializeField] private LayerMask environmentMask;
     [SerializeField] private LayerMask terrainMask;
     [SerializeField] private LayerMask walkableMask;
+    [SerializeField] private LayerMask playerMask;
     [Header("UI")]
     [SerializeField] private Color selectedCellColor = Color.white;
     [SerializeField] private Color defaultCellColor = Color.white;
+
+    [SerializeField] private Color infoActiveColor = Color.white;
+    [SerializeField] private Color infoGainedColor = Color.white;
+    [SerializeField] private Color selectedInfoColor = Color.white;
     [Header("Progress Piece Status UI")]
     [SerializeField] private string statusNotAcquired = string.Empty;
     [SerializeField] private string statusCompletedWrong = string.Empty;
@@ -35,10 +40,15 @@ public class InternalSettings : MonoBehaviour
     public LayerMask EnvironmentMask => environmentMask;
     public LayerMask TerrainMask => terrainMask;
     public LayerMask WalkableMask => walkableMask;
+    public LayerMask PlayerMask => LayerMask.NameToLayer("Player");
 
 
     public Color SelectedCellColor => selectedCellColor;
     public Color DefaultCellColor => defaultCellColor;
+
+    public Color InfoActiveColor => infoActiveColor;
+    public Color InfoGainedColor => infoGainedColor;
+    public Color SelectedInfoColor => selectedInfoColor;
 
     public string StatusText_NotAcquired => statusNotAcquired;
     public string StatusText_EmptyGaps => statusEmptyGaps;

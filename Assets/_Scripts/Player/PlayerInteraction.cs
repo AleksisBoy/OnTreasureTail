@@ -9,7 +9,6 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private Animator animator = null;
     [SerializeField] private PlayerMovement movement = null;
     [SerializeField] private PlayerCamera view = null;
-    [SerializeField] private Camera focusCamera = null;
     [SerializeField] private PlayerSubinteraction[] subinteractions = null;
     [SerializeField] private PlayerEquipment equipment = null;
 
@@ -24,7 +23,6 @@ public class PlayerInteraction : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        focusCamera.gameObject.SetActive(false);
 
         foreach(var sub in subinteractions)
         {
@@ -109,10 +107,6 @@ public class PlayerInteraction : MonoBehaviour
         movement.enabled = state;
         view.enabled = state;
         this.enabled = state;
-    }
-    public Camera GetFocusCamera()
-    {
-        return focusCamera;
     }
     public PlayerCamera GetPlayerCamera()
     {

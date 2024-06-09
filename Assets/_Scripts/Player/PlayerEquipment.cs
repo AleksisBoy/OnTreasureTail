@@ -12,7 +12,7 @@ public class PlayerEquipment : MonoBehaviour
     private Item[] inventory = null;
     private Item equipped = null;
     public Item Equipped => equipped;
-    private void Awake()
+    private void Start()
     {
         SetupInventory();
     }
@@ -100,6 +100,11 @@ public class PlayerEquipment : MonoBehaviour
             if (inventory[i].meshObject != null) continue;
 
             inventory[i].meshObject = Instantiate(inventory[i].MeshPrefab, inventoryAnchors[i]);
+            inventory[i].meshObject.layer = InternalSettings.Get.PlayerMask;
+            foreach(Transform child in inventory[i].meshObject.transform)
+            {
+                child.gameObject.layer = InternalSettings.Get.PlayerMask;
+            }
         }
     }
     public void PutItemInSlotVisual(Item item)

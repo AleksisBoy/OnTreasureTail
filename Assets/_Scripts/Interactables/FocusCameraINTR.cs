@@ -7,6 +7,7 @@ public class FocusCameraINTR : Interactable, IInteractable
     [Header("Focus Camera")]
     [SerializeField] private Transform alignObject = null;
     [SerializeField] private float alignTime = 4f;
+    [SerializeField] private InfoSO[] infoProvided = null;
 
     private Camera focusCamera = null;
     private Vector3 initialPosition = Vector3.zero;
@@ -68,7 +69,7 @@ public class FocusCameraINTR : Interactable, IInteractable
 
     private void FocusedInput()
     {
-        if (!Input.GetKeyDown(KeyCode.Mouse0)) return;
+        if (!Input.GetKeyDown(KeyCode.Escape) && !Input.GetKeyDown(KeyCode.E)) return;
 
         focusCamera.cullingMask = InternalSettings.Get.DefaultCameraMask;
         alignTarget = PlayerInteraction.Instance.GetPlayerCamera().transform;
@@ -85,10 +86,15 @@ public class FocusCameraINTR : Interactable, IInteractable
 
     public void Interact()
     {
+        if (!interacted)
+        {
+            IslandManager.Instance.AddInfo(new Vector2(Screen.width / 2f, Screen.height / 2f), infoProvided);
+        }
+
         UIManager.AddBlocker(gameObject);
         align = 0f;
         PlayerInteraction.Instance.EnablePlayerComponents(false);
-        focusCamera = PlayerInteraction.Instance.GetFocusCamera();
+        focusCamera = PlayerCamera.Instance.FocusCamera;
         focusCamera.transform.gameObject.SetActive(true);
         initialPosition = focusCamera.transform.position;
         initialRotation = focusCamera.transform.rotation;

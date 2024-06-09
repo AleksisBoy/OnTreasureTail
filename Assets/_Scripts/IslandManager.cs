@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 // TODO: 
@@ -162,7 +161,27 @@ public class IslandManager : MonoBehaviour
             Debug.LogWarning("Same info added " + newInfo.name);
             return;
         }
+        info.Add(newInfo);
         informationBar.AddInfoToBar(newInfo);
+    }
+    public void AddInfo(InfoSO newInfo, Vector2 screenPos)
+    {
+        if (info.Contains(newInfo))
+        {
+            Debug.LogWarning("Same info added " + newInfo.name);
+            return;
+        }
+        info.Add(newInfo);
+        informationBar.AddInfoToBar(newInfo);
+
+        UserInterface.Instance.GainInfoAt(newInfo.name, screenPos);
+    }
+    public void AddInfo(Vector2 screenPos, params InfoSO[] newInfoArray)
+    {
+        foreach(InfoSO newInfo in newInfoArray)
+        {
+            AddInfo(newInfo, screenPos);
+        }
     }
     private void OnDestroy()
     {

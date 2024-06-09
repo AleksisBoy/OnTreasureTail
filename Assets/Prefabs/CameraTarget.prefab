@@ -59,6 +59,7 @@ GameObject:
   - component: {fileID: 8476991131117254358}
   - component: {fileID: 9153937502944267470}
   - component: {fileID: 1673336132694297328}
+  - component: {fileID: 5401539807089768493}
   m_Layer: 0
   m_Name: FocusCamera
   m_TagString: Untagged
@@ -176,6 +177,22 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &5401539807089768493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3995882045292918316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  m_MaxRayIntersections: 0
 --- !u!1001 &5717095000048596052
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -184,6 +201,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6684055977195384734}
     m_Modifications:
+    - target: {fileID: 231460778082241818, guid: 7913b9d9504a71948aa16e86872b7b6f,
+        type: 3}
+      propertyPath: focusCamera
+      value: 
+      objectReference: {fileID: 9153937502944267470}
     - target: {fileID: 231460778082241818, guid: 7913b9d9504a71948aa16e86872b7b6f,
         type: 3}
       propertyPath: cameraTarget

@@ -39,6 +39,14 @@ public class GapText : MonoBehaviour, ICellDragEnd, IPointerClickHandler, IPoint
             gapText.text = info.name;
         }
     }
+    [ContextMenu("Name All Objects")]
+    private void NameGapTextAll()
+    {
+        foreach(var gaptext in FindObjectsOfType<GapText>())
+        {
+            gaptext.NameGapText();
+        }
+    }
     public bool IsOverObject(Vector3 mousePos)
     {
         return RectTransformUtility.RectangleContainsScreenPoint(RT, mousePos);

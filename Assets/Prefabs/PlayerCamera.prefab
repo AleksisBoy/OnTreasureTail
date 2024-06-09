@@ -150,5 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4815163875b08f45a6c8edead1122da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  topViewCamera: {fileID: 5122023277491352138}
+  focusCamera: {fileID: 0}
   cameraTarget: {fileID: 0}
   sensitivity: 120
