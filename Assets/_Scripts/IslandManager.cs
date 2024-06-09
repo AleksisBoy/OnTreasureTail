@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // TODO: 
@@ -9,6 +10,7 @@ public class IslandManager : MonoBehaviour
     [SerializeField] private Terrain islandTerrain = null;
     [SerializeField] private int[] sandLayerIndex = new int[1] { 1 };
     [SerializeField] private InformationBar informationBar = null;
+
     [Header("Digging")]
     [SerializeField] private GameObject diggedNothingPrefab = null;
     [SerializeField] private Vector3 diggedObjectOffset = Vector3.zero;

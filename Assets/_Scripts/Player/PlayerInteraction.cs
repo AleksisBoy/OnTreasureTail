@@ -57,6 +57,20 @@ public class PlayerInteraction : MonoBehaviour
     {
         InteractionInput();
     }
+    private void FixedUpdate()
+    {
+        IInteractable inter = IslandManager.Instance.GetClosestInteractable(transform.position, out float distance);
+
+        if (inter != null && distance < inter.GetInteractionDistance())
+        {
+            animator.SetBool("Interact", true);
+        }
+        else
+        {
+
+            animator.SetBool("Interact", false);
+        }
+    }
 
     private void InteractionInput()
     {

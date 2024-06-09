@@ -8,7 +8,8 @@ public class GapText : MonoBehaviour, ICellDragEnd, IPointerClickHandler, IPoint
 {
     [SerializeField] private Image image = null;
     [SerializeField] private TMP_Text gapText = null;
-    [SerializeField] private string infoID = string.Empty;
+    [SerializeField] private InfoSO info = null;
+    [SerializeField] private bool correctCapitalLetter = false;
 
     private bool lockedCorrect = false;
 
@@ -19,9 +20,23 @@ public class GapText : MonoBehaviour, ICellDragEnd, IPointerClickHandler, IPoint
     private void Awake()
     {
         gapText.text = string.Empty;
-        if(infoID == string.Empty)
+        if (info == null)
         {
             Debug.LogError("INFO ID NOT SET FOR " + name);
+        }
+    }
+    [ContextMenu("Name The Object")]
+    private void NameGapText()
+    {
+        if (info == null)
+        {
+            name = "GapText_NOTSET";
+            gapText.text = "NOT SET";
+        }
+        else
+        {
+            name = "GapText_" + info.name;
+            gapText.text = info.name;
         }
     }
     public bool IsOverObject(Vector3 mousePos)
@@ -39,12 +54,27 @@ public class GapText : MonoBehaviour, ICellDragEnd, IPointerClickHandler, IPoint
     public void LockGapTextCorrect()
     {
         lockedCorrect = true;
-        foreach(Cell cell in infoCelledUI.InfoCelled.cells)
+        UppercaseFirstLetter();
+        foreach (Cell cell in infoCelledUI.InfoCelled.cells)
         {
             cell.occupied = false;
         }
         infoCelledUI.Lock(RT.position);
     }
+
+    private void UppercaseFirstLetter()
+    {
+        string theText = gapText.text;
+        if (correctCapitalLetter)
+        {
+            gapText.text = char.ToUpper(theText[0]) + theText.Substring(1);
+        }
+        else
+        {
+            gapText.text = char.ToLower(theText[0]) + theText.Substring(1);
+        }
+    }
+
     private void SetInfoCelled(InfoCelledUI infoCelledUI)
     {
         if (this.infoCelledUI == infoCelledUI) return;
@@ -78,7 +108,7 @@ public class GapText : MonoBehaviour, ICellDragEnd, IPointerClickHandler, IPoint
     }
     public bool InfoSetCorrectly()
     {
-        return infoID == infoCelledUI.InfoCelled.info.InfoID;
+        return info == infoCelledUI.InfoCelled.info;
     }
     public bool IsInfoSet()
     {
