@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Door : Interactable, IInteractable
 {
@@ -8,6 +9,7 @@ public class Door : Interactable, IInteractable
     [SerializeField] private Animator animator = null;
     [SerializeField] private bool disableAfterOpen = false;
     [SerializeField] private bool locked = false;
+    [SerializeField] private UnityEvent onOpen = null;
 
     private bool open = false;
     protected override void Awake()
@@ -29,6 +31,7 @@ public class Door : Interactable, IInteractable
         {
             enabled = false;
         }
+        if (open) onOpen.Invoke();
     }
     public void Unlock()
     {
@@ -57,12 +60,10 @@ public class Door : Interactable, IInteractable
     {
         return interacted;
     }
-
     public Vector3 GetInteractionPosition()
     {
         return interactionPoint.position;
     }
-
     public float GetInteractionDistance()
     {
         return interactionDistance;

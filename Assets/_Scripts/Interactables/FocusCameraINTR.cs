@@ -1,19 +1,37 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class FocusCameraINTR : Interactable, IInteractable
+public class FocusCameraINTR : Interactable, IInteractable, ITailable
 {
     [Header("Focus Camera")]
     [SerializeField] private Transform alignObject = null;
     [SerializeField] private float alignTime = 4f;
     [SerializeField] private InfoSO[] infoProvided = null;
+    [SerializeField] private UnityEvent onFocused = null;
+    [SerializeField] private UnityEvent onPlayerCamera = null;
 
     private Camera focusCamera = null;
     private Vector3 initialPosition = Vector3.zero;
     private Quaternion initialRotation = Quaternion.identity;
     private float align = 0f;
     private Transform alignTarget = null;
+
+    private List<Action> addedOnCloseActions = new List<Action>();
+
+    public bool BlockPlayer 
+    {
+        get => true;
+        set => throw new NotImplementedException(); 
+    }
+    public List<ITailable> Children 
+    {
+        get => children;
+        set => throw new NotImplementedException(); 
+    }
+    public List<ITailable> children = new List<ITailable>();
 
     private void Start()
     {
@@ -24,12 +42,12 @@ public class FocusCameraINTR : Interactable, IInteractable
         if (focusCamera == null) return;
         if (alignTarget == null)
         {
-            FocusedInput();
+            //FocusedInput();
             return;
         }
 
         // skip aligning if half way through and clicked any button
-        if (align > 0.5f && Input.anyKeyDown) align = 1f;
+        //if (align > 0.5f && Input.anyKeyDown) align = 1f;
 
         if (align > 1f) return;
 
@@ -54,15 +72,15 @@ public class FocusCameraINTR : Interactable, IInteractable
         if (alignTarget == PlayerInteraction.Instance.GetPlayerCamera().transform)
         {
             // on aligned to back to player camera
-            PlayerInteraction.Instance.EnablePlayerComponents(true);
             focusCamera.gameObject.SetActive(false);
             focusCamera = null;
-            UIManager.RemoveBlocker(gameObject);
+            onPlayerCamera?.Invoke();
         }
         else
         {
             // on aligned to focus object
             focusCamera.cullingMask = InternalSettings.Get.FocusedCameraMask;
+            onFocused?.Invoke();
         }
         alignTarget = null;
     }
@@ -71,11 +89,7 @@ public class FocusCameraINTR : Interactable, IInteractable
     {
         if (!Input.GetKeyDown(KeyCode.Escape) && !Input.GetKeyDown(KeyCode.E)) return;
 
-        focusCamera.cullingMask = InternalSettings.Get.DefaultCameraMask;
-        alignTarget = PlayerInteraction.Instance.GetPlayerCamera().transform;
-        initialPosition = focusCamera.transform.position;
-        initialRotation = focusCamera.transform.rotation;
-        align = 0f;
+        Close();
     }
 
     // IInteractable calls
@@ -91,14 +105,7 @@ public class FocusCameraINTR : Interactable, IInteractable
             IslandManager.Instance.AddInfo(new Vector2(Screen.width / 2f, Screen.height / 2f), infoProvided);
         }
 
-        UIManager.AddBlocker(gameObject);
-        align = 0f;
-        PlayerInteraction.Instance.EnablePlayerComponents(false);
-        focusCamera = PlayerCamera.Instance.FocusCamera;
-        focusCamera.transform.gameObject.SetActive(true);
-        initialPosition = focusCamera.transform.position;
-        initialRotation = focusCamera.transform.rotation;
-        alignTarget = alignObject;
+        UIManager.Open(this);
         interacted = true;
     }
 
@@ -120,5 +127,46 @@ public class FocusCameraINTR : Interactable, IInteractable
     public bool HasInteracted()
     {
         return interacted;
+    }
+
+    public void Open()
+    {
+        //UIManager.AddBlocker(gameObject);
+        align = 0f;
+        PlayerInteraction.Instance.EnablePlayerComponents(false);
+        focusCamera = PlayerCamera.Instance.FocusCamera;
+        focusCamera.transform.gameObject.SetActive(true);
+        initialPosition = focusCamera.transform.position;
+        initialRotation = focusCamera.transform.rotation;
+        alignTarget = alignObject;
+    }
+
+    public void Close()
+    {
+        focusCamera.cullingMask = InternalSettings.Get.DefaultCameraMask;
+        alignTarget = PlayerInteraction.Instance.GetPlayerCamera().transform;
+        initialPosition = focusCamera.transform.position;
+        initialRotation = focusCamera.transform.rotation;
+        align = 0f;
+    }
+
+    public void AddOnClose(Action action)
+    {
+        if (!addedOnCloseActions.Contains(action))
+        {
+            UnityAction unityAction = new UnityAction(action);
+            addedOnCloseActions.Add(action);
+            onPlayerCamera.AddListener(unityAction);
+            Debug.Log("added on close");
+        }
+        else
+        {
+            Debug.Log("Added same action to  " + name);
+        }
+    }
+
+    public string GetName()
+    {
+        return name;
     }
 }

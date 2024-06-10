@@ -10,14 +10,14 @@ public class UIController : MonoBehaviour
     {
         UIInput();
 
-        if (!Input.GetKeyDown(KeyCode.Tab) || UIManager.Blocking) return;
+        if (!Input.GetKeyDown(KeyCode.Tab)) return;
 
         UIManager.Toggle(islandProgress);
     }
 
     private void UIInput()
     {
-        if (!Input.GetKeyDown(KeyCode.Escape) || UIManager.Blocking) return;
+        if (!Input.GetKeyDown(KeyCode.Escape)) return;
 
         if (UIManager.IsOpen()) UIManager.CloseLast();
         else

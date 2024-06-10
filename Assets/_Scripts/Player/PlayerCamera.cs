@@ -36,6 +36,8 @@ public class PlayerCamera : MonoBehaviour
 
     private void RotationInput()
     {
+        if (focusCamera.gameObject.activeSelf) return;
+
         float mouseX = Input.GetAxis("Mouse X");
         if (mouseX != 0f)
         {

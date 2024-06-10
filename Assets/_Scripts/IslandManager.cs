@@ -109,7 +109,7 @@ public class IslandManager : MonoBehaviour
             string debug = "Currently open: ";
             foreach( var panel in UIManager.Current)
             {
-                debug += panel.name + "\n";
+                debug += panel.GetName() + "\n";
             }
             Debug.Log(debug);
         }

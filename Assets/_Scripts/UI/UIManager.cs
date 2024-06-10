@@ -6,13 +6,12 @@ using UnityEngine;
 
 public static class UIManager
 {
-    public static Stack<TailPanel> Current {  get; private set; } = new Stack<TailPanel>();
-    public static List<int> Blockers { get; private set; } = new List<int>();
-    public static bool Open(TailPanel panel)
+    public static Stack<ITailable> Current {  get; private set; } = new Stack<ITailable>();
+    public static bool Open(ITailable panel)
     {
         if (Current.Contains(panel))
         {
-            Debug.LogWarning(panel.name + " already opened");
+            Debug.LogWarning(panel.GetName() + " already opened");
             return false;
         }
         panel.Open();
@@ -23,8 +22,8 @@ public static class UIManager
 
     private static void UpdatePlayerBlocking()
     {
-        bool blockPlayer = false;
-        foreach (TailPanel openPanel in Current)
+        bool blockPlayer = false; 
+        foreach (ITailable openPanel in Current)
         {
             if (openPanel.BlockPlayer)
             {
@@ -32,29 +31,30 @@ public static class UIManager
                 break;
             }
         }
+
         PlayerInteraction.Instance.EnablePlayerComponents(!blockPlayer);
     }
 
-    public static bool Open(TailPanel panel, Action closeEvent)
+    public static bool Open(ITailable panel, Action closeEvent)
     {
         if(Open(panel)) panel.AddOnClose(closeEvent);
         return true;
     }
-    public static void Close(TailPanel panel)
+    public static void Close(ITailable panel)
     {
-        List<TailPanel> currentList = Current.ToList();
-        Queue<TailPanel> dependantPanels = new Queue<TailPanel>();
-        foreach(TailPanel child in panel.children)
+        List<ITailable> currentList = Current.ToList();
+        Queue<ITailable> dependantPanels = new Queue<ITailable>();
+        foreach(ITailable child in panel.Children)
         {
             dependantPanels.Enqueue(child);
         }
         while (dependantPanels.Count > 0)
         {
-            TailPanel dependantPanel = dependantPanels.Dequeue();
+            ITailable dependantPanel = dependantPanels.Dequeue();
 
             if(currentList.Contains(dependantPanel)) currentList.Remove(dependantPanel);
 
-            foreach (TailPanel child in dependantPanel.children)
+            foreach (ITailable child in dependantPanel.Children)
             {
                 if (currentList.Contains(child)) dependantPanels.Enqueue(child);
             }
@@ -68,7 +68,7 @@ public static class UIManager
         }
         UpdatePlayerBlocking();
     }
-    public static void Toggle(TailPanel panel)
+    public static void Toggle(ITailable panel)
     {
         if (Current.Contains(panel)) Close(panel);
         else Open(panel);
@@ -77,7 +77,7 @@ public static class UIManager
     {
         Close(Current.Pop());
     }
-    public static TailPanel LastOpen
+    public static ITailable LastOpen
     {
         get 
         { 
@@ -92,16 +92,19 @@ public static class UIManager
     {
         return Current.Count > 0;
     }
-    public static bool IsOpen(TailPanel panel)
+    public static bool IsOpen(ITailable panel)
     {
         return Current.Contains(panel);
     }
-    public static bool IsOpenOnly(TailPanel panel)
+    public static bool IsOpenOnly(ITailable panel)
     {
         if (Current.Count != 1) return false;
 
         return Current.Peek() == panel;
     }
+    /*
+    public static List<int> Blockers { get; private set; } = new List<int>();
+
     public static void AddBlocker(GameObject blocker)
     {
         int instanceID = blocker.GetInstanceID();
@@ -123,9 +126,10 @@ public static class UIManager
             return Blockers.Count > 0;
         }
     }
+    */
     public static void Clear()
     {
         Current.Clear();
-        Blockers.Clear();
+        //Blockers.Clear();
     }
 }

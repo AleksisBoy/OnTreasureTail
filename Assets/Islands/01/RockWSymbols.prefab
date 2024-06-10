@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 2110949449389480574}
   - component: {fileID: 8940034299323712002}
   - component: {fileID: 8304396005568624984}
-  - component: {fileID: 6160892471436809264}
+  - component: {fileID: 5588131808643337172}
+  - component: {fileID: 3174122946242456297}
   m_Layer: 7
   m_Name: Rock
   m_TagString: Untagged
@@ -106,7 +107,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.57821375, y: 1.0971216, z: 0.600285}
   m_Center: {x: -0.023735844, y: 0.5485608, z: -0.029019881}
---- !u!114 &6160892471436809264
+--- !u!114 &5588131808643337172
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,7 +116,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 990608194511450489}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c87ba55edf516e4087f23eaac215f3e, type: 3}
+  m_Script: {fileID: 11500000, guid: 967ee9a39aaf0bc4c85b4e6eb39c66d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onMouseDown:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3174122946242456297}
+        m_TargetAssemblyTypeName: ProvideInfo, Assembly-CSharp
+        m_MethodName: CallProvideInfo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3174122946242456297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990608194511450489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eaac59f00dc26c48b250156f8acab9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   infoProvided:
@@ -130,9 +158,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2324189809466261885}
   - component: {fileID: 681643397123497431}
-  - component: {fileID: 5481958822174539351}
   - component: {fileID: 2999939578680965665}
-  m_Layer: 10
+  - component: {fileID: 3135527548135886005}
+  - component: {fileID: 9003614437357291202}
+  m_Layer: 7
   m_Name: cluemaptest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,20 +235,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5481958822174539351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1282088885967176596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c87ba55edf516e4087f23eaac215f3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  infoProvided:
-  - {fileID: 11400000, guid: 2d1887854c48f664a98e34c8548b30f4, type: 2}
 --- !u!65 &2999939578680965665
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -241,6 +256,47 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 8.8499975, y: 5.9999995, z: 0.20000005}
   m_Center: {x: -0.000030517578, y: 0.93, z: -0.3}
+--- !u!114 &3135527548135886005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282088885967176596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 967ee9a39aaf0bc4c85b4e6eb39c66d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onMouseDown:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9003614437357291202}
+        m_TargetAssemblyTypeName: ProvideInfo, Assembly-CSharp
+        m_MethodName: CallProvideInfo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &9003614437357291202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282088885967176596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eaac59f00dc26c48b250156f8acab9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoProvided:
+  - {fileID: 11400000, guid: 2d1887854c48f664a98e34c8548b30f4, type: 2}
 --- !u!1001 &7400298026255311106
 PrefabInstance:
   m_ObjectHideFlags: 0

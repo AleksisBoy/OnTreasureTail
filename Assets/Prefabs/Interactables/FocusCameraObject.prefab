@@ -50,8 +50,14 @@ MonoBehaviour:
   interactionPoint: {fileID: 4312832929866121465}
   interactionDistance: 1.95
   alignObject: {fileID: 6151999309873423511}
-  alignTime: 1.4
+  alignTime: 1.2
   infoProvided: []
+  onFocused:
+    m_PersistentCalls:
+      m_Calls: []
+  onPlayerCamera:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &572692873387896163
 GameObject:
   m_ObjectHideFlags: 0
