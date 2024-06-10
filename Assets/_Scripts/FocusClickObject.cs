@@ -10,7 +10,7 @@ public class FocusClickObject : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (PlayerCamera.Instance.FocusCamera.gameObject.activeSelf)
+        if (PlayerCamera.Instance.FocusCamera.gameObject.activeSelf && !OTTInputModule.Module.GetFocused())
         {
             onMouseDown?.Invoke();
         }

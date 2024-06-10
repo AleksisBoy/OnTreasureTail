@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -37,6 +38,9 @@ public class GapText : MonoBehaviour, ICellDragEnd, IPointerClickHandler, IPoint
         {
             name = "GapText_" + info.name;
             gapText.text = info.name;
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(gapText);
+#endif
         }
     }
     [ContextMenu("Name All Objects")]
@@ -142,6 +146,7 @@ public class GapText : MonoBehaviour, ICellDragEnd, IPointerClickHandler, IPoint
         // set dragging of the info celled in cell based viewport 
         if (!lockedCorrect) return;
 
+        infoCelledUI.RT.position = RT.position;
         FindObjectOfType<CellBasedViewport>().Debug_SetCurrentDragged(infoCelledUI);
         infoCelledUI.gameObject.SetActive(true);
     }

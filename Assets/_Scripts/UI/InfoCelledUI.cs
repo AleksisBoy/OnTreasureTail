@@ -24,7 +24,6 @@ public abstract class InfoCelledUI : MonoBehaviour
     }
     public void SetPositionRect(Vector3 worldPos)
     {
-        Debug.Log("new pos " + name);
         infoCelled.positionRect.start = (Vector2)worldPos - RT.sizeDelta / 2f;
         infoCelled.positionRect.end = (Vector2)worldPos + RT.sizeDelta / 2f;
     }

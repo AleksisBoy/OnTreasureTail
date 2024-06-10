@@ -13,6 +13,7 @@ public class NoteTextInfo : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     [SerializeField] private InfoTextSO infoText = null;
 
     private bool clicked = false;
+    public RectTransform RT => (RectTransform)transform;
 
     [ContextMenu("Name The Object")]
     private void NameNoteInfo()
@@ -30,6 +31,8 @@ public class NoteTextInfo : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
             EditorUtility.SetDirty(tmp);
 #endif
         }
+
+        FitText();
     }
     [ContextMenu("Name All Objects")]
     private void NameGapTextAll()
@@ -38,6 +41,10 @@ public class NoteTextInfo : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         {
             gaptext.NameNoteInfo();
         }
+    }
+    private void FitText()
+    {
+        RT.sizeDelta = new Vector2(tmp.preferredWidth, RT.sizeDelta.y);
     }
     private void Start()
     {

@@ -4,6 +4,7 @@ using UnityEngine;
 
 // TODO: 
 // Walkable areas
+// check people's belongings like in golden idol
 public class IslandManager : MonoBehaviour
 {
     [SerializeField] private Terrain islandTerrain = null;
