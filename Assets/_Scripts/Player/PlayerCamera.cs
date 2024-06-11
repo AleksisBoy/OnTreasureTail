@@ -6,9 +6,10 @@ public class PlayerCamera : MonoBehaviour
 {
     [SerializeField] private Camera topViewCamera = null;
     [SerializeField] private Camera focusCamera = null;
-    [SerializeField] private Transform cameraTarget = null;
+    [SerializeField] private CameraTarget cameraTarget = null;
     [SerializeField] private float sensitivity = 10f;
 
+    private Transform playerTransform = null;
     public Camera Current
     {
         get
@@ -18,6 +19,7 @@ public class PlayerCamera : MonoBehaviour
         }
     }
     public Camera FocusCamera => focusCamera;
+    public CameraTarget CameraTarget => cameraTarget;
     public static PlayerCamera Instance { get; private set; } = null;
     private void Awake()
     {
@@ -29,8 +31,23 @@ public class PlayerCamera : MonoBehaviour
         }
         focusCamera.gameObject.SetActive(false);
     }
+    private void Start()
+    {
+        playerTransform = PlayerInteraction.Instance.transform;
+        UnlockCameraFromTarget();
+    }
+    public void LockCameraOn(Transform target)
+    {
+        cameraTarget.SetTargets(playerTransform, target);
+    }
+    public void UnlockCameraFromTarget()
+    {
+        cameraTarget.SetTargets(playerTransform, null);
+    }
     private void Update()
     {
+        if (cameraTarget.HasOptionalTarget()) return;
+
         RotationInput();
     }
 
@@ -41,7 +58,7 @@ public class PlayerCamera : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X");
         if (mouseX != 0f)
         {
-            cameraTarget.Rotate(0f, mouseX * Time.deltaTime * sensitivity, 0f);
+            cameraTarget.transform.Rotate(0f, mouseX * Time.deltaTime * sensitivity, 0f);
         }
     }
 }

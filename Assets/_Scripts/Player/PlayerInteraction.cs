@@ -11,9 +11,12 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerCamera view = null;
     [SerializeField] private PlayerSubinteraction[] subinteractions = null;
     [SerializeField] private PlayerEquipment equipment = null;
+    [SerializeField] private Health playerHealth = null;
+    [SerializeField] private PlayerCombat combat = null;
 
     private Terrain terrain = null;
     private RideableBoat boat = null;
+    public Health Health => playerHealth;
     public static PlayerInteraction Instance { get; private set; } = null;
     private void Awake()
     {
@@ -49,7 +52,8 @@ public class PlayerInteraction : MonoBehaviour
     private void Start()
     {
         terrain = IslandManager.Instance.Terrain;
-        movement.Set(terrain, animator);
+        movement.Set(terrain, animator, combat, view);
+        combat.Set(view);
     }
     private void Update()
     {
@@ -91,16 +95,21 @@ public class PlayerInteraction : MonoBehaviour
             transform.SetParent(boat.SeatTransform, true);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
-            animator.SetLayerWeight(2, 1f);
-            animator.SetLayerWeight(0, 0f);
+            animator.SetLayerWeight(animator.GetLayerIndex("Boat"), 1f);
+            animator.SetLayerWeight(animator.GetLayerIndex("Ground"), 0f);
         }
         else
         {
             transform.SetParent(null, true);
-            animator.SetLayerWeight(2, 0f);
-            animator.SetLayerWeight(0, 1f);
+            animator.SetLayerWeight(animator.GetLayerIndex("Boat"), 0f);
+            animator.SetLayerWeight(animator.GetLayerIndex("Ground"), 1f);
         }
         movement.enabled = !rideBoat;
+    }
+    public void SetCombatAnimator(bool state)
+    {
+        animator.SetLayerWeight(animator.GetLayerIndex("Ground"), state ? 0f : 1f);
+        animator.SetLayerWeight(animator.GetLayerIndex("Combat"), state ? 1f : 0f);
     }
     public void EnablePlayerComponents(bool state)
     {

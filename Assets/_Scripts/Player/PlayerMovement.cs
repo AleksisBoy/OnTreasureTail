@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private PlayerCamera playerCamera = null;
     [SerializeField] private float playerRadius = 0.25f;
     [Header("Grounded")]
     [SerializeField] private float walkSpeed = 3f;
@@ -27,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Animator animator;
     private Terrain terrain;
+    private PlayerCombat combat;
+    private PlayerCamera playerCamera;
 
     private bool sloping = false; 
     private bool grounded = false; 
@@ -35,10 +36,12 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 lastPosition = Vector3.zero;
     public float velocityFloat = 0f;
     public bool Grounded => grounded;
-    public void Set(Terrain terrain, Animator animator)
+    public void Set(Terrain terrain, Animator animator, PlayerCombat combat, PlayerCamera playerCamera)
     {
         this.terrain = terrain;
         this.animator = animator;
+        this.combat = combat;
+        this.playerCamera = playerCamera;
 
         lastPosition = transform.position;
 
@@ -66,11 +69,27 @@ public class PlayerMovement : MonoBehaviour
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (JumpInput()) return;
+        animator.SetFloat("InputX", horizontalInput);
+        animator.SetFloat("InputY", verticalInput);
+        bool inCombat = combat.InCombat();
+        
+        if (!inCombat && JumpInput()) return;
 
         // Yaw rotation of player
         Vector3 cameraDirection = GetCameraDirectionFromInput(horizontalInput, verticalInput);
-        if (horizontalInput != 0f || verticalInput != 0f) transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(new Vector3(cameraDirection.x, 0f, cameraDirection.z), Vector3.up), Time.deltaTime * rotationSpeed);
+        if (horizontalInput != 0f || verticalInput != 0f)
+        {
+            Quaternion lookRotation;
+            if (inCombat)
+            {
+                lookRotation = Quaternion.LookRotation((TailUtil.PositionFlat(combat.Target.transform.position) - TailUtil.PositionFlat(transform.position)).normalized, Vector3.up);
+            }
+            else
+            {
+                lookRotation = Quaternion.LookRotation(new Vector3(cameraDirection.x, 0f, cameraDirection.z), Vector3.up);
+            }
+            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+        }
 
         // Get the speed depending on input
         float currentSpeed = GetCurrentSpeedInput();
@@ -228,6 +247,10 @@ public class PlayerMovement : MonoBehaviour
     {
         // Setting current speed depending on grounded
         float currentSpeed;
+        if (combat.InCombat())
+        {
+            return combat.Speed;
+        }
         if (grounded)
         {
             currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;

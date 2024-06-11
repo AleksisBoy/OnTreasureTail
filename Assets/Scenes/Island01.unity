@@ -408,7 +408,7 @@ GameObject:
   - component: {fileID: 183687566}
   - component: {fileID: 183687565}
   - component: {fileID: 183687564}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Island01Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2595,6 +2595,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: GapText_Eastern
       objectReference: {fileID: 0}
+    - target: {fileID: 483654317088523423, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483654317088523423, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483654317088523423, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483654317088523423, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 693929166530399566, guid: 1df2b72b72226fe46ae054edc00a9fc9,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2735,6 +2755,26 @@ PrefabInstance:
       propertyPath: m_text
       value: Eastern
       objectReference: {fileID: 0}
+    - target: {fileID: 5584468105913850402, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5584468105913850402, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5584468105913850402, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5584468105913850402, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5865394771768534285, guid: 1df2b72b72226fe46ae054edc00a9fc9,
         type: 3}
       propertyPath: m_Name
@@ -2759,6 +2799,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: trapdoor
+      objectReference: {fileID: 0}
+    - target: {fileID: 7636737505395295089, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7636737505395295089, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7636737505395295089, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7636737505395295089, guid: 1df2b72b72226fe46ae054edc00a9fc9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8393764898642635024, guid: 1df2b72b72226fe46ae054edc00a9fc9,
         type: 3}

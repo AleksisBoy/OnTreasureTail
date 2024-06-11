@@ -655,6 +655,8 @@ GameObject:
   - component: {fileID: 1552048286800219323}
   - component: {fileID: 8868799578893869142}
   - component: {fileID: 3225385572864564303}
+  - component: {fileID: 4054690041552130729}
+  - component: {fileID: 8766013707428227383}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -690,7 +692,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f4c0329905656f40b8bdeb6c1855755, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCamera: {fileID: 0}
   playerRadius: 0.25
   walkSpeed: 3
   runSpeed: 5
@@ -796,10 +797,11 @@ MonoBehaviour:
   animator: {fileID: 7576676028293474202}
   movement: {fileID: 4043697657939580133}
   view: {fileID: 0}
-  focusCamera: {fileID: 0}
   subinteractions:
   - {fileID: 3225385572864564303}
   equipment: {fileID: 8868799578893869142}
+  playerHealth: {fileID: 4054690041552130729}
+  combat: {fileID: 8766013707428227383}
 --- !u!114 &8868799578893869142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -835,6 +837,32 @@ MonoBehaviour:
   diggingRadius: 0.5
   diggingHeightDelta: -0.00025
   diggingForwardModifier: 0.6
+--- !u!114 &4054690041552130729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416394642961204579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e62b0142f62e82445aead8a9bbafb5ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+--- !u!114 &8766013707428227383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416394642961204579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56bfa3d3e47b2414aa90c4306eeb51a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combatSpeed: 2.5
 --- !u!1 &7499727931088559446
 GameObject:
   m_ObjectHideFlags: 0
