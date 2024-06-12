@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -32,7 +30,9 @@ public class PlayerMovement : MonoBehaviour
     private bool sloping = false; 
     private bool grounded = false; 
     private bool jumping = false; 
-    private float jump = 0f; 
+    private bool evading = false; 
+
+    private float process = 0f; 
     private Vector3 lastPosition = Vector3.zero;
     public float velocityFloat = 0f;
     public bool Grounded => grounded;
@@ -71,24 +71,12 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("InputX", horizontalInput);
         animator.SetFloat("InputY", verticalInput);
         bool inCombat = combat.InCombat();
-        
-        if (!inCombat && JumpInput()) return;
 
-        // Yaw rotation of player
         Vector3 cameraDirection = GetCameraDirectionFromInput(horizontalInput, verticalInput);
-        if (horizontalInput != 0f || verticalInput != 0f)
-        {
-            Quaternion lookRotation;
-            if (inCombat)
-            {
-                lookRotation = Quaternion.LookRotation((TailUtil.PositionFlat(combat.Target.transform.position) - TailUtil.PositionFlat(transform.position)).normalized, Vector3.up);
-            }
-            else
-            {
-                lookRotation = Quaternion.LookRotation(new Vector3(cameraDirection.x, 0f, cameraDirection.z), Vector3.up);
-            }
-            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
-        }
+        RotationInput(cameraDirection, horizontalInput, verticalInput, inCombat);
+
+        if (!inCombat && JumpInput()) return;
+        if (inCombat && EvadeInput(horizontalInput, verticalInput, cameraDirection)) return;
 
         // Get the speed depending on input
         float currentSpeed = GetCurrentSpeedInput();
@@ -104,9 +92,9 @@ public class PlayerMovement : MonoBehaviour
             transform.position.x + cameraDirection.x * currentSpeed * Time.deltaTime * speedModifier,
             0f,
             transform.position.z + cameraDirection.z * currentSpeed * Time.deltaTime * speedModifier);
-        
+
         // Checking desiredPosition
-        if(Physics.Raycast(desiredPosition + new Vector3(0f, transform.position.y + 0.1f, 0f), Vector3.down, out RaycastHit hit, 1f) && hit.point.y > waterLevel)
+        if (Physics.Raycast(desiredPosition + new Vector3(0f, transform.position.y + 0.1f, 0f), Vector3.down, out RaycastHit hit, 1f) && hit.point.y > waterLevel)
         {
             // Desired to be on ground
             grounded = true;
@@ -143,13 +131,32 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("Grounded", grounded);
         animator.SetBool("Sloping", sloping);
     }
+
+    private void RotationInput(Vector3 forwardDirection, float horizontalInput, float verticalInput, bool inCombat)
+    {
+        // Yaw rotation of player
+        if (horizontalInput != 0f || verticalInput != 0f)
+        {
+            Quaternion lookRotation;
+            if (inCombat && !evading)
+            {
+                lookRotation = Quaternion.LookRotation((TailUtil.PositionFlat(combat.Target.transform.position) - TailUtil.PositionFlat(transform.position)).normalized, Vector3.up);
+            }
+            else
+            {
+                lookRotation = Quaternion.LookRotation(TailUtil.PositionFlatNormalized(forwardDirection), Vector3.up);
+            }
+            transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+        }
+    }
+
     private bool JumpInput()
     {
         // add in air slight movement
         if (Input.GetKeyDown(KeyCode.Space) && !jumping && grounded && velocityFloat > 0f)
         {
             jumping = true;
-            jump = 0f;
+            process = 0f;
             // check for collision
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
             Vector3 jumpFinalPosition =  new Vector3(transform.position.x + direction.x * (1f /jumpSpeed)  * jumpDistance, 0f, transform.position.z + direction.z * (1f / jumpSpeed) * jumpDistance);
@@ -173,15 +180,42 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
             Vector3 jumpPosition = new Vector3(transform.position.x + direction.x * Time.deltaTime * jumpDistance, 0f, transform.position.z + direction.z * Time.deltaTime * jumpDistance);
-            transform.position = new Vector3(jumpPosition.x, terrain.SampleHeight(jumpPosition) + jumpCurve.Evaluate(jump) * jumpHeight + terrain.transform.position.y, jumpPosition.z);
+            transform.position = new Vector3(jumpPosition.x, terrain.SampleHeight(jumpPosition) + jumpCurve.Evaluate(process) * jumpHeight + terrain.transform.position.y, jumpPosition.z);
             
-            jump += jumpSpeed * Time.deltaTime;
-            if (jump > 1f)
+            process += jumpSpeed * Time.deltaTime;
+            if (process > 1f)
             {
                 jumping = false;
             }
         }
         return jumping;
+    }
+    private bool EvadeInput(float horizontalInput, float verticalInput, Vector3 forwardDirection)
+    {
+        if (horizontalInput == 0f && verticalInput == 0f)
+        {
+            evading = false;
+            return false;
+        }
+
+        if (!evading && grounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            evading = true;
+            process = 0f;
+            animator.SetTrigger("Evade");
+        }
+        if (evading)
+        {
+            Vector3 evadePosition = new Vector3(transform.position.x + forwardDirection.x * Time.deltaTime * combat.EvadeDistance, 0f, transform.position.z + forwardDirection.z * Time.deltaTime * combat.EvadeDistance);
+            transform.position = DesiredPositionWithCollision(new Vector3(evadePosition.x, terrain.SampleHeight(evadePosition)  + terrain.transform.position.y, evadePosition.z));
+
+            process += combat.EvadeSpeed * Time.deltaTime;
+            if (process > 1f)
+            {
+                evading = false;
+            }
+        }
+        return evading;
     }
     private bool SlopeBehaviour(Vector3 hitNormal)
     {

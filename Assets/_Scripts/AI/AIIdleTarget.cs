@@ -1,21 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AIIdleTarget : MonoBehaviour
 {
     [SerializeField] private string animationName = string.Empty;
 
+    private bool processing = false;
     private AIAgent currentAgent = null;
     public Vector3 Position => transform.position;
     public string AnimationName => animationName;
-    public AIAgent CurrentAgent => currentAgent;
+    public AIAgent CurrentAgent
+    {
+        get => currentAgent;
+        set => currentAgent = value;
+    }
+    public bool Processing => processing;
     public void StartIdling(AIAgent agent)
     {
-        currentAgent = agent;
+        if(agent == currentAgent)
+            processing = true;
     }
-    public void StopIdling()
+    public void StopIdling(AIAgent agent)
     {
-        currentAgent = null;
+        if(agent == currentAgent)
+        {
+            currentAgent = null;
+            processing = false;
+        }
     }
 }

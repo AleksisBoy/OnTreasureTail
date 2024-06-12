@@ -1,13 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 public class PlayerCombat : PlayerSubinteraction
 {
     [Header("Combat")]
+    [SerializeField] private float combatLockRadius = 10f;
     [SerializeField] private float combatSpeed = 3f;
     [SerializeField] private float combatSprintSpeed = 3f;
+    [Header("Evasion")]
+    [SerializeField] private float evadeSpeed = 3f;
+    [SerializeField] private float evadeDistance = 20f;
     [Header("Agility")]
     [SerializeField] private float baseAgility = 100f;
     [SerializeField] private float sprintAgility = 1f;
@@ -22,6 +24,8 @@ public class PlayerCombat : PlayerSubinteraction
 
     public AIEnemy Target => target;
     public float Speed => combatSpeed;
+    public float EvadeSpeed => evadeSpeed;
+    public float EvadeDistance => evadeDistance;
     public float SprintSpeed
     {
         get
@@ -65,7 +69,6 @@ public class PlayerCombat : PlayerSubinteraction
     }
     private void Start()
     {
-        CombatManager.AssignOnCombatEnded(EndCombat);
         CombatManager.AssignOnCombatEnded(ResetAgility);
     }
     public void SetTarget(AIEnemy target)
@@ -86,11 +89,11 @@ public class PlayerCombat : PlayerSubinteraction
     }
     private void OnGUI()
     {
-        GUI.Box(new Rect(0f, 0f, 100f, 30f), Agility.ToString());
+        GUI.Box(new Rect(30f, 30f, 100f, 30f), string.Format("{0:0}", Agility), InternalSettings.Get.DebugStyle);
     }
     private void ToggleCameraLockInput()
     {
-        if (!CombatManager.Ongoing) return;
+        //if (!CombatManager.Ongoing) return;
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -109,20 +112,23 @@ public class PlayerCombat : PlayerSubinteraction
         }
     }
 
-    private void EndCombat()
-    {
-        PlayerInteraction.Instance.SetCombatAnimator(false);
-        playerCamera.UnlockCameraFromTarget();
-        SetTarget(null);
-    }
-
     private void StartCombat()
     {
+        List<AIEnemy> enemiesAround = CombatManager.GetEnemiesInRadius(transform.position, combatLockRadius);
+        if (enemiesAround.Count == 0) return;
+
         PlayerInteraction.Instance.SetCombatAnimator(true);
-        AIEnemy enemy = CombatManager.EnemyList[0];
+        AIEnemy enemy = enemiesAround[0];
         SetTarget(enemy);
         playerCamera.LockCameraOn(enemy.transform);
     }
+    private void EndCombat()
+    {
+        PlayerInteraction.Instance.SetCombatAnimator(false);
+        SetTarget(null);
+        playerCamera?.UnlockCameraFromTarget();
+    }
+
 
     public bool InCombat()
     {
@@ -135,6 +141,11 @@ public class PlayerCombat : PlayerSubinteraction
     protected override void OnDisable()
     {
         base.OnDisable();
-
+        EndCombat();
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, combatLockRadius);
     }
 }

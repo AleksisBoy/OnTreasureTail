@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InternalSettings : MonoBehaviour
@@ -23,6 +21,8 @@ public class InternalSettings : MonoBehaviour
     [SerializeField] private string statusCompletedWrong = string.Empty;
     [SerializeField] private string statusCompletedCorrect = string.Empty;
     [SerializeField] private string statusEmptyGaps = string.Empty;
+    [Header("Debug")]
+    [SerializeField] private GUIStyle debugStyle = null;
 
     public static InternalSettings Get { get; private set; } = null;
     private void Awake()
@@ -54,6 +54,9 @@ public class InternalSettings : MonoBehaviour
     public string StatusText_EmptyGaps => statusEmptyGaps;
     public string StatusText_CompletedWrong => statusCompletedWrong;
     public string StatusText_CompletedCorrect => statusCompletedCorrect;
+
+    // Debug
+    public GUIStyle DebugStyle => debugStyle;
 
     public static void CreateDebugSphere(Vector3 position, float scale)
     {

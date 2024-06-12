@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class AIAgent : MonoBehaviour
 {
     [Header("AI Agent")]
+    [SerializeField] private float updateTime = 0.1f;
     [SerializeField] protected NavMeshAgent agent = null;
     [SerializeField] protected Animator animator = null;
     [SerializeField] protected float walkSpeed = 4f;
@@ -33,6 +33,7 @@ public class AIAgent : MonoBehaviour
     protected virtual void Awake()
     {
         agent.speed = walkSpeed;
+        updateTime *= UnityEngine.Random.Range(0.8f, 1f);
         tree = new BehaviourTree();
     }
     protected virtual void Start()
@@ -152,7 +153,7 @@ public class AIAgent : MonoBehaviour
         {
             Prebehave();
             status = tree.Process();
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(updateTime);
         }
     }
     private void Call_OnTargetChanged()

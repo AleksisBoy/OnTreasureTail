@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +13,8 @@ public class AIEnemy : AIAgent
     private AIIdleTarget currentIdleTarget = null;
     private SeePlayerState seePlayer = SeePlayerState.DidNotCheck;
 
+    public static HashSet<AIEnemy> List { get; private set; } = new HashSet<AIEnemy>();
+
     private enum SeePlayerState
     {
         DoNotSeePlayer,
@@ -23,6 +23,8 @@ public class AIEnemy : AIAgent
     }
     protected override void Awake()
     {
+        if (!List.Contains(this)) List.Add(this);
+
         base.Awake();
 
         // Checkers
@@ -131,23 +133,39 @@ public class AIEnemy : AIAgent
     }
     private Node.Status SetRandomFreeIdleTarget()
     {
-        currentIdleTarget = idleTargets[UnityEngine.Random.Range(0, idleTargets.Length)];
-        SetTarget(currentIdleTarget.transform);
-        return Node.Status.SUCCESS;
+        List<int> indexes = new List<int>();
+        for(int i = 0; i < idleTargets.Length; i++)
+        {
+            indexes.Add(i);
+        }
+        while(indexes.Count > 0)
+        {
+            int randomIndex = indexes[UnityEngine.Random.Range(0, indexes.Count)];
+            indexes.Remove(randomIndex);
+            if (idleTargets[randomIndex].CurrentAgent) continue;
+
+            currentIdleTarget = idleTargets[randomIndex];
+            currentIdleTarget.CurrentAgent = this;
+            SetTarget(currentIdleTarget.transform);
+
+            return Node.Status.SUCCESS;
+        }
+
+        return Node.Status.FAILURE;
     }
     private Node.Status IdleAnimation()
     {
         if(currentIdleTarget == null) return Node.Status.FAILURE;
 
-        if(currentIdleTarget.CurrentAgent == this)
-        {
-            return Node.Status.RUNNING;
-        }
-        else if(currentIdleTarget.CurrentAgent == null)
+        if(currentIdleTarget.CurrentAgent == this && !currentIdleTarget.Processing)
         {
             agent.speed = 0f;
             currentIdleTarget.StartIdling(this);
             animator.SetBool(currentIdleTarget.AnimationName, true);
+            return Node.Status.RUNNING;
+        }
+        else if(currentIdleTarget.CurrentAgent == this)
+        {
             return Node.Status.RUNNING;
         }
         else
@@ -161,7 +179,7 @@ public class AIEnemy : AIAgent
     {
         if (currentIdleTarget)
         {
-            currentIdleTarget.StopIdling();
+            currentIdleTarget.StopIdling(this);
             animator.SetBool(currentIdleTarget.AnimationName, false);
             currentIdleTarget = null;
             agent.speed = walkSpeed;
@@ -215,5 +233,8 @@ public class AIEnemy : AIAgent
 
         playerHealth.DealDamage(attackDamage);
     }
-
+    private void OnDestroy()
+    {
+        if (List.Contains(this)) List.Remove(this);
+    }
 }
