@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // TODO: 
-// Walkable areas
-// Check people's belongings like in golden idol. make it like an unknown magic that player would possess
+// -Walkable areas
+// -Check people's belongings like in golden idol. make it like an unknown magic that player would possess
 // it source in the beginning is unknown but later with more info u get u will know that an artifact from isla prudera
 // froze everyone who was involved in the search for it. 
-// To have other living people on islands with whom u can talk. It would be people from the Warrick's fleet that
+// -To have other living people on islands with whom u can talk. It would be people from the Warrick's fleet that
 // did not get cursed.
+// -Footsteps
+// -Water splashes
 public class IslandManager : MonoBehaviour
 {
     [SerializeField] private Terrain islandTerrain = null;

@@ -8772,27 +8772,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 8868799578893869142, guid: 8f9356cd88e18ea44949aa6ac463dac8,
-        type: 3}
-      propertyPath: inventorySize
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8868799578893869142, guid: 8f9356cd88e18ea44949aa6ac463dac8,
-        type: 3}
-      propertyPath: starterItems.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8868799578893869142, guid: 8f9356cd88e18ea44949aa6ac463dac8,
-        type: 3}
-      propertyPath: starterItems.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: adf21e34a5e406a44b9abdf1494505eb,
-        type: 2}
-    - target: {fileID: 8868799578893869142, guid: 8f9356cd88e18ea44949aa6ac463dac8,
-        type: 3}
-      propertyPath: inventoryAnchors.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -4,21 +4,21 @@ using UnityEngine;
 public class PlayerEquipment : MonoBehaviour
 {
     [SerializeField] private int inventorySize = 2;
-    [SerializeField] private Item[] starterItems = null;
+    [SerializeField] private ItemTail[] starterItems = null;
     [SerializeField] private Transform[] inventoryAnchors = null;
 
-    private Action<Item> onEquippedChanged = null;
+    private Action<ItemTail> onEquippedChanged = null;
 
-    private Item[] inventory = null;
-    private Item equipped = null;
-    public Item Equipped => equipped;
+    private ItemTail[] inventory = null;
+    private ItemTail equipped = null;
+    public ItemTail Equipped => equipped;
     private void Start()
     {
         SetupInventory();
     }
     private void SetupInventory()
     {
-        inventory = new Item[inventorySize];
+        inventory = new ItemTail[inventorySize];
         for (int i = 0; i < inventorySize; i++)
         {
             inventory[i] = null;
@@ -42,7 +42,7 @@ public class PlayerEquipment : MonoBehaviour
             EquipToggle(inventory[1]);
         }
     }
-    public void Equip(Item item)
+    public void Equip(ItemTail item)
     {
         if(equipped != item)
         {
@@ -54,12 +54,12 @@ public class PlayerEquipment : MonoBehaviour
             Invoke_OnEquippedChanged();
         }
     }
-    public void EquipToggle(Item item) // unequip if was equipped
+    public void EquipToggle(ItemTail item) // unequip if was equipped
     {
         if (equipped == item) Equip(null);
         else Equip(item);
     }
-    public bool CanEquip(Item item)
+    public bool CanEquip(ItemTail item)
     {
         for (int i = 0; i < inventory.Length; i++)
         {
@@ -75,7 +75,7 @@ public class PlayerEquipment : MonoBehaviour
         }
         return false;
     }
-    public bool TryAdd(Item item)
+    public bool TryAdd(ItemTail item)
     {
         for(int i = 0; i < inventory.Length; i++)
         {
@@ -87,9 +87,9 @@ public class PlayerEquipment : MonoBehaviour
         }
         return false;   
     }
-    private void Add(Item item, int inventoryIndex)
+    private void Add(ItemTail item, int inventoryIndex)
     {
-        Item itemInstance = Item.CreateInstanceOf(item);
+        ItemTail itemInstance = ItemTail.CreateInstanceOf(item);
         inventory[inventoryIndex] = itemInstance;
         UpdateEquipmentVisual();
     }
@@ -107,7 +107,7 @@ public class PlayerEquipment : MonoBehaviour
             }
         }
     }
-    public void PutItemInSlotVisual(Item item)
+    public void PutItemInSlotVisual(ItemTail item)
     {
         for(int i = 0; i < inventoryAnchors.Length; i++)
         {
@@ -121,33 +121,12 @@ public class PlayerEquipment : MonoBehaviour
     }
 
     // Action
-    public void AssignOnEquippedChanged(Action<Item> action)
+    public void AssignOnEquippedChanged(Action<ItemTail> action)
     {
         onEquippedChanged += action;
     }
     private void Invoke_OnEquippedChanged()
     {
         if (onEquippedChanged != null) onEquippedChanged(equipped);
-    }
-    [CreateAssetMenu(menuName = "OTT/New Item")]
-    public class Item : ScriptableObject
-    {
-        [SerializeField] private string itemName = "ITEM NAME";
-        [SerializeField] private GameObject meshPrefab = null;
-
-        public GameObject meshObject = null;
-
-        public GameObject MeshPrefab => meshPrefab;
-        public string ItemName => itemName;
-
-        public static Item CreateInstanceOf(Item item)
-        {
-            Item itemInstance = Item.CreateInstance<Item>();
-
-            itemInstance.itemName = item.itemName;
-            itemInstance.meshPrefab = item.meshPrefab;
-            itemInstance.meshObject = item.meshObject;
-            return itemInstance;
-        }
     }
 }

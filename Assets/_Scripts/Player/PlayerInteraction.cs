@@ -32,7 +32,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         equipment.AssignOnEquippedChanged(OnEqippedChanged);
     }
-    private void OnEqippedChanged(PlayerEquipment.Item item)
+    private void OnEqippedChanged(ItemTail item)
     {
         string itemName = item != null ? item.ItemName : string.Empty;
         foreach(PlayerSubinteraction sub in subinteractions)
