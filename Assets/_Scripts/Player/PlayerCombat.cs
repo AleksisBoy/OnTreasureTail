@@ -159,7 +159,7 @@ public class PlayerCombat : PlayerSubinteraction
 
         foreach(AIEnemy enemy in enemiesNear)
         {
-            enemy.Health.DealDamage(10f);
+            enemy.Health.DealDamage(attackDamage);
             Debug.Log("damage dealt to " + enemy);
         }
     }

@@ -29,6 +29,10 @@ public class Health : MonoBehaviour
             Call_OnDie();
         }
     }
+    public void Heal(float perc)
+    {
+        hp = Mathf.Clamp(hp + maxHealth * perc, 0, maxHealth);
+    }
     public bool IsDead()
     {
         return hp <= 0f;

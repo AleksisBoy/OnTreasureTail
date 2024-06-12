@@ -11,6 +11,7 @@ using UnityEngine;
 // did not get cursed.
 // -Footsteps
 // -Water splashes
+// -Fog of war
 public class IslandManager : MonoBehaviour
 {
     [SerializeField] private Terrain islandTerrain = null;
@@ -23,10 +24,12 @@ public class IslandManager : MonoBehaviour
     [SerializeField] private Transform[] buriedObjects = null;
     [SerializeField] private float diggingDistanceRestrictionModifier = 4f;
 
+    private Vector3 startPosition = Vector3.zero;
     private List<Vector3> diggingPositions = new List<Vector3>();
     private TerrainData initialTerrainData = null;
     public int[] SandLayerIndex => sandLayerIndex;
     public Terrain Terrain => islandTerrain;
+    public Vector3 StartPosition => startPosition;
 
     private List<InfoSO> info = new List<InfoSO>();
     private List<IInteractable> interactables = new List<IInteractable>();
@@ -46,6 +49,7 @@ public class IslandManager : MonoBehaviour
     }
     private void Start()
     {
+        startPosition = PlayerInteraction.Instance.transform.position; 
         informationBar.BuildGridViewport();
 
         foreach(Transform buried in buriedObjects)

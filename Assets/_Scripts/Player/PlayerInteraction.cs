@@ -31,6 +31,7 @@ public class PlayerInteraction : MonoBehaviour
             sub.Set(animator, movement, view);
         }
         equipment.AssignOnEquippedChanged(OnEqippedChanged);
+        Health.AssignOnDie(OnDeath);
     }
     private void OnEqippedChanged(ItemTail item)
     {
@@ -105,6 +106,12 @@ public class PlayerInteraction : MonoBehaviour
         }
         movement.enabled = !rideBoat;
     }
+    private void OnDeath()
+    {
+        Health.Heal(1);
+        transform.position = IslandManager.Instance.StartPosition;
+    }
+    // Setters
     public void SetCombatAnimator(bool state)
     {
         animator.SetLayerWeight(animator.GetLayerIndex("Ground"), state ? 0f : 1f);
@@ -116,10 +123,8 @@ public class PlayerInteraction : MonoBehaviour
         view.enabled = state;
         this.enabled = state;
     }
-    public PlayerCamera GetPlayerCamera()
-    {
-        return view;
-    }
+    // Getters
+    public PlayerCamera PlayerCamera => view;
     public PlayerMovement Movement => movement;
     public Animator Animator => animator;
     public Transform RightHand => rightHandTransform;

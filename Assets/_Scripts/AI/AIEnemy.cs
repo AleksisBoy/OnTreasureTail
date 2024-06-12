@@ -28,6 +28,7 @@ public class AIEnemy : AIAgent
     {
         if (!List.Contains(this)) List.Add(this);
         health = GetComponent<Health>();
+        health.AssignOnDie(OnDeath);
 
         base.Awake();
 
@@ -236,6 +237,11 @@ public class AIEnemy : AIAgent
         if (distance > closeDistance) return; 
 
         playerHealth.DealDamage(attackDamage);
+    }
+    private void OnDeath()
+    {
+        Destroy(gameObject);
+        enabled = false;
     }
     private void OnDestroy()
     {

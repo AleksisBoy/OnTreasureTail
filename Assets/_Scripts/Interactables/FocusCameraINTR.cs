@@ -69,7 +69,7 @@ public class FocusCameraINTR : Interactable, IInteractable, ITailable
     {
         focusCamera.transform.position = alignTarget.position;
         focusCamera.transform.rotation = alignTarget.rotation;
-        if (alignTarget == PlayerInteraction.Instance.GetPlayerCamera().transform)
+        if (alignTarget == PlayerInteraction.Instance.PlayerCamera.transform)
         {
             // on aligned to back to player camera
             focusCamera.gameObject.SetActive(false);
@@ -144,7 +144,7 @@ public class FocusCameraINTR : Interactable, IInteractable, ITailable
     public void Close()
     {
         focusCamera.cullingMask = InternalSettings.Get.DefaultCameraMask;
-        alignTarget = PlayerInteraction.Instance.GetPlayerCamera().transform;
+        alignTarget = PlayerInteraction.Instance.PlayerCamera.transform;
         initialPosition = focusCamera.transform.position;
         initialRotation = focusCamera.transform.rotation;
         align = 0f;
