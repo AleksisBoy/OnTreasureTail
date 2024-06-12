@@ -5,20 +5,24 @@ using UnityEngine;
 public abstract class PlayerSubinteraction : MonoBehaviour
 {
     [SerializeField] private string itemDependantName = string.Empty;
-    [SerializeField] protected Animator animator = null;
     [SerializeField] private int animatorLayerIndex = -1;
 
+    protected Animator animator = null;
     public string ItemName => itemDependantName;
-    public virtual void Set(params object[] setList)
+    public virtual void Set(Animator animator, params object[] setList)
     {
-
+        this.animator = animator;
     }
     protected virtual void OnEnable()
     {
-        animator.SetLayerWeight(animatorLayerIndex, 1f);
+        if (animatorLayerIndex < 0) return;
+
+        animator?.SetLayerWeight(animatorLayerIndex, 1f);
     }
     protected virtual void OnDisable()
     {
-        animator.SetLayerWeight(animatorLayerIndex, 0f);
+        if (animatorLayerIndex < 0) return;
+
+        animator?.SetLayerWeight(animatorLayerIndex, 0f);
     }
 }

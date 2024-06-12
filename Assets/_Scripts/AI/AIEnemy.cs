@@ -25,6 +25,7 @@ public class AIEnemy : AIAgent
     {
         base.Awake();
 
+        // Checkers
         Leaf isTriggered = new Leaf("Is Triggered", IsTriggered);
         Inverter isNotTriggered = new Inverter("Is Not Triggered");
         isNotTriggered.AddChild(isTriggered);
@@ -50,7 +51,6 @@ public class AIEnemy : AIAgent
 
         DepSequence beIdle = new DepSequence("Idle Behaviour", beIdleCondition, agent);
 
-        Leaf goToIdleTarget = new Leaf("Go to Idle Target", GoToIdleTarget);
         Leaf doIdleAnimation = new Leaf("Idle Animation", IdleAnimation);
 
         Selector findIdleTarget = new Selector("Find Idle Target");
@@ -103,7 +103,7 @@ public class AIEnemy : AIAgent
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        animator.SetFloat("Speed", agent.velocity.magnitude);
+        animator.SetFloat("Speed", agent.speed);
     }
     private Node.Status CanSeePlayer()
     {
@@ -125,12 +125,6 @@ public class AIEnemy : AIAgent
             return seePlayer == SeePlayerState.SeePlayer ? Node.Status.SUCCESS : Node.Status.FAILURE;
         }
     }
-    private Node.Status GoToIdleTarget()
-    {
-        if (currentIdleTarget == null) return Node.Status.FAILURE;
-
-        return GoToLocation(currentIdleTarget.Position);
-    }
     private Node.Status HasIdleTarget()
     {
         return currentIdleTarget != null ? Node.Status.SUCCESS : Node.Status.FAILURE;
@@ -151,6 +145,7 @@ public class AIEnemy : AIAgent
         }
         else if(currentIdleTarget.CurrentAgent == null)
         {
+            agent.speed = 0f;
             currentIdleTarget.StartIdling(this);
             animator.SetBool(currentIdleTarget.AnimationName, true);
             return Node.Status.RUNNING;
@@ -169,6 +164,7 @@ public class AIEnemy : AIAgent
             currentIdleTarget.StopIdling();
             animator.SetBool(currentIdleTarget.AnimationName, false);
             currentIdleTarget = null;
+            agent.speed = walkSpeed;
         }
         else
         {

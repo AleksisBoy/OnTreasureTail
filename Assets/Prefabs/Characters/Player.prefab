@@ -372,6 +372,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2049586523793054034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2029030394179718271}
+  m_Layer: 6
+  m_Name: InventorySlot2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2029030394179718271
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049586523793054034}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0.109, y: 0.28, z: 0.128}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7031439686212297795}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2611068879638638417
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,6 +587,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8688708049746453848}
+  - {fileID: 2029030394179718271}
   m_Father: {fileID: 1839551508568496196}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3819225475097351330
@@ -799,9 +831,9 @@ MonoBehaviour:
   view: {fileID: 0}
   subinteractions:
   - {fileID: 3225385572864564303}
+  - {fileID: 8766013707428227383}
   equipment: {fileID: 8868799578893869142}
   playerHealth: {fileID: 4054690041552130729}
-  combat: {fileID: 8766013707428227383}
 --- !u!114 &8868799578893869142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -815,9 +847,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventorySize: 2
-  starterItems: []
+  starterItems:
+  - {fileID: 11400000, guid: adf21e34a5e406a44b9abdf1494505eb, type: 2}
+  - {fileID: 11400000, guid: cd9402dbd4e4d3d469faf61d85e6238c, type: 2}
   inventoryAnchors:
   - {fileID: 8688708049746453848}
+  - {fileID: 2029030394179718271}
 --- !u!114 &3225385572864564303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,7 +866,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDependantName: Shovel
-  animator: {fileID: 7576676028293474202}
   animatorLayerIndex: 3
   digInput: 102
   diggingRadius: 0.5
@@ -862,7 +896,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56bfa3d3e47b2414aa90c4306eeb51a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemDependantName: Sword
+  animatorLayerIndex: -1
   combatSpeed: 2.5
+  combatSprintSpeed: 3.4
 --- !u!1 &7499727931088559446
 GameObject:
   m_ObjectHideFlags: 0

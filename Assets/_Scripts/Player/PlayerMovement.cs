@@ -36,11 +36,10 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 lastPosition = Vector3.zero;
     public float velocityFloat = 0f;
     public bool Grounded => grounded;
-    public void Set(Terrain terrain, Animator animator, PlayerCombat combat, PlayerCamera playerCamera)
+    public void Set(Terrain terrain, Animator animator, PlayerCamera playerCamera)
     {
         this.terrain = terrain;
         this.animator = animator;
-        this.combat = combat;
         this.playerCamera = playerCamera;
 
         lastPosition = transform.position;
@@ -237,7 +236,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Next position is inside environment object
-            Collider[] colls = Physics.OverlapSphere(desiredPosition, playerRadius, InternalSettings.Get.EnvironmentMask);
+            Collider[] colls = Physics.OverlapSphere(desiredPosition, playerRadius, LayerMask.NameToLayer("Environment"));
 
             if (colls.Length > 0) desiredPosition = transform.position;
         }
@@ -246,20 +245,25 @@ public class PlayerMovement : MonoBehaviour
     private float GetCurrentSpeedInput()
     {
         // Setting current speed depending on grounded
+        bool sprinting = Input.GetKey(KeyCode.LeftShift);
         float currentSpeed;
         if (combat.InCombat())
         {
-            return combat.Speed;
+            currentSpeed = sprinting ? combat.SprintSpeed : combat.Speed;
         }
-        if (grounded)
+        else if (grounded)
         {
-            currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+            currentSpeed = sprinting ? runSpeed : walkSpeed;
         }
         else 
         {
-            currentSpeed = Input.GetKey(KeyCode.LeftShift) ? swimSprintSpeed : swimSpeed;
+            currentSpeed = sprinting ? swimSprintSpeed : swimSpeed;
         }
         return currentSpeed;
+    }
+    public void SetCombat(PlayerCombat combat)
+    {
+        this.combat = combat;
     }
     private void OnDisable()
     {

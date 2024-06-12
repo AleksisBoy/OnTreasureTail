@@ -43,8 +43,17 @@ public class AIAgent : MonoBehaviour
     {
         if (target)
         {
+            //transform.position += transform.forward * walkSpeed * Time.fixedDeltaTime;
+            //transform.position += (agent.path.corners[0] - transform.position).normalized * Time.fixedDeltaTime;
             agent.SetDestination(target.position);
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation((target.position - transform.position).normalized, Vector3.up), rotationSpeed * Time.fixedDeltaTime);
+        }
+    }
+    private void Update()
+    {
+        if (target && agent.path.corners.Length > 1)
+        {
+            transform.position += (agent.path.corners[1] - transform.position).normalized * walkSpeed * Time.deltaTime;
         }
     }
     protected Node.Status SetTarget(Transform newTarget)
@@ -73,6 +82,7 @@ public class AIAgent : MonoBehaviour
         float distance = Vector3.Distance(transform.position, target.position);
         if (distance < closeDistance)
         {
+            target = null;
             return Node.Status.SUCCESS;
         }
         else if (Vector3.Distance(agent.pathEndPosition, target.position) >= closeDistance)
@@ -142,7 +152,7 @@ public class AIAgent : MonoBehaviour
         {
             Prebehave();
             status = tree.Process();
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
     private void Call_OnTargetChanged()
@@ -164,5 +174,7 @@ public class AIAgent : MonoBehaviour
             Gizmos.DrawLine(transform.position + eyeOffset, transform.position + (Vector3.Lerp(transform.right, -transform.forward, -canSeeRange) * lookDistance) + eyeOffset);
             Gizmos.DrawLine(transform.position + eyeOffset, transform.position + (Vector3.Lerp(-transform.right, -transform.forward, -canSeeRange) * lookDistance) + eyeOffset);
         }
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(transform.position, closeDistance);
     }
 }

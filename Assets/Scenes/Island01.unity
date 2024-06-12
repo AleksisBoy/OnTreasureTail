@@ -408,7 +408,7 @@ GameObject:
   - component: {fileID: 183687566}
   - component: {fileID: 183687565}
   - component: {fileID: 183687564}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Island01Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}

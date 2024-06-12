@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   focusedCameraMask:
     serializedVersion: 2
-    m_Bits: 1463
+    m_Bits: 439
   defaultCameraMask:
     serializedVersion: 2
     m_Bits: 4294967295

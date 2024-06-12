@@ -46,7 +46,7 @@ public class PlayerEquipment : MonoBehaviour
     {
         if(equipped != item)
         {
-            if(item == null && equipped != null)
+            if(equipped != null)
             {
                 PutItemInSlotVisual(equipped);
             }

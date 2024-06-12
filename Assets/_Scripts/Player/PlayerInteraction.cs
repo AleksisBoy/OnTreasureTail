@@ -12,7 +12,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerSubinteraction[] subinteractions = null;
     [SerializeField] private PlayerEquipment equipment = null;
     [SerializeField] private Health playerHealth = null;
-    [SerializeField] private PlayerCombat combat = null;
+    //[SerializeField] private PlayerCombat combat = null;
 
     private Terrain terrain = null;
     private RideableBoat boat = null;
@@ -30,20 +30,21 @@ public class PlayerInteraction : MonoBehaviour
         foreach(var sub in subinteractions)
         {
             sub.enabled = false;
-            sub.Set(movement);
+            sub.Set(animator, movement, view);
         }
         equipment.AssignOnEquippedChanged(OnEqippedChanged);
     }
     private void OnEqippedChanged(PlayerEquipment.Item item)
     {
+        string itemName = item != null ? item.ItemName : string.Empty;
         foreach(PlayerSubinteraction sub in subinteractions)
         {
-            if (item != null && sub.ItemName == item.ItemName && !sub.enabled)
+            if (item != null && sub.ItemName == itemName && !sub.enabled)
             {
                 sub.enabled = true;
                 item.meshObject.transform.SetParent(rightHandTransform, false);
             }
-            else if((item == null && sub.enabled) || (sub.ItemName != item.ItemName && sub.enabled))
+            else if((item == null && sub.enabled) || (sub.ItemName != itemName && sub.enabled))
             {
                 sub.enabled = false;
             }
@@ -52,8 +53,7 @@ public class PlayerInteraction : MonoBehaviour
     private void Start()
     {
         terrain = IslandManager.Instance.Terrain;
-        movement.Set(terrain, animator, combat, view);
-        combat.Set(view);
+        movement.Set(terrain, animator, view);
     }
     private void Update()
     {

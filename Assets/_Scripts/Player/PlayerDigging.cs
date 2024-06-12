@@ -18,8 +18,9 @@ public class PlayerDigging : PlayerSubinteraction
     {
         terrain = IslandManager.Instance.Terrain;
     }
-    public override void Set(params object[] setList)
+    public override void Set(Animator animator, params object[] setList)
     {
+        base.Set(animator, setList);
         foreach (var item in setList)
         {
             if(item as PlayerMovement)
