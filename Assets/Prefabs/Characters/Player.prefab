@@ -197,14 +197,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 662875962824026799}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30761784, y: -0, z: -0.000000007450581, w: 0.95151}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.1679998, y: 0.7045199, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 258195075214548290}
   m_Father: {fileID: 1839551508568496196}
-  m_LocalEulerAnglesHint: {x: 35.831, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7428581694442738158
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -897,16 +897,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDependantName: Sword
-  animatorLayerIndex: -1
+  animatorLayerIndex: 4
+  attackImpactTransform: {fileID: 258195075214548290}
   combatLockRadius: 10
   combatSpeed: 2.5
   combatSprintSpeed: 3.4
+  attackInput: 102
+  attackDamage: 30
+  attackCooldown: 0.3
+  attackAnimations: 2
   evadeSpeed: 3
   evadeDistance: 10
   baseAgility: 100
-  sprintAgility: 1
+  sprintAgility: 7
+  attackAgility: 15
+  evadeAgility: 20
   restoreAgilityTimer: 1
-  restoreAgilityModifier: 10
+  restoreAgilityModifier: 25
 --- !u!1 &7499727931088559446
 GameObject:
   m_ObjectHideFlags: 0

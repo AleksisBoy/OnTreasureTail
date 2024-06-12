@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Shovel
   m_EditorClassIdentifier: Assembly-CSharp::PlayerEquipment/Item
   itemName: Shovel
+  gripRotation: {x: 321.8002, y: 172.05733, z: 215.3115}
   meshPrefab: {fileID: 8724401702122184120, guid: 2ecac53a8e7f57c4dbd927d41576dad2,
     type: 3}
   meshObject: {fileID: 0}

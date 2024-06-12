@@ -40,6 +40,7 @@ public class PlayerInteraction : MonoBehaviour
             if (item != null && sub.ItemName == itemName && !sub.enabled)
             {
                 sub.enabled = true;
+                rightHandTransform.localEulerAngles = item.GripRotation;
                 item.meshObject.transform.SetParent(rightHandTransform, false);
             }
             else if((item == null && sub.enabled) || (sub.ItemName != itemName && sub.enabled))

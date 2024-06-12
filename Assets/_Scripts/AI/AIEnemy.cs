@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Health))]
 public class AIEnemy : AIAgent
 {
     [Header("AIEnemy")]
@@ -9,6 +10,8 @@ public class AIEnemy : AIAgent
     [SerializeField] private float cooldown = 2f;
 
     private float timeOfLastAttack = 0f;
+    private Health health;
+    public Health Health => health;
 
     private AIIdleTarget currentIdleTarget = null;
     private SeePlayerState seePlayer = SeePlayerState.DidNotCheck;
@@ -24,6 +27,7 @@ public class AIEnemy : AIAgent
     protected override void Awake()
     {
         if (!List.Contains(this)) List.Add(this);
+        health = GetComponent<Health>();
 
         base.Awake();
 

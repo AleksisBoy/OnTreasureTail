@@ -27,7 +27,7 @@ public class PlayerEquipment : MonoBehaviour
         {
             if (i >= inventorySize) return;
 
-            inventory[i] = starterItems[i];
+            Add(starterItems[i], i);
         }
         UpdateEquipmentVisual();
     }
@@ -97,7 +97,7 @@ public class PlayerEquipment : MonoBehaviour
     {
         for (int i = 0; i < inventory.Length; i++)
         {
-            if (inventory[i].meshObject != null) continue;
+            if (inventory[i] == null || inventory[i].meshObject != null) continue;
 
             inventory[i].meshObject = Instantiate(inventory[i].MeshPrefab, inventoryAnchors[i]);
             inventory[i].meshObject.layer = InternalSettings.Get.PlayerMask;

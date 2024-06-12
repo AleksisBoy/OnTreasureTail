@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class PlayerSubinteraction : MonoBehaviour
 {
+    [Header("Subinteraction")]
     [SerializeField] private string itemDependantName = string.Empty;
     [SerializeField] private int animatorLayerIndex = -1;
 

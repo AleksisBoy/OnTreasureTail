@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: Assembly-CSharp::PlayerEquipment/Item
   itemName: Sword
+  gripRotation: {x: 190, y: 0, z: 0}
   meshPrefab: {fileID: 8724401702122184120, guid: 7f6421250cafd4046bd4d2023fb4bc26,
     type: 3}
   meshObject: {fileID: 0}

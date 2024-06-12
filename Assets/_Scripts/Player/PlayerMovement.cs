@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     private bool sloping = false; 
     private bool grounded = false; 
     private bool jumping = false; 
-    private bool evading = false; 
+    private bool evading = false;
 
     private float process = 0f; 
     private Vector3 lastPosition = Vector3.zero;
@@ -192,13 +192,13 @@ public class PlayerMovement : MonoBehaviour
     }
     private bool EvadeInput(float horizontalInput, float verticalInput, Vector3 forwardDirection)
     {
-        if (horizontalInput == 0f && verticalInput == 0f)
+        if ((horizontalInput == 0f && verticalInput == 0f))
         {
             evading = false;
             return false;
         }
 
-        if (!evading && grounded && Input.GetKeyDown(KeyCode.Space))
+        if (!evading && grounded && Input.GetKeyDown(KeyCode.Space) && combat.TryEvade())
         {
             evading = true;
             process = 0f;

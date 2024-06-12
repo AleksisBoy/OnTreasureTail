@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerDigging : PlayerSubinteraction
 {
+    [Header("Digging")]
     [SerializeField] private KeyCode digInput = KeyCode.F;
     [SerializeField] private float diggingRadius = 0.5f;
     [SerializeField] private float diggingHeightDelta = -0.00025f;

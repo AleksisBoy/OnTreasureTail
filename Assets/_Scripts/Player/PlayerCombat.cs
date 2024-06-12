@@ -4,20 +4,29 @@ using UnityEngine;
 public class PlayerCombat : PlayerSubinteraction
 {
     [Header("Combat")]
+    [SerializeField] private Transform attackImpactTransform = null;
     [SerializeField] private float combatLockRadius = 10f;
     [SerializeField] private float combatSpeed = 3f;
     [SerializeField] private float combatSprintSpeed = 3f;
+    [Header("Attacks")]
+    [SerializeField] private KeyCode attackInput = KeyCode.F;
+    [SerializeField] private float attackDamage = 30f;
+    [SerializeField] private float attackCooldown = 0.3f;
+    [SerializeField] private int attackAnimations = 2;
     [Header("Evasion")]
     [SerializeField] private float evadeSpeed = 3f;
     [SerializeField] private float evadeDistance = 20f;
     [Header("Agility")]
     [SerializeField] private float baseAgility = 100f;
     [SerializeField] private float sprintAgility = 1f;
+    [SerializeField] private float attackAgility = 20f;
+    [SerializeField] private float evadeAgility = 20f;
     [SerializeField] private float restoreAgilityTimer = 1f;
     [SerializeField] private float restoreAgilityModifier = 10f;
 
     private float agility = 100f;
     private float lastAgilityUse = 0f;
+    private float lastAttackTime = 0f;
 
     private PlayerCamera playerCamera = null;
     private AIEnemy target = null;
@@ -37,7 +46,7 @@ public class PlayerCombat : PlayerSubinteraction
             return combatSprintSpeed;
         }
     }
-    private float Agility
+    private float Agility // decrease agility on evade
     {
         get
         {
@@ -67,10 +76,6 @@ public class PlayerCombat : PlayerSubinteraction
         }
         ResetAgility();
     }
-    private void Start()
-    {
-        CombatManager.AssignOnCombatEnded(ResetAgility);
-    }
     public void SetTarget(AIEnemy target)
     {
         this.target = target;
@@ -82,19 +87,38 @@ public class PlayerCombat : PlayerSubinteraction
     private void Update()
     {
         ToggleCameraLockInput();
-        if(Agility < baseAgility && Time.time - lastAgilityUse > restoreAgilityTimer)
+        AttackInput();
+        AgilityRestoreProcess();
+    }
+
+    private void AgilityRestoreProcess()
+    {
+        if (Agility < baseAgility && Time.time - lastAgilityUse > restoreAgilityTimer)
         {
             Agility += Time.deltaTime * restoreAgilityModifier;
         }
     }
+
+    private void AttackInput()
+    {
+        if (Time.time - lastAttackTime < attackCooldown) return;
+        if (Agility < attackAgility) return;
+
+        if (Input.GetKeyDown(attackInput))
+        {
+            lastAttackTime = Time.time;
+            lastAgilityUse = Time.time;
+            Agility -= attackAgility;
+            animator.SetInteger("AttackAnim", Random.Range(0, attackAnimations));
+        }
+    }
+
     private void OnGUI()
     {
         GUI.Box(new Rect(30f, 30f, 100f, 30f), string.Format("{0:0}", Agility), InternalSettings.Get.DebugStyle);
     }
     private void ToggleCameraLockInput()
     {
-        //if (!CombatManager.Ongoing) return;
-
         if (Input.GetKeyDown(KeyCode.Q))
         {
             ToggleCombatLock();
@@ -102,13 +126,13 @@ public class PlayerCombat : PlayerSubinteraction
     }
     private void ToggleCombatLock()
     {
-        if (target != null)
+        if (target == null)
         {
-            EndCombat();
+            StartCombat();
         }
         else
         {
-            StartCombat();
+            EndCombat();
         }
     }
 
@@ -117,22 +141,42 @@ public class PlayerCombat : PlayerSubinteraction
         List<AIEnemy> enemiesAround = CombatManager.GetEnemiesInRadius(transform.position, combatLockRadius);
         if (enemiesAround.Count == 0) return;
 
-        PlayerInteraction.Instance.SetCombatAnimator(true);
+        animator.SetBool("CombatLocked", true);
         AIEnemy enemy = enemiesAround[0];
         SetTarget(enemy);
         playerCamera.LockCameraOn(enemy.transform);
     }
     private void EndCombat()
     {
-        PlayerInteraction.Instance.SetCombatAnimator(false);
+        animator?.SetBool("CombatLocked", false);
         SetTarget(null);
         playerCamera?.UnlockCameraFromTarget();
     }
+    public void AnimationEvent_AttackImpact()
+    {
+        List<AIEnemy> enemiesNear = CombatManager.GetEnemiesInRadius(attackImpactTransform.position, 1f);
+        if (enemiesNear.Count == 0) return;
 
-
+        foreach(AIEnemy enemy in enemiesNear)
+        {
+            enemy.Health.DealDamage(10f);
+            Debug.Log("damage dealt to " + enemy);
+        }
+    }
     public bool InCombat()
     {
         return target != null;
+    }
+    public bool TryEvade()
+    {
+        bool didEvade = agility >= evadeAgility;
+        if (didEvade)
+        {
+            Agility -= evadeAgility;
+            lastAgilityUse = Time.time;
+        }
+
+        return didEvade;
     }
     protected override void OnEnable()
     {
