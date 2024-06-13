@@ -8,8 +8,13 @@ public class AIEnemy : AIAgent
     [SerializeField] private AIIdleTarget[] idleTargets = null;
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float cooldown = 2f;
+    [SerializeField] private float alertTimer = 15f;
 
     private float timeOfLastAttack = 0f;
+    private bool alerted = false;
+    private float alertTime = 0f;
+    private Transform lastPlayerSeenTransform = null;
+
     private Health health;
     public Health Health => health;
 
@@ -24,18 +29,23 @@ public class AIEnemy : AIAgent
         SeePlayer,
         DidNotCheck
     }
-    protected override void Awake()
+    private void EnemySetup()
     {
         if (!List.Contains(this)) List.Add(this);
         health = GetComponent<Health>();
         health.AssignOnDie(OnDeath);
-
+        lastPlayerSeenTransform = new GameObject().transform;
+        lastPlayerSeenTransform.name = "Last Player Seen for " + name;
+    }
+    protected override void Awake()
+    {
+        EnemySetup();
         base.Awake();
 
         // Checkers
-        Leaf isTriggered = new Leaf("Is Triggered", IsTriggered);
-        Inverter isNotTriggered = new Inverter("Is Not Triggered");
-        isNotTriggered.AddChild(isTriggered);
+        Leaf isAlert = new Leaf("Is Alert", IsAlert);
+        Inverter isNotAlerted = new Inverter("Is Not Alerted");
+        isNotAlerted.AddChild(isAlert);
 
         Leaf canSeePlayer = new Leaf("Can See player", CanSeePlayer);
         Inverter cannotSeePlayer = new Inverter("Cannot see player");
@@ -53,7 +63,7 @@ public class AIEnemy : AIAgent
         BehaviourTree beIdleCondition = new BehaviourTree("Dependancy for be idle");
         Sequence beIdleConditions = new Sequence("dependancyBeIdleSequence");
         beIdleConditions.AddChild(cannotSeePlayer);
-        beIdleConditions.AddChild(isNotTriggered);
+        beIdleConditions.AddChild(isNotAlerted);
         beIdleCondition.AddChild(beIdleConditions);
 
         DepSequence beIdle = new DepSequence("Idle Behaviour", beIdleCondition, agent);
@@ -72,6 +82,9 @@ public class AIEnemy : AIAgent
         beIdle.AddChild(doIdleAnimation);
 
         // Chase Player DepSequence
+        Leaf setPlayerTarget = new Leaf("Set Player target", SetPlayerTarget);
+        Leaf attackPlayer = new Leaf("Attack Player", AttackPlayer);
+
         BehaviourTree dependancyChasePlayer = new BehaviourTree("Dependancy chase player");
         Sequence dependancyChasePlayerSequence = new Sequence("dependancyChasePlayerSequence");
         dependancyChasePlayerSequence.AddChild(isNotAttacking);
@@ -79,24 +92,43 @@ public class AIEnemy : AIAgent
         dependancyChasePlayer.AddChild(dependancyChasePlayerSequence);
 
         DepSequence chasePlayer = new DepSequence("Chase player", dependancyChasePlayer, agent);
+
         Selector findPlayerTarget = new Selector("Find Player target");
-        Leaf setPlayerTarget = new Leaf("Set Player target", SetPlayerTarget);
         findPlayerTarget.AddChild(isPlayerTarget);
         findPlayerTarget.AddChild(setPlayerTarget);
-
-        Leaf attackPlayer = new Leaf("Attack Player", AttackPlayer);
 
         chasePlayer.AddChild(findPlayerTarget);
         chasePlayer.AddChild(isCloseToTarget);
         chasePlayer.AddChild(attackPlayer);
 
-        //
+        // Go to last seen player position
+        Leaf isLastSeenTarget = new Leaf("Is Last seen target", IsLastSeenPlayerTarget);
+        Leaf setLastSeenTarget = new Leaf("Set last seen target", SetLastSeenPlayerTarget);
+
+        BehaviourTree checkLastSeenPositionCondition = new BehaviourTree("Conditions");
+        Sequence checkLastSeenPositionConditions = new Sequence("checkLastSeenPositionConditions");
+        checkLastSeenPositionConditions.AddChild(cannotSeePlayer);
+        checkLastSeenPositionConditions.AddChild(isAlert);
+        checkLastSeenPositionCondition.AddChild(checkLastSeenPositionConditions);
+
+        DepSequence checkLastSeenPosition = new DepSequence("Check last seen player pos", checkLastSeenPositionCondition, agent);
+        
+        Selector findLastSeenTransform = new Selector("Find last seen transform");
+        findLastSeenTransform.AddChild(isLastSeenTarget);
+        findLastSeenTransform.AddChild(setLastSeenTarget);
+
+        checkLastSeenPosition.AddChild(findLastSeenTransform);
+        checkLastSeenPosition.AddChild(isCloseToTarget);
+        // if is close to target -> look around? go around?
+
+        // Reset
         Leaf resetTarget = new Leaf("Reset target", ResetTarget);
 
         // Enemy Behaviour
         Selector behaveEnemy = new Selector("Behave Like Enemy");
         behaveEnemy.AddChild(beIdle);
         behaveEnemy.AddChild(chasePlayer);
+        behaveEnemy.AddChild(checkLastSeenPosition);
         behaveEnemy.AddChild(resetTarget);
 
         tree.AddChild(behaveEnemy);
@@ -112,14 +144,23 @@ public class AIEnemy : AIAgent
         base.FixedUpdate();
         animator.SetFloat("Speed", agent.speed);
     }
+    private void Alert()
+    {
+        alerted = true;
+        alertTime = Time.time;
+        if (currentIdleTarget) StopIdleAnimation();
+    }
     private Node.Status CanSeePlayer()
     {
         if(seePlayer == SeePlayerState.DidNotCheck)
         {
-            Node.Status s = CanSee(PlayerInteraction.Instance.transform.position);
+            Vector3 playerPosition = PlayerInteraction.Instance.transform.position;
+            Node.Status s = CanSee(playerPosition);
             if(s == Node.Status.SUCCESS)
             {
                 seePlayer = SeePlayerState.SeePlayer;
+                lastPlayerSeenTransform.position = playerPosition;
+                Alert();
             }
             else
             {
@@ -164,7 +205,6 @@ public class AIEnemy : AIAgent
 
         if(currentIdleTarget.CurrentAgent == this && !currentIdleTarget.Processing)
         {
-            agent.speed = 0f;
             currentIdleTarget.StartIdling(this);
             animator.SetBool(currentIdleTarget.AnimationName, true);
             return Node.Status.RUNNING;
@@ -184,16 +224,21 @@ public class AIEnemy : AIAgent
     {
         if (currentIdleTarget)
         {
-            currentIdleTarget.StopIdling(this);
-            animator.SetBool(currentIdleTarget.AnimationName, false);
-            currentIdleTarget = null;
-            agent.speed = walkSpeed;
+            StopIdleAnimation();
         }
         else
         {
             throw new System.Exception("No idle target for " + name);
         }
     }
+
+    private void StopIdleAnimation()
+    {
+        currentIdleTarget.StopIdling(this);
+        animator.SetBool(currentIdleTarget.AnimationName, false);
+        ResetTarget();
+    }
+
     protected override Node.Status ResetTarget()
     {
         base.ResetTarget();
@@ -202,9 +247,13 @@ public class AIEnemy : AIAgent
 
         return Node.Status.SUCCESS;
     }
-    private Node.Status IsTriggered()
+    private Node.Status IsAlert()
     {
-        return state == AIState.TRIGGERED ? Node.Status.SUCCESS : Node.Status.FAILURE;
+        if(alerted && Time.time - alertTime > alertTimer)
+        {
+            alerted = false;
+        }
+        return alerted ? Node.Status.SUCCESS : Node.Status.FAILURE;
     }
     private Node.Status IsPlayerTarget()
     {
@@ -212,8 +261,17 @@ public class AIEnemy : AIAgent
     }
     private Node.Status SetPlayerTarget()
     {
-        target = PlayerInteraction.Instance.transform;
+        SetTarget(PlayerInteraction.Instance.transform);
         CombatManager.AddInCombat(this);
+        return Node.Status.SUCCESS;
+    }
+    private Node.Status IsLastSeenPlayerTarget()
+    {
+        return target == lastPlayerSeenTransform ? Node.Status.SUCCESS : Node.Status.FAILURE;
+    }
+    private Node.Status SetLastSeenPlayerTarget()
+    {
+        SetTarget(lastPlayerSeenTransform);
         return Node.Status.SUCCESS;
     }
     private Node.Status IsAttacking()
@@ -226,12 +284,10 @@ public class AIEnemy : AIAgent
         timeOfLastAttack = Time.time;
 
         animator.SetBool("Attacking", true);
-        agent.speed = 0f;
         return Node.Status.SUCCESS;
     }
     public void AnimationEvent_AttackImpact()
     {
-        agent.speed = walkSpeed;
         Health playerHealth = PlayerInteraction.Instance.Health;
         float distance = Vector3.Distance(transform.position, playerHealth.transform.position);
         if (distance > closeDistance) return; 

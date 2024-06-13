@@ -30,6 +30,13 @@ public class AIAgent : MonoBehaviour
         GOING,
         TRIGGERED
     }
+    protected TargetState targetState = TargetState.None;
+    protected enum TargetState
+    {
+        None,
+        InProcess,
+        InTargetRange
+    }
     protected virtual void Awake()
     {
         agent.speed = walkSpeed;
@@ -52,6 +59,8 @@ public class AIAgent : MonoBehaviour
     }
     private void Update()
     {
+        if (targetState == TargetState.InTargetRange) return;
+
         if (target && agent.path.corners.Length > 1)
         {
             transform.position += (agent.path.corners[1] - transform.position).normalized * walkSpeed * Time.deltaTime;
@@ -63,6 +72,7 @@ public class AIAgent : MonoBehaviour
         {
             target = null;
             state = AIState.IDLE;
+            targetState = TargetState.None;
             return Node.Status.FAILURE;
         }
         else
@@ -72,27 +82,33 @@ public class AIAgent : MonoBehaviour
                 Call_OnTargetChanged();
             }
             target = newTarget;
+            targetState = TargetState.InProcess;
+            agent.speed = walkSpeed;
             state = AIState.GOING;
             return Node.Status.SUCCESS;
         }
     }
     protected Node.Status IsCloseToTarget()
     {
+        if (targetState == TargetState.InTargetRange) return Node.Status.SUCCESS;
         if (target == null) return Node.Status.FAILURE;
 
         float distance = Vector3.Distance(transform.position, target.position);
         if (distance < closeDistance)
         {
-            target = null;
+            //target = null;
+            agent.speed = 0f;
+            targetState = TargetState.InTargetRange;
             return Node.Status.SUCCESS;
         }
         else if (Vector3.Distance(agent.pathEndPosition, target.position) >= closeDistance)
         {
-            state = AIState.IDLE;
+            ResetTarget();
             return Node.Status.FAILURE;
         }
         else
         {
+            targetState = TargetState.InProcess;
             return Node.Status.RUNNING;
         }
     }
@@ -136,7 +152,7 @@ public class AIAgent : MonoBehaviour
     }
     protected virtual Node.Status ResetTarget()
     {
-        target = null; 
+        SetTarget(null); 
         return Node.Status.SUCCESS;
     }
     protected virtual void Prebehave()

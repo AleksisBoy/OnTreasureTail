@@ -685,7 +685,7 @@ PrefabInstance:
     - target: {fileID: 7274199749854365298, guid: 981ee39fffc647e44a92d93925b09b50,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1650,6 +1650,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2293517323852219060, guid: 981ee39fffc647e44a92d93925b09b50,
+        type: 3}
+      propertyPath: alertTimer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2293517323852219060, guid: 981ee39fffc647e44a92d93925b09b50,
         type: 3}

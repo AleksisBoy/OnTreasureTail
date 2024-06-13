@@ -28,7 +28,6 @@ public class Node
     {
         foreach (Node n in children) 
         {
-
             n.Reset();
         }
         currentChild = 0;
