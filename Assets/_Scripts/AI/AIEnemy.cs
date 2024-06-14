@@ -9,6 +9,7 @@ public class AIEnemy : AIAgent
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float cooldown = 2f;
     [SerializeField] private float alertTimer = 15f;
+    [SerializeField] private float investigatingSpeed = 2f;
 
     private float timeOfLastAttack = 0f;
     private bool alerted = false;
@@ -32,8 +33,11 @@ public class AIEnemy : AIAgent
     private void EnemySetup()
     {
         if (!List.Contains(this)) List.Add(this);
+
         health = GetComponent<Health>();
         health.AssignOnDie(OnDeath);
+        health.AssignOnDamage(OnDamage);
+
         lastPlayerSeenTransform = new GameObject().transform;
         lastPlayerSeenTransform.name = "Last Player Seen for " + name;
     }
@@ -104,6 +108,7 @@ public class AIEnemy : AIAgent
         // Go to last seen player position
         Leaf isLastSeenTarget = new Leaf("Is Last seen target", IsLastSeenPlayerTarget);
         Leaf setLastSeenTarget = new Leaf("Set last seen target", SetLastSeenPlayerTarget);
+        Leaf offsetLastSeenTarget = new Leaf("Offset last seen target", OffsetLastSeenPlayerTarget);
 
         BehaviourTree checkLastSeenPositionCondition = new BehaviourTree("Conditions");
         Sequence checkLastSeenPositionConditions = new Sequence("checkLastSeenPositionConditions");
@@ -119,6 +124,8 @@ public class AIEnemy : AIAgent
 
         checkLastSeenPosition.AddChild(findLastSeenTransform);
         checkLastSeenPosition.AddChild(isCloseToTarget);
+        checkLastSeenPosition.AddChild(offsetLastSeenTarget);
+        //
         // if is close to target -> look around? go around?
 
         // Reset
@@ -134,10 +141,6 @@ public class AIEnemy : AIAgent
         tree.AddChild(behaveEnemy);
 
         tree.PrintTree();
-    }
-    protected override void Prebehave()
-    {
-        seePlayer = SeePlayerState.DidNotCheck;
     }
     protected override void FixedUpdate()
     {
@@ -220,17 +223,6 @@ public class AIEnemy : AIAgent
             return Node.Status.FAILURE;
         }
     }
-    public void AnimationEvent_IdleActionAnimationFinished()
-    {
-        if (currentIdleTarget)
-        {
-            StopIdleAnimation();
-        }
-        else
-        {
-            throw new System.Exception("No idle target for " + name);
-        }
-    }
 
     private void StopIdleAnimation()
     {
@@ -274,9 +266,25 @@ public class AIEnemy : AIAgent
         SetTarget(lastPlayerSeenTransform);
         return Node.Status.SUCCESS;
     }
+    private Node.Status OffsetLastSeenPlayerTarget()
+    {
+        Vector2 randomPoint = Random.insideUnitCircle * 5f;
+        lastPlayerSeenTransform.position += new Vector3(randomPoint.x, 0f, randomPoint.y);
+        if(target == lastPlayerSeenTransform)
+        {
+            agent.speed = investigatingSpeed;
+            targetState = TargetState.InProcess;
+        }
+        // adjust to terrain height
+        return Node.Status.SUCCESS;
+    }
     private Node.Status IsAttacking()
     {
         return animator.GetBool("Attacking") ? Node.Status.SUCCESS : Node.Status.FAILURE;
+    }
+    private Node.Status IsKnockbacked()
+    {
+        return animator.GetBool("Knockback") ? Node.Status.SUCCESS : Node.Status.FAILURE;
     }
     private Node.Status AttackPlayer()
     {
@@ -286,13 +294,39 @@ public class AIEnemy : AIAgent
         animator.SetBool("Attacking", true);
         return Node.Status.SUCCESS;
     }
+    protected override bool Prebehave()
+    {
+        seePlayer = SeePlayerState.DidNotCheck;
+        return IsKnockbacked() == Node.Status.SUCCESS ? true : false;
+    }
+    // Animation
     public void AnimationEvent_AttackImpact()
     {
         Health playerHealth = PlayerInteraction.Instance.Health;
         float distance = Vector3.Distance(transform.position, playerHealth.transform.position);
-        if (distance > closeDistance) return; 
+        if (distance > closeDistance) return;
 
-        playerHealth.DealDamage(attackDamage);
+        playerHealth.DealDamage(attackDamage, transform.position);
+    }
+    public void AnimationEvent_IdleActionAnimationFinished()
+    {
+        if (currentIdleTarget)
+        {
+            StopIdleAnimation();
+        }
+        else
+        {
+            throw new System.Exception("No idle target for " + name);
+        }
+    }
+    // Health
+    private void OnDamage(Vector3 direction)
+    {
+        Alert();
+        lastPlayerSeenTransform.position = transform.position + direction;
+        transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        SetTarget(null);
+        animator.SetBool("Knockback", true);
     }
     private void OnDeath()
     {
@@ -302,5 +336,6 @@ public class AIEnemy : AIAgent
     private void OnDestroy()
     {
         if (List.Contains(this)) List.Remove(this);
+        if (lastPlayerSeenTransform) Destroy(lastPlayerSeenTransform.gameObject);
     }
 }

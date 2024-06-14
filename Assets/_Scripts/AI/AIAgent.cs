@@ -63,7 +63,7 @@ public class AIAgent : MonoBehaviour
 
         if (target && agent.path.corners.Length > 1)
         {
-            transform.position += (agent.path.corners[1] - transform.position).normalized * walkSpeed * Time.deltaTime;
+            transform.position += (agent.path.corners[1] - transform.position).normalized * agent.speed * Time.deltaTime;
         }
     }
     protected Node.Status SetTarget(Transform newTarget)
@@ -155,9 +155,9 @@ public class AIAgent : MonoBehaviour
         SetTarget(null); 
         return Node.Status.SUCCESS;
     }
-    protected virtual void Prebehave()
+    protected virtual bool Prebehave()
     {
-
+        return false;
     }
     private IEnumerator Behave()
     {
@@ -167,8 +167,9 @@ public class AIAgent : MonoBehaviour
         }
         while (true)
         {
-            Prebehave();
-            status = tree.Process();
+            bool skipBehave = Prebehave();
+            if (!skipBehave) status = tree.Process();
+
             yield return new WaitForSeconds(updateTime);
         }
     }

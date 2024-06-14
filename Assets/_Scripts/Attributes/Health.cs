@@ -10,17 +10,18 @@ public class Health : MonoBehaviour
     private float hp = 0f;
     public float Value => hp;
 
-    private Action onDamage;
+    private Action<Vector3> onDamage;
     private Action onDie;
 
     private void Awake()
     {
         hp = maxHealth;
     }
-    public void DealDamage(float damage)
+    public void DealDamage(float damage, Vector3 actorPosition)
     {
         hp -= damage;
-        Call_OnDamage();
+        Vector3 direction = actorPosition - transform.position;
+        Call_OnDamage(direction.normalized);
 
         if (hp <= 0f)
         {
@@ -37,7 +38,7 @@ public class Health : MonoBehaviour
     {
         return hp <= 0f;
     }
-    public void AssignOnDamage(Action onDamageAction)
+    public void AssignOnDamage(Action<Vector3> onDamageAction)
     {
         onDamage += onDamageAction;
     }
@@ -45,9 +46,9 @@ public class Health : MonoBehaviour
     {
         onDie += onDieAction;
     }
-    private void Call_OnDamage()
+    private void Call_OnDamage(Vector3 direction)
     {
-        if (onDamage != null) onDamage();
+        if (onDamage != null) onDamage(direction);
     }
     private void Call_OnDie()
     {

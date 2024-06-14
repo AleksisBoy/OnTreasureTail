@@ -1654,7 +1654,12 @@ PrefabInstance:
     - target: {fileID: 2293517323852219060, guid: 981ee39fffc647e44a92d93925b09b50,
         type: 3}
       propertyPath: alertTimer
-      value: 8
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2293517323852219060, guid: 981ee39fffc647e44a92d93925b09b50,
+        type: 3}
+      propertyPath: investigatingSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2293517323852219060, guid: 981ee39fffc647e44a92d93925b09b50,
         type: 3}
@@ -2360,6 +2365,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8766013707428227383, guid: 8f9356cd88e18ea44949aa6ac463dac8,
+        type: 3}
+      propertyPath: attackDamage
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8766013707428227383, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
