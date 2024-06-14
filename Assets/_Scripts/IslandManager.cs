@@ -9,7 +9,7 @@ using UnityEngine;
 // froze everyone who was involved in the search for it. 
 // -To have other living people on islands with whom u can talk. It would be people from the Warrick's fleet that
 // did not get cursed.
-// -Footsteps >>
+// !-Footsteps >>
 // -Water splashes
 // -Fog of war
 public class IslandManager : MonoBehaviour

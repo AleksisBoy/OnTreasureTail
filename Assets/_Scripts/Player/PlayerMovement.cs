@@ -306,6 +306,7 @@ public class PlayerMovement : MonoBehaviour
     private void Footstep(Transform footTransform)
     {
         if (Time.time - lastFootstepTime < footstepCooldown) return;
+        // check if the grounf is suitable for creating footstep
 
         if (!Physics.Raycast(footTransform.position, Vector3.down, out RaycastHit hit, 10f, InternalSettings.Get.TerrainMask)) return;
 
