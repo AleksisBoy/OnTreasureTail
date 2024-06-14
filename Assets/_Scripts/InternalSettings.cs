@@ -21,6 +21,9 @@ public class InternalSettings : MonoBehaviour
     [SerializeField] private string statusCompletedWrong = string.Empty;
     [SerializeField] private string statusCompletedCorrect = string.Empty;
     [SerializeField] private string statusEmptyGaps = string.Empty;
+    [Header("Misc")]
+    [SerializeField] private GameObject footStepPrefab = null;
+    [SerializeField] private GameObject diggedNothingPrefab = null;
     [Header("Debug")]
     [SerializeField] private GUIStyle debugStyle = null;
 
@@ -54,6 +57,9 @@ public class InternalSettings : MonoBehaviour
     public string StatusText_EmptyGaps => statusEmptyGaps;
     public string StatusText_CompletedWrong => statusCompletedWrong;
     public string StatusText_CompletedCorrect => statusCompletedCorrect;
+
+    public GameObject FootStepPrefab => footStepPrefab;
+    public GameObject DiggedNothingPrefab => diggedNothingPrefab;
 
     // Debug
     public GUIStyle DebugStyle => debugStyle;

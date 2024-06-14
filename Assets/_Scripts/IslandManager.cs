@@ -9,7 +9,7 @@ using UnityEngine;
 // froze everyone who was involved in the search for it. 
 // -To have other living people on islands with whom u can talk. It would be people from the Warrick's fleet that
 // did not get cursed.
-// -Footsteps
+// -Footsteps >>
 // -Water splashes
 // -Fog of war
 public class IslandManager : MonoBehaviour
@@ -19,7 +19,6 @@ public class IslandManager : MonoBehaviour
     [SerializeField] private InformationBar informationBar = null;
 
     [Header("Digging")]
-    [SerializeField] private GameObject diggedNothingPrefab = null;
     [SerializeField] private Vector3 diggedObjectOffset = Vector3.zero;
     [SerializeField] private Transform[] buriedObjects = null;
     [SerializeField] private float diggingDistanceRestrictionModifier = 4f;
@@ -97,7 +96,7 @@ public class IslandManager : MonoBehaviour
         // Create object on nothing digged
         if (!diggedBuried)
         {
-            GameObject diggedNothing = Instantiate(diggedNothingPrefab, diggedPosition, Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f));
+            GameObject diggedNothing = ObjectPoolingManager.GetObject(InternalSettings.Get.DiggedNothingPrefab, diggedPosition, Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f));
         }
     }
 

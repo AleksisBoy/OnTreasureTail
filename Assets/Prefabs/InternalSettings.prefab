@@ -71,6 +71,10 @@ MonoBehaviour:
   statusCompletedWrong: Contains incorrect fields...
   statusCompletedCorrect: Completed correctly!
   statusEmptyGaps: Some filled gaps missing...
+  footStepPrefab: {fileID: 7027760982426067231, guid: 14afdaa4e8edee241a90b87f7f5d03b6,
+    type: 3}
+  diggedNothingPrefab: {fileID: 3986377353734567161, guid: eba696d9b9ac10348acfbb5282318ae8,
+    type: 3}
   debugStyle:
     m_Name: Debug
     m_Normal:

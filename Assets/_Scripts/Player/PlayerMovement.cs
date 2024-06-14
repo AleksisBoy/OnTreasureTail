@@ -3,6 +3,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float playerRadius = 0.25f;
+    [SerializeField] private Transform rightFootTransform = null;
+    [SerializeField] private Transform leftFootTransform = null;
+    [SerializeField] private float footstepCooldown = 0.1f;
     [Header("Grounded")]
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float runSpeed = 5f;
@@ -35,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     private float process = 0f; 
     private Vector3 lastPosition = Vector3.zero;
     public float velocityFloat = 0f;
+    private float lastFootstepTime = 0f;
     public bool Grounded => grounded;
     public void Set(Terrain terrain, Animator animator, PlayerCamera playerCamera)
     {
@@ -298,6 +302,29 @@ public class PlayerMovement : MonoBehaviour
     public void SetCombat(PlayerCombat combat)
     {
         this.combat = combat;
+    }
+    private void Footstep(Transform footTransform)
+    {
+        if (Time.time - lastFootstepTime < footstepCooldown) return;
+
+        if (!Physics.Raycast(footTransform.position, Vector3.down, out RaycastHit hit, 10f, InternalSettings.Get.TerrainMask)) return;
+
+        Vector3 groundPosition = TailUtil.PositionFlat(footTransform.position);
+        groundPosition.y = terrain.SampleHeight(groundPosition) + terrain.transform.position.y;
+
+        GameObject footstep = ObjectPoolingManager.GetObject(InternalSettings.Get.FootStepPrefab, groundPosition, Quaternion.identity);
+
+        footstep.transform.up = hit.normal;
+        lastFootstepTime = Time.time;
+    }
+    // Animation
+    public void AnimationEvent_FootstepRight()
+    {
+        Footstep(rightFootTransform);
+    }
+    public void AnimationEvent_FootstepLeft()
+    {
+        Footstep(leftFootTransform);
     }
     private void OnDisable()
     {
