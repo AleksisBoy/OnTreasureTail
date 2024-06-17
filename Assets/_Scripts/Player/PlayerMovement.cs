@@ -245,7 +245,7 @@ public class PlayerMovement : MonoBehaviour
         // Update new position with collision check
         Vector3 directionToDesired = (desiredPosition - transform.position).normalized;
         float distanceToDesired = Vector3.Distance(transform.position, desiredPosition);
-        if (Physics.SphereCast(transform.position + new Vector3(0f, playerRadius, 0f), playerRadius, directionToDesired, out RaycastHit mainHit, distanceToDesired))
+        if (Physics.SphereCast(transform.position + new Vector3(0f, playerRadius, 0f), playerRadius, directionToDesired, out RaycastHit mainHit, distanceToDesired, InternalSettings.Get.CollisionMask))
         {
             // Get the value that indicates the facing to the collision (0 - facing in front, 1 - facing sideways)
             float dot = 1f + Vector3.Dot(directionToDesired, mainHit.normal);
@@ -262,7 +262,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 sideOffset = wallDirection * dot * glideModifier;
 
             // Check if side movement does not hit other obstacles
-            if (Physics.SphereCast(transform.position + collisionOffset, playerRadius, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.EnvironmentMask))
+            if (Physics.SphereCast(transform.position + collisionOffset, playerRadius, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.CollisionMask))
             {
                 // Do not move if there is an obstacle to the side
                 desiredPosition = transform.position;

@@ -6,6 +6,7 @@ public class InternalSettings : MonoBehaviour
     [SerializeField] private LayerMask focusedCameraMask;
     [SerializeField] private LayerMask defaultCameraMask;
     [SerializeField] private LayerMask environmentMask;
+    [SerializeField] private LayerMask collisionMask;
     [SerializeField] private LayerMask terrainMask;
     [SerializeField] private LayerMask walkableMask;
     [SerializeField] private LayerMask playerMask;
@@ -41,6 +42,7 @@ public class InternalSettings : MonoBehaviour
     public LayerMask FocusedCameraMask => focusedCameraMask;
     public LayerMask DefaultCameraMask => defaultCameraMask;
     public LayerMask EnvironmentMask => environmentMask;
+    public LayerMask CollisionMask => collisionMask;
     public LayerMask TerrainMask => terrainMask;
     public LayerMask WalkableMask => walkableMask;
     public LayerMask PlayerMask => LayerMask.NameToLayer("Player");

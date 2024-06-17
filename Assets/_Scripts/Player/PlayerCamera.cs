@@ -88,7 +88,7 @@ public class PlayerCamera : MonoBehaviour
     }
     private void ZoomInput()
     {
-        if (!Input.GetKeyDown(KeyCode.LeftControl)) return;
+        if (!Input.GetKey(KeyCode.LeftControl)) return;
 
         float mouseZoom = -Input.mouseScrollDelta.y;
         if (mouseZoom != 0f)

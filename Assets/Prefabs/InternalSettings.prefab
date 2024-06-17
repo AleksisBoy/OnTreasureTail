@@ -53,6 +53,9 @@ MonoBehaviour:
   environmentMask:
     serializedVersion: 2
     m_Bits: 128
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 1152
   terrainMask:
     serializedVersion: 2
     m_Bits: 256
