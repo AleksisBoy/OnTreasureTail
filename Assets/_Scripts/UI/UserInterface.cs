@@ -9,6 +9,7 @@ public class UserInterface : MonoBehaviour
     [SerializeField] private InfoPopup infoGainedPrefab = null;
     [SerializeField] private IslandProgressPanel progressPanel = null;
     [SerializeField] private RectTransform combatLockUI = null;
+    [SerializeField] private ObjectInteractionBox interactionBox = null;
 
     private Transform combatLockTarget = null;
     private RectTransform RT { get { return (RectTransform)transform; } }
@@ -48,5 +49,10 @@ public class UserInterface : MonoBehaviour
     {
         combatLockTarget = target;
         combatLockUI.gameObject.SetActive(target ? true : false);
+    }
+    public void SetInteractionBox(string text)
+    {
+        ObjectInteractionBox.Text = text;
+        UIManager.Open(interactionBox);
     }
 }
