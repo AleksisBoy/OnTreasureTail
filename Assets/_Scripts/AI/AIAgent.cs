@@ -40,7 +40,7 @@ public class AIAgent : MonoBehaviour
     protected virtual void Awake()
     {
         agent.speed = walkSpeed;
-        updateTime *= UnityEngine.Random.Range(0.8f, 1f);
+        updateTime *= UnityEngine.Random.Range(0.8f, 1.2f);
         tree = new BehaviourTree();
     }
     protected virtual void Start()
@@ -49,17 +49,14 @@ public class AIAgent : MonoBehaviour
     }
     protected virtual void FixedUpdate()
     {
-        if (target)
-        {
-            //transform.position += transform.forward * walkSpeed * Time.fixedDeltaTime;
-            //transform.position += (agent.path.corners[0] - transform.position).normalized * Time.fixedDeltaTime;
-            agent.SetDestination(target.position);
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation((target.position - transform.position).normalized, Vector3.up), rotationSpeed * Time.fixedDeltaTime);
-        }
+        if (!target) return;
+
+        agent.SetDestination(target.position);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation((target.position - transform.position).normalized, Vector3.up), rotationSpeed * Time.fixedDeltaTime);
     }
-    private void Update()
+    protected virtual void Update()
     {
-        if (targetState == TargetState.InTargetRange) return;
+        if (targetState != TargetState.InProcess) return;
 
         if (target && agent.path.corners.Length > 1)
         {
@@ -68,7 +65,7 @@ public class AIAgent : MonoBehaviour
     }
     protected Node.Status SetTarget(Transform newTarget)
     {
-        if(newTarget == null)
+        if (newTarget == null)
         {
             target = null;
             state = AIState.IDLE;
@@ -77,7 +74,7 @@ public class AIAgent : MonoBehaviour
         }
         else
         {
-            if(target != newTarget)
+            if (target != newTarget)
             {
                 Call_OnTargetChanged();
             }
@@ -161,7 +158,7 @@ public class AIAgent : MonoBehaviour
     }
     private IEnumerator Behave()
     {
-        if(tree == null)
+        if (tree == null)
         {
             throw new System.Exception("Behaviour Tree not set for " + name);
         }
@@ -179,10 +176,13 @@ public class AIAgent : MonoBehaviour
     }
     private void OnDrawGizmosSelected()
     {
+        // draw look distance
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, lookDistance);
+
+        // draw view
         Gizmos.color = Color.green;
-        if(canSeeRange >= 0f)
+        if (canSeeRange >= 0f)
         {
             Gizmos.DrawLine(transform.position + eyeOffset, transform.position + (Vector3.Lerp(transform.right, transform.forward, canSeeRange) * lookDistance) + eyeOffset);
             Gizmos.DrawLine(transform.position + eyeOffset, transform.position + (Vector3.Lerp(-transform.right, transform.forward, canSeeRange) * lookDistance) + eyeOffset);
@@ -192,6 +192,8 @@ public class AIAgent : MonoBehaviour
             Gizmos.DrawLine(transform.position + eyeOffset, transform.position + (Vector3.Lerp(transform.right, -transform.forward, -canSeeRange) * lookDistance) + eyeOffset);
             Gizmos.DrawLine(transform.position + eyeOffset, transform.position + (Vector3.Lerp(-transform.right, -transform.forward, -canSeeRange) * lookDistance) + eyeOffset);
         }
+
+        // draw close distance
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position, closeDistance);
     }

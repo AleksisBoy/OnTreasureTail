@@ -1,3 +1,4 @@
+using UnityEditor.Playables;
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
@@ -10,7 +11,6 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private PlayerSubinteraction[] subinteractions = null;
     [SerializeField] private PlayerEquipment equipment = null;
     [SerializeField] private Health playerHealth = null;
-    //[SerializeField] private PlayerCombat combat = null;
 
     private Terrain terrain = null;
     private RideableBoat boat = null;
@@ -32,23 +32,7 @@ public class PlayerInteraction : MonoBehaviour
         }
         equipment.AssignOnEquippedChanged(OnEqippedChanged);
         Health.AssignOnDie(OnDeath);
-    }
-    private void OnEqippedChanged(ItemTail item)
-    {
-        string itemName = item != null ? item.ItemName : string.Empty;
-        foreach(PlayerSubinteraction sub in subinteractions)
-        {
-            if (item != null && sub.ItemName == itemName && !sub.enabled)
-            {
-                sub.enabled = true;
-                rightHandTransform.localEulerAngles = item.GripRotation;
-                item.meshObject.transform.SetParent(rightHandTransform, false);
-            }
-            else if((item == null && sub.enabled) || (sub.ItemName != itemName && sub.enabled))
-            {
-                sub.enabled = false;
-            }
-        }
+        Health.AssignOnDamage(OnDamage);
     }
     private void Start()
     {
@@ -106,6 +90,32 @@ public class PlayerInteraction : MonoBehaviour
         }
         movement.enabled = !rideBoat;
     }
+    private void OnEqippedChanged(ItemTail item)
+    {
+        string itemName = item != null ? item.ItemName : string.Empty;
+        foreach (PlayerSubinteraction sub in subinteractions)
+        {
+            if (item != null && sub.ItemName == itemName && !sub.enabled)
+            {
+                sub.enabled = true;
+                rightHandTransform.localEulerAngles = item.GripRotation;
+                item.meshObject.transform.SetParent(rightHandTransform, false);
+            }
+            else if ((item == null && sub.enabled) || (sub.ItemName != itemName && sub.enabled))
+            {
+                sub.enabled = false;
+            }
+        }
+    }
+    private void OnGUI()
+    {
+        GUI.Box(new Rect(30f, 70f, 100f, 30f), string.Format("{0:0}", Health.Value), InternalSettings.Get.DebugStyle);
+    }
+    // Health actions 
+    private void OnDamage(Vector3 direction)
+    {
+        animator.SetTrigger("Damaged");
+    }
     private void OnDeath()
     {
         Health.Heal(1);
@@ -124,6 +134,11 @@ public class PlayerInteraction : MonoBehaviour
         this.enabled = state;
     }
     // Getters
+    public bool IsAttacking()
+    {
+        //if (!movement.GetCombat().enabled) return false;
+        return movement.GetCombat().IsAttacking();
+    }
     public PlayerCamera PlayerCamera => view;
     public PlayerMovement Movement => movement;
     public Animator Animator => animator;

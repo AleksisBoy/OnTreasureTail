@@ -12,6 +12,7 @@ using UnityEngine;
 // !-Footsteps >>
 // -Water splashes
 // -Fog of war
+// distance to camera target setter
 public class IslandManager : MonoBehaviour
 {
     [SerializeField] private Terrain islandTerrain = null;

@@ -59,12 +59,6 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("Grounded", grounded);
         animator.SetBool("Sloping", sloping);
     }
-    public Vector3 GetCameraDirectionFromInput(float horizontalInput, float verticalInput)
-    {
-        Vector3 cameraDirection = playerCamera.transform.TransformDirection(new Vector3(horizontalInput, 0f, verticalInput));
-        cameraDirection.y = 0f;
-        return cameraDirection.normalized;
-    }
     private void Update()
     {
         if (animator.GetBool("Dig")) return;
@@ -79,8 +73,14 @@ public class PlayerMovement : MonoBehaviour
         Vector3 cameraDirection = GetCameraDirectionFromInput(horizontalInput, verticalInput);
         RotationInput(cameraDirection, horizontalInput, verticalInput, inCombat);
 
-        if (!inCombat && JumpInput()) return;
-        if (inCombat && EvadeInput(horizontalInput, verticalInput, cameraDirection)) return;
+        if (inCombat)
+        {
+            bool evading = EvadeInput(horizontalInput, verticalInput, cameraDirection); if (evading) return;
+        }
+        else
+        {
+            bool jumping = JumpInput(); if (jumping) return;
+        }
 
         // Get the speed depending on input
         float currentSpeed = GetCurrentSpeedInput();
@@ -136,6 +136,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("Sloping", sloping);
     }
 
+    // Input
     private void RotationInput(Vector3 forwardDirection, float horizontalInput, float verticalInput, bool inCombat)
     {
         // Yaw rotation of player
@@ -196,6 +197,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private bool EvadeInput(float horizontalInput, float verticalInput, Vector3 forwardDirection)
     {
+        // inCombat is true here 
         if ((horizontalInput == 0f && verticalInput == 0f))
         {
             evading = false;
@@ -241,12 +243,12 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 DesiredPositionWithCollision(Vector3 desiredPosition)
     {
         // Update new position with collision check
-        Vector3 direction = (desiredPosition - transform.position).normalized;
-        float distance = Vector3.Distance(transform.position, desiredPosition);
-        if (Physics.SphereCast(transform.position + new Vector3(0f, playerRadius, 0f), playerRadius, direction, out RaycastHit mainHit, distance, InternalSettings.Get.EnvironmentMask))
+        Vector3 directionToDesired = (desiredPosition - transform.position).normalized;
+        float distanceToDesired = Vector3.Distance(transform.position, desiredPosition);
+        if (Physics.SphereCast(transform.position + new Vector3(0f, playerRadius, 0f), playerRadius, directionToDesired, out RaycastHit mainHit, distanceToDesired))
         {
             // Get the value that indicates the facing to the collision (0 - facing in front, 1 - facing sideways)
-            float dot = 1f + Vector3.Dot(direction, mainHit.normal);
+            float dot = 1f + Vector3.Dot(directionToDesired, mainHit.normal);
 
             // Get the direction of the wall
             Vector3 wallDirection = Vector3.Cross(Vector3.up, mainHit.normal);
@@ -280,29 +282,7 @@ public class PlayerMovement : MonoBehaviour
         }
         return desiredPosition;
     }
-    private float GetCurrentSpeedInput()
-    {
-        // Setting current speed depending on grounded
-        bool sprinting = Input.GetKey(KeyCode.LeftShift);
-        float currentSpeed;
-        if (combat.InCombat())
-        {
-            currentSpeed = sprinting ? combat.SprintSpeed : combat.Speed;
-        }
-        else if (grounded)
-        {
-            currentSpeed = sprinting ? runSpeed : walkSpeed;
-        }
-        else 
-        {
-            currentSpeed = sprinting ? swimSprintSpeed : swimSpeed;
-        }
-        return currentSpeed;
-    }
-    public void SetCombat(PlayerCombat combat)
-    {
-        this.combat = combat;
-    }
+
     private void Footstep(Transform footTransform)
     {
         if (Time.time - lastFootstepTime < footstepCooldown) return;
@@ -318,6 +298,43 @@ public class PlayerMovement : MonoBehaviour
         footstep.transform.up = hit.normal;
         lastFootstepTime = Time.time;
     }
+    // Getters
+    public Vector3 GetCameraDirectionFromInput(float horizontalInput, float verticalInput)
+    {
+        Vector3 cameraDirection = playerCamera.transform.TransformDirection(new Vector3(horizontalInput, 0f, verticalInput));
+        cameraDirection.y = 0f;
+        return cameraDirection.normalized;
+    }
+    private float GetCurrentSpeedInput()
+    {
+        // Setting current speed depending on grounded
+        bool sprinting = Input.GetKey(KeyCode.LeftShift);
+        float currentSpeed;
+        if (combat.InCombat())
+        {
+            currentSpeed = sprinting ? combat.SprintSpeed : combat.Speed;
+        }
+        else if (grounded)
+        {
+            currentSpeed = sprinting ? runSpeed : walkSpeed;
+        }
+        else
+        {
+            currentSpeed = sprinting ? swimSprintSpeed : swimSpeed;
+        }
+        return currentSpeed;
+    }
+    public PlayerCombat GetCombat()
+    {
+        return combat;
+    }
+
+    // Setters
+    public void SetCombat(PlayerCombat combat)
+    {
+        this.combat = combat;
+    }
+
     // Animation
     public void AnimationEvent_FootstepRight()
     {

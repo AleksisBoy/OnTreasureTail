@@ -4,17 +4,24 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class AIEnemy : AIAgent
 {
-    [Header("AIEnemy")]
+    [Header("AI Enemy")]
     [SerializeField] private AIIdleTarget[] idleTargets = null;
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float cooldown = 2f;
     [SerializeField] private float alertTimer = 15f;
     [SerializeField] private float investigatingSpeed = 2f;
+    [SerializeField] private float evadeSpeed = 4f;
+    [SerializeField] private float evadeDuration = 0.3f;
+    [SerializeField] private float evadeCooldown = 3f;
 
     private float timeOfLastAttack = 0f;
     private bool alerted = false;
     private float alertTime = 0f;
     private Transform lastPlayerSeenTransform = null;
+
+    private bool evading = false;
+    private float evade = 0f;
+    private float timeOfLastEvade = 0f;
 
     private Health health;
     public Health Health => health;
@@ -131,12 +138,28 @@ public class AIEnemy : AIAgent
         // Reset
         Leaf resetTarget = new Leaf("Reset target", ResetTarget);
 
+        // Evade attack
+        Leaf isPlayerAttacking = new Leaf("Is Player attacking", IsPlayerAttacking);
+        Leaf isPlayerClose = new Leaf("Is player Close", IsPlayerClose);
+        Leaf evadeBack = new Leaf("Evade back", EvadeBack);
+
+        BehaviourTree evadeAttackCondition = new BehaviourTree();
+        Sequence evadeAttackConditions = new Sequence("Evade conditions");
+        evadeAttackConditions.AddChild(isPlayerAttacking);
+        evadeAttackConditions.AddChild(isPlayerClose);
+        evadeAttackCondition.AddChild(evadeAttackConditions);
+
+        DepSequence evadeAttack = new DepSequence("Evade Attack", evadeAttackCondition, agent);
+
+        evadeAttack.AddChild(evadeBack);
+
         // Enemy Behaviour
         Selector behaveEnemy = new Selector("Behave Like Enemy");
-        behaveEnemy.AddChild(beIdle);
+        behaveEnemy.AddChild(evadeAttack);
         behaveEnemy.AddChild(chasePlayer);
         behaveEnemy.AddChild(checkLastSeenPosition);
-        behaveEnemy.AddChild(resetTarget);
+        behaveEnemy.AddChild(beIdle);
+        //behaveEnemy.AddChild(resetTarget);
 
         tree.AddChild(behaveEnemy);
 
@@ -147,6 +170,27 @@ public class AIEnemy : AIAgent
         base.FixedUpdate();
         animator.SetFloat("Speed", agent.speed);
     }
+    protected override void Update()
+    {
+        if (EvadeProcess()) return;
+        base.Update();
+    }
+
+    private bool EvadeProcess()
+    {
+        if (!evading) return false;
+
+        transform.position += -transform.forward * evadeSpeed * Time.deltaTime;
+        evade += Time.deltaTime / evadeDuration;
+        if (evade > 1f)
+        {
+            evading = false;
+            targetState = TargetState.None;
+            agent.speed = walkSpeed; 
+        }
+        return true;
+    }
+
     private void Alert()
     {
         alerted = true;
@@ -290,18 +334,46 @@ public class AIEnemy : AIAgent
     {
         if(Time.time - timeOfLastAttack < cooldown) return Node.Status.FAILURE;
         timeOfLastAttack = Time.time;
+        targetState = TargetState.None;
 
         animator.SetBool("Attacking", true);
         return Node.Status.SUCCESS;
     }
+    private Node.Status IsPlayerClose()
+    {
+        return Vector3.Distance(transform.position, PlayerInteraction.Instance.transform.position) < closeDistance ? Node.Status.SUCCESS : Node.Status.FAILURE;
+    }
+    private Node.Status IsPlayerAttacking()
+    {
+        return PlayerInteraction.Instance.IsAttacking() ? Node.Status.SUCCESS : Node.Status.FAILURE;
+    }
+    private Node.Status EvadeBack()
+    {
+        if (Time.time - timeOfLastEvade < evadeCooldown) return Node.Status.FAILURE;
+
+        animator.SetTrigger("Evade");
+        evade = 0f;
+        evading = true;
+        timeOfLastEvade = Time.time;
+        targetState = TargetState.None;
+        return Node.Status.SUCCESS;
+    }
+    private bool IsEvading()
+    {
+        return evading;
+    }
     protected override bool Prebehave()
     {
         seePlayer = SeePlayerState.DidNotCheck;
-        return IsKnockbacked() == Node.Status.SUCCESS ? true : false;
+        if (IsKnockbacked() == Node.Status.SUCCESS) return true;
+        if (IsEvading()) return true;
+
+        return false;
     }
     // Animation
     public void AnimationEvent_AttackImpact()
     {
+        agent.speed = walkSpeed;
         Health playerHealth = PlayerInteraction.Instance.Health;
         float distance = Vector3.Distance(transform.position, playerHealth.transform.position);
         if (distance > closeDistance) return;
@@ -325,7 +397,7 @@ public class AIEnemy : AIAgent
         Alert();
         lastPlayerSeenTransform.position = transform.position + direction;
         transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
-        SetTarget(null);
+        targetState = TargetState.None;
         animator.SetBool("Knockback", true);
     }
     private void OnDeath()

@@ -160,12 +160,19 @@ public class PlayerCombat : PlayerSubinteraction
         foreach(AIEnemy enemy in enemiesNear)
         {
             enemy.Health.DealDamage(attackDamage, transform.position);
-            Debug.Log("damage dealt to " + enemy);
         }
+    }
+    public bool IsAttacking()
+    {
+        return animator.GetInteger("AttackAnim") > -1 ? true : false;
     }
     public bool InCombat()
     {
         return target != null;
+    }
+    public float GetDistanceToTarget()
+    {
+        return Vector3.Distance(transform.position, target.transform.position);
     }
     public bool TryEvade()
     {

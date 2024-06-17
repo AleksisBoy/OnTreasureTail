@@ -19,6 +19,7 @@ public class Health : MonoBehaviour
     }
     public void DealDamage(float damage, Vector3 actorPosition)
     {
+        Debug.Log( damage +" Damage dealt on " + name);
         hp -= damage;
         Vector3 direction = actorPosition - transform.position;
         Call_OnDamage(direction.normalized);
