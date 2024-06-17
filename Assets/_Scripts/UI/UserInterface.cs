@@ -8,7 +8,9 @@ public class UserInterface : MonoBehaviour
     [SerializeField] private Button buttonProgress = null;
     [SerializeField] private InfoPopup infoGainedPrefab = null;
     [SerializeField] private IslandProgressPanel progressPanel = null;
+    [SerializeField] private RectTransform combatLockUI = null;
 
+    private Transform combatLockTarget = null;
     private RectTransform RT { get { return (RectTransform)transform; } }
     public static UserInterface Instance { get; private set; } = null;
     private void Awake()
@@ -19,6 +21,16 @@ public class UserInterface : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+    }
+    private void Update()
+    {
+        UpdateCombatLockUIPosition();
+    }
+    private void UpdateCombatLockUIPosition()
+    {
+        if (!combatLockTarget) return;
+
+        combatLockUI.position = RectTransformUtility.WorldToScreenPoint(PlayerCamera.Instance.Current, combatLockTarget.position);
     }
     public void Button_ProgressToggle()
     {
@@ -31,5 +43,10 @@ public class UserInterface : MonoBehaviour
         RectTransformUtility.ScreenPointToLocalPointInRectangle(RT, mousePos, null, out Vector2 localPos);
         popup.RT.localPosition = localPos;
         popup.SetPopup(infoText, (RectTransform)buttonProgress.transform);
+    }
+    public void SetCombatLockTarget(Transform target)
+    {
+        combatLockTarget = target;
+        combatLockUI.gameObject.SetActive(target ? true : false);
     }
 }

@@ -685,7 +685,7 @@ PrefabInstance:
     - target: {fileID: 7274199749854365298, guid: 981ee39fffc647e44a92d93925b09b50,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2052,7 +2052,7 @@ PrefabInstance:
         type: 3}
       propertyPath: progressPanel
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2098053348}
     - target: {fileID: 3264658836843761550, guid: 1ba771bf4d940f24bba4fd6b3e3dfab0,
         type: 3}
       propertyPath: m_VertexColorAlwaysGammaSpace

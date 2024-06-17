@@ -61,10 +61,12 @@ public class PlayerCamera : MonoBehaviour
     public void LockCameraOn(Transform target)
     {
         cameraTarget.SetTargets(playerTransform, target);
+        UserInterface.Instance.SetCombatLockTarget(target);
     }
     public void UnlockCameraFromTarget()
     {
         cameraTarget.SetTargets(playerTransform, null);
+        UserInterface.Instance.SetCombatLockTarget(null);
     }
     private void Update()
     {
