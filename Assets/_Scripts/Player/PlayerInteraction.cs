@@ -30,6 +30,7 @@ public class PlayerInteraction : MonoBehaviour
             sub.enabled = false;
             sub.Set(animator, movement, view);
         }
+        view.Set(transform);
         equipment.AssignOnEquippedChanged(OnEqippedChanged);
         Health.AssignOnDie(OnDeath);
         Health.AssignOnDamage(OnDamage);

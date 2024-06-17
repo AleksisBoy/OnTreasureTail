@@ -44,7 +44,7 @@ public class Leaf : Node
         else
             s = Status.FAILURE;
 
-        Debug.Log(name + " " + s);
+        Debug.LogWarning(name + " " + s);
         return s;
     }
 

@@ -6,8 +6,27 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Camera focusCamera = null;
     [SerializeField] private CameraTarget cameraTarget = null;
     [SerializeField] private float sensitivity = 10f;
+    [SerializeField] private float zoomSensitivity = 2f;
+    [SerializeField] private float distanceToTarget = 10f;
+    [SerializeField] private Vector2 distanceRange = Vector2.zero;
 
     private Transform playerTransform = null;
+    private float DistanceToTarget
+    {
+        get
+        {
+            return distanceToTarget;
+        }
+        set
+        {
+            value = Mathf.Clamp(value, distanceRange.x, distanceRange.y);
+            if (distanceToTarget != value)
+            {
+                distanceToTarget = value;
+                UpdateDistanceToTarget();
+            }
+        }
+    }
     public Camera Current
     {
         get
@@ -19,6 +38,11 @@ public class PlayerCamera : MonoBehaviour
     public Camera FocusCamera => focusCamera;
     public CameraTarget CameraTarget => cameraTarget;
     public static PlayerCamera Instance { get; private set; } = null;
+    private void OnValidate()
+    {
+        distanceToTarget = Mathf.Clamp(distanceToTarget, distanceRange.x, distanceRange.y);
+        UpdateDistanceToTarget();
+    }
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -29,9 +53,9 @@ public class PlayerCamera : MonoBehaviour
         }
         focusCamera.gameObject.SetActive(false);
     }
-    private void Start()
+    public void Set(Transform playerTransform)
     {
-        playerTransform = PlayerInteraction.Instance.transform;
+        this.playerTransform = playerTransform;
         UnlockCameraFromTarget();
     }
     public void LockCameraOn(Transform target)
@@ -44,6 +68,7 @@ public class PlayerCamera : MonoBehaviour
     }
     private void Update()
     {
+        ZoomInput();
         if (cameraTarget.HasOptionalTarget()) return;
 
         RotationInput();
@@ -58,5 +83,25 @@ public class PlayerCamera : MonoBehaviour
         {
             cameraTarget.transform.Rotate(0f, mouseX * Time.deltaTime * sensitivity, 0f);
         }
+    }
+    private void ZoomInput()
+    {
+        if (!Input.GetKeyDown(KeyCode.LeftControl)) return;
+
+        float mouseZoom = -Input.mouseScrollDelta.y;
+        if (mouseZoom != 0f)
+        {
+            Debug.Log(mouseZoom);
+            DistanceToTarget += mouseZoom * zoomSensitivity;
+        }
+    }
+    private void UpdateDistanceToTarget()
+    {
+        if (!cameraTarget) return;
+        
+        Vector3 direction = transform.position - cameraTarget.transform.position;
+        direction.Normalize();
+
+        transform.position = cameraTarget.transform.position + direction * distanceToTarget;
     }
 }

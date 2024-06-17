@@ -154,3 +154,6 @@ MonoBehaviour:
   focusCamera: {fileID: 0}
   cameraTarget: {fileID: 0}
   sensitivity: 120
+  zoomSensitivity: 4
+  distanceToTarget: 36.04
+  distanceRange: {x: 15.23, y: 50}

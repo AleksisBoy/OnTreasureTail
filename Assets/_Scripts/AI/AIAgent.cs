@@ -37,9 +37,22 @@ public class AIAgent : MonoBehaviour
         InProcess,
         InTargetRange
     }
+    protected float Speed
+    {
+        get
+        {
+            return agent.speed;
+        }
+        set
+        {
+            if (value < 0f) value = 0f;
+            agent.speed = value;
+            animator.SetFloat("Speed", agent.speed);
+        }
+    }
     protected virtual void Awake()
     {
-        agent.speed = walkSpeed;
+        Speed = walkSpeed;
         updateTime *= UnityEngine.Random.Range(0.8f, 1.2f);
         tree = new BehaviourTree();
     }
@@ -60,9 +73,16 @@ public class AIAgent : MonoBehaviour
 
         if (target && agent.path.corners.Length > 1)
         {
-            transform.position += (agent.path.corners[1] - transform.position).normalized * agent.speed * Time.deltaTime;
+            transform.position += (agent.path.corners[1] - transform.position).normalized * Speed * Time.deltaTime;
         }
     }
+    // Leaf Actions
+    protected virtual Node.Status ResetTarget()
+    {
+        SetTarget(null);
+        return Node.Status.SUCCESS;
+    }
+    // Leaf Setters
     protected Node.Status SetTarget(Transform newTarget)
     {
         if (newTarget == null)
@@ -80,11 +100,12 @@ public class AIAgent : MonoBehaviour
             }
             target = newTarget;
             targetState = TargetState.InProcess;
-            agent.speed = walkSpeed;
+            Speed = walkSpeed;
             state = AIState.GOING;
             return Node.Status.SUCCESS;
         }
     }
+    // Leaf Checks
     protected Node.Status IsCloseToTarget()
     {
         if (targetState == TargetState.InTargetRange) return Node.Status.SUCCESS;
@@ -94,7 +115,7 @@ public class AIAgent : MonoBehaviour
         if (distance < closeDistance)
         {
             //target = null;
-            agent.speed = 0f;
+            Speed = 0f;
             targetState = TargetState.InTargetRange;
             return Node.Status.SUCCESS;
         }
@@ -106,28 +127,9 @@ public class AIAgent : MonoBehaviour
         else
         {
             targetState = TargetState.InProcess;
+            Speed = walkSpeed;
             return Node.Status.RUNNING;
         }
-    }
-    protected Node.Status GoToLocation(Vector3 destination)
-    {
-        float distanceToTarget = Vector3.Distance(destination, this.transform.position);
-        if (state == AIState.IDLE)
-        {
-            agent.SetDestination(destination);
-            state = AIState.GOING;
-        }
-        else if (Vector3.Distance(agent.pathEndPosition, destination) >= closeDistance)
-        {
-            state = AIState.IDLE;
-            return Node.Status.FAILURE;
-        }
-        else if (distanceToTarget < closeDistance)
-        {
-            state = AIState.IDLE;
-            return Node.Status.SUCCESS;
-        }
-        return Node.Status.RUNNING;
     }
     protected Node.Status CanSee(Vector3 targetPosition)
     {
@@ -139,18 +141,13 @@ public class AIAgent : MonoBehaviour
 
         if (dot >= canSeeRange)
         {
-            if(!Physics.Raycast(transform.position + eyeOffset, directionToTarget, lookDistance, InternalSettings.Get.EnvironmentMask))
+            if (!Physics.Raycast(transform.position + eyeOffset, directionToTarget, lookDistance, InternalSettings.Get.EnvironmentMask))
             {
                 return Node.Status.SUCCESS;
             }
         }
 
         return Node.Status.FAILURE;
-    }
-    protected virtual Node.Status ResetTarget()
-    {
-        SetTarget(null); 
-        return Node.Status.SUCCESS;
     }
     protected virtual bool Prebehave()
     {
@@ -173,6 +170,27 @@ public class AIAgent : MonoBehaviour
     private void Call_OnTargetChanged()
     {
         if (onTargetChanged != null) onTargetChanged();
+    }
+    // Deprecated
+    protected Node.Status GoToLocation(Vector3 destination)
+    {
+        float distanceToTarget = Vector3.Distance(destination, this.transform.position);
+        if (state == AIState.IDLE)
+        {
+            agent.SetDestination(destination);
+            state = AIState.GOING;
+        }
+        else if (Vector3.Distance(agent.pathEndPosition, destination) >= closeDistance)
+        {
+            state = AIState.IDLE;
+            return Node.Status.FAILURE;
+        }
+        else if (distanceToTarget < closeDistance)
+        {
+            state = AIState.IDLE;
+            return Node.Status.SUCCESS;
+        }
+        return Node.Status.RUNNING;
     }
     private void OnDrawGizmosSelected()
     {

@@ -82,7 +82,7 @@ public class AIEnemy : AIAgent
         Leaf doIdleAnimation = new Leaf("Idle Animation", IdleAnimation);
 
         Selector findIdleTarget = new Selector("Find Idle Target");
-        Leaf hasIdleTarget = new Leaf("Has Idle Target", HasIdleTarget);
+        Leaf hasIdleTarget = new Leaf("Has Idle Target", IsIdleTarget);
         Leaf setRandomFreeIdleTarget = new Leaf("Set Random Free Idle Target", SetRandomFreeIdleTarget);
 
         findIdleTarget.AddChild(hasIdleTarget);
@@ -165,11 +165,6 @@ public class AIEnemy : AIAgent
 
         tree.PrintTree();
     }
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-        animator.SetFloat("Speed", agent.speed);
-    }
     protected override void Update()
     {
         if (EvadeProcess()) return;
@@ -186,7 +181,7 @@ public class AIEnemy : AIAgent
         {
             evading = false;
             targetState = TargetState.None;
-            agent.speed = walkSpeed; 
+            Speed = walkSpeed; 
         }
         return true;
     }
@@ -197,13 +192,118 @@ public class AIEnemy : AIAgent
         alertTime = Time.time;
         if (currentIdleTarget) StopIdleAnimation();
     }
+
+    private void StopIdleAnimation()
+    {
+        currentIdleTarget.StopIdling(this);
+        animator.SetBool(currentIdleTarget.AnimationName, false);
+        ResetTarget();
+    }
+    // Leaf Actions
+    private Node.Status IdleAnimation()
+    {
+        if (currentIdleTarget == null) return Node.Status.FAILURE;
+
+        if (currentIdleTarget.CurrentAgent == this && !currentIdleTarget.Processing)
+        {
+            currentIdleTarget.StartIdling(this);
+            animator.SetBool(currentIdleTarget.AnimationName, true);
+            return Node.Status.RUNNING;
+        }
+        else if (currentIdleTarget.CurrentAgent == this)
+        {
+            return Node.Status.RUNNING;
+        }
+        else
+        {
+            // idle target occupied
+            animator.SetBool(currentIdleTarget.AnimationName, false);
+            return Node.Status.FAILURE;
+        }
+    }
+    protected override Node.Status ResetTarget()
+    {
+        base.ResetTarget();
+        currentIdleTarget = null;
+        CombatManager.RemoveFromCombat(this);
+
+        return Node.Status.SUCCESS;
+    }
+    private Node.Status OffsetLastSeenPlayerTarget()
+    {
+        Vector2 randomPoint = Random.insideUnitCircle * 5f;
+        lastPlayerSeenTransform.position += new Vector3(randomPoint.x, 0f, randomPoint.y);
+        if(target == lastPlayerSeenTransform)
+        {
+            Speed = investigatingSpeed;
+            targetState = TargetState.InProcess;
+        }
+        // adjust to terrain height
+        return Node.Status.SUCCESS;
+    }
+    private Node.Status AttackPlayer()
+    {
+        if (Time.time - timeOfLastAttack < cooldown) return Node.Status.FAILURE;
+        timeOfLastAttack = Time.time;
+        targetState = TargetState.None;
+
+        animator.SetBool("Attacking", true);
+        return Node.Status.SUCCESS;
+    }
+    private Node.Status EvadeBack()
+    {
+        if (Time.time - timeOfLastEvade < evadeCooldown) return Node.Status.FAILURE;
+
+        animator.SetTrigger("Evade");
+        animator.SetBool("Attacking", false);
+        evade = 0f;
+        evading = true;
+        timeOfLastEvade = Time.time;
+        targetState = TargetState.None;
+        return Node.Status.SUCCESS;
+    }
+    // Leaf Setters
+    private Node.Status SetRandomFreeIdleTarget()
+    {
+        List<int> indexes = new List<int>();
+        for (int i = 0; i < idleTargets.Length; i++)
+        {
+            indexes.Add(i);
+        }
+        while (indexes.Count > 0)
+        {
+            int randomIndex = indexes[UnityEngine.Random.Range(0, indexes.Count)];
+            indexes.Remove(randomIndex);
+            if (idleTargets[randomIndex].CurrentAgent) continue;
+
+            currentIdleTarget = idleTargets[randomIndex];
+            currentIdleTarget.CurrentAgent = this;
+            SetTarget(currentIdleTarget.transform);
+
+            return Node.Status.SUCCESS;
+        }
+
+        return Node.Status.FAILURE;
+    }
+    private Node.Status SetPlayerTarget()
+    {
+        SetTarget(PlayerInteraction.Instance.transform);
+        CombatManager.AddInCombat(this);
+        return Node.Status.SUCCESS;
+    }
+    private Node.Status SetLastSeenPlayerTarget()
+    {
+        SetTarget(lastPlayerSeenTransform);
+        return Node.Status.SUCCESS;
+    }
+    // Leaf Checks
     private Node.Status CanSeePlayer()
     {
-        if(seePlayer == SeePlayerState.DidNotCheck)
+        if (seePlayer == SeePlayerState.DidNotCheck)
         {
             Vector3 playerPosition = PlayerInteraction.Instance.transform.position;
             Node.Status s = CanSee(playerPosition);
-            if(s == Node.Status.SUCCESS)
+            if (s == Node.Status.SUCCESS)
             {
                 seePlayer = SeePlayerState.SeePlayer;
                 lastPlayerSeenTransform.position = playerPosition;
@@ -220,72 +320,13 @@ public class AIEnemy : AIAgent
             return seePlayer == SeePlayerState.SeePlayer ? Node.Status.SUCCESS : Node.Status.FAILURE;
         }
     }
-    private Node.Status HasIdleTarget()
+    private Node.Status IsIdleTarget()
     {
         return currentIdleTarget != null ? Node.Status.SUCCESS : Node.Status.FAILURE;
     }
-    private Node.Status SetRandomFreeIdleTarget()
-    {
-        List<int> indexes = new List<int>();
-        for(int i = 0; i < idleTargets.Length; i++)
-        {
-            indexes.Add(i);
-        }
-        while(indexes.Count > 0)
-        {
-            int randomIndex = indexes[UnityEngine.Random.Range(0, indexes.Count)];
-            indexes.Remove(randomIndex);
-            if (idleTargets[randomIndex].CurrentAgent) continue;
-
-            currentIdleTarget = idleTargets[randomIndex];
-            currentIdleTarget.CurrentAgent = this;
-            SetTarget(currentIdleTarget.transform);
-
-            return Node.Status.SUCCESS;
-        }
-
-        return Node.Status.FAILURE;
-    }
-    private Node.Status IdleAnimation()
-    {
-        if(currentIdleTarget == null) return Node.Status.FAILURE;
-
-        if(currentIdleTarget.CurrentAgent == this && !currentIdleTarget.Processing)
-        {
-            currentIdleTarget.StartIdling(this);
-            animator.SetBool(currentIdleTarget.AnimationName, true);
-            return Node.Status.RUNNING;
-        }
-        else if(currentIdleTarget.CurrentAgent == this)
-        {
-            return Node.Status.RUNNING;
-        }
-        else
-        {
-            // idle target occupied
-            animator.SetBool(currentIdleTarget.AnimationName, false);
-            return Node.Status.FAILURE;
-        }
-    }
-
-    private void StopIdleAnimation()
-    {
-        currentIdleTarget.StopIdling(this);
-        animator.SetBool(currentIdleTarget.AnimationName, false);
-        ResetTarget();
-    }
-
-    protected override Node.Status ResetTarget()
-    {
-        base.ResetTarget();
-        currentIdleTarget = null;
-        CombatManager.RemoveFromCombat(this);
-
-        return Node.Status.SUCCESS;
-    }
     private Node.Status IsAlert()
     {
-        if(alerted && Time.time - alertTime > alertTimer)
+        if (alerted && Time.time - alertTime > alertTimer)
         {
             alerted = false;
         }
@@ -295,32 +336,9 @@ public class AIEnemy : AIAgent
     {
         return target == PlayerInteraction.Instance.transform ? Node.Status.SUCCESS : Node.Status.FAILURE;
     }
-    private Node.Status SetPlayerTarget()
-    {
-        SetTarget(PlayerInteraction.Instance.transform);
-        CombatManager.AddInCombat(this);
-        return Node.Status.SUCCESS;
-    }
     private Node.Status IsLastSeenPlayerTarget()
     {
         return target == lastPlayerSeenTransform ? Node.Status.SUCCESS : Node.Status.FAILURE;
-    }
-    private Node.Status SetLastSeenPlayerTarget()
-    {
-        SetTarget(lastPlayerSeenTransform);
-        return Node.Status.SUCCESS;
-    }
-    private Node.Status OffsetLastSeenPlayerTarget()
-    {
-        Vector2 randomPoint = Random.insideUnitCircle * 5f;
-        lastPlayerSeenTransform.position += new Vector3(randomPoint.x, 0f, randomPoint.y);
-        if(target == lastPlayerSeenTransform)
-        {
-            agent.speed = investigatingSpeed;
-            targetState = TargetState.InProcess;
-        }
-        // adjust to terrain height
-        return Node.Status.SUCCESS;
     }
     private Node.Status IsAttacking()
     {
@@ -330,15 +348,6 @@ public class AIEnemy : AIAgent
     {
         return animator.GetBool("Knockback") ? Node.Status.SUCCESS : Node.Status.FAILURE;
     }
-    private Node.Status AttackPlayer()
-    {
-        if(Time.time - timeOfLastAttack < cooldown) return Node.Status.FAILURE;
-        timeOfLastAttack = Time.time;
-        targetState = TargetState.None;
-
-        animator.SetBool("Attacking", true);
-        return Node.Status.SUCCESS;
-    }
     private Node.Status IsPlayerClose()
     {
         return Vector3.Distance(transform.position, PlayerInteraction.Instance.transform.position) < closeDistance ? Node.Status.SUCCESS : Node.Status.FAILURE;
@@ -346,17 +355,6 @@ public class AIEnemy : AIAgent
     private Node.Status IsPlayerAttacking()
     {
         return PlayerInteraction.Instance.IsAttacking() ? Node.Status.SUCCESS : Node.Status.FAILURE;
-    }
-    private Node.Status EvadeBack()
-    {
-        if (Time.time - timeOfLastEvade < evadeCooldown) return Node.Status.FAILURE;
-
-        animator.SetTrigger("Evade");
-        evade = 0f;
-        evading = true;
-        timeOfLastEvade = Time.time;
-        targetState = TargetState.None;
-        return Node.Status.SUCCESS;
     }
     private bool IsEvading()
     {
@@ -373,7 +371,7 @@ public class AIEnemy : AIAgent
     // Animation
     public void AnimationEvent_AttackImpact()
     {
-        agent.speed = walkSpeed;
+        Speed = walkSpeed;
         Health playerHealth = PlayerInteraction.Instance.Health;
         float distance = Vector3.Distance(transform.position, playerHealth.transform.position);
         if (distance > closeDistance) return;
@@ -399,6 +397,7 @@ public class AIEnemy : AIAgent
         transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
         targetState = TargetState.None;
         animator.SetBool("Knockback", true);
+        animator.SetBool("Attacking", false);
     }
     private void OnDeath()
     {

@@ -12,6 +12,7 @@ public class PlayerCombat : PlayerSubinteraction
     [SerializeField] private KeyCode attackInput = KeyCode.F;
     [SerializeField] private float attackDamage = 30f;
     [SerializeField] private float attackCooldown = 0.3f;
+    [SerializeField] private float attackRadius = 1.5f;
     [SerializeField] private int attackAnimations = 2;
     [Header("Evasion")]
     [SerializeField] private float evadeSpeed = 3f;
@@ -154,7 +155,7 @@ public class PlayerCombat : PlayerSubinteraction
     }
     public void AnimationEvent_AttackImpact()
     {
-        List<AIEnemy> enemiesNear = CombatManager.GetEnemiesInRadius(attackImpactTransform.position, 1f);
+        List<AIEnemy> enemiesNear = CombatManager.GetEnemiesInRadius(transform.position, attackRadius);
         if (enemiesNear.Count == 0) return;
 
         foreach(AIEnemy enemy in enemiesNear)
@@ -196,7 +197,12 @@ public class PlayerCombat : PlayerSubinteraction
     }
     private void OnDrawGizmosSelected()
     {
+        // Combat Lock radius
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, combatLockRadius);
+
+        // Attack Radius
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRadius);
     }
 }

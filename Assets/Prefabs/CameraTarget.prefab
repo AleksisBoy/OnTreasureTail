@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+  optionalTarget: {fileID: 0}
   followSpeed: 4
 --- !u!1 &3995882045292918316
 GameObject:
@@ -224,12 +225,12 @@ PrefabInstance:
     - target: {fileID: 5600250484995164242, guid: 7913b9d9504a71948aa16e86872b7b6f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 25
+      value: 24.996223
       objectReference: {fileID: 0}
     - target: {fileID: 5600250484995164242, guid: 7913b9d9504a71948aa16e86872b7b6f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -25
+      value: -24.996223
       objectReference: {fileID: 0}
     - target: {fileID: 5600250484995164242, guid: 7913b9d9504a71948aa16e86872b7b6f,
         type: 3}
