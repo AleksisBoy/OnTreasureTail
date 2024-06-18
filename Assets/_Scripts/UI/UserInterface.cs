@@ -48,7 +48,7 @@ public class UserInterface : MonoBehaviour
     public void SetCombatLockTarget(Transform target)
     {
         combatLockTarget = target;
-        combatLockUI.gameObject.SetActive(target ? true : false);
+        if (combatLockUI) combatLockUI.gameObject.SetActive(target ? true : false);
     }
     public void SetInteractionBox(string text)
     {

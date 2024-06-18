@@ -96,18 +96,16 @@ public class AIEnemy : AIAgent
         // Chase Player DepSequence
         Leaf setPlayerTarget = new Leaf("Set Player target", SetPlayerTarget);
         Leaf attackPlayer = new Leaf("Attack Player", AttackPlayer);
-
+        
         BehaviourTree dependancyChasePlayer = new BehaviourTree("Dependancy chase player");
         Sequence dependancyChasePlayerSequence = new Sequence("dependancyChasePlayerSequence");
-        dependancyChasePlayerSequence.AddChild(isNotAttacking);
-        dependancyChasePlayerSequence.AddChild(canSeePlayer);
+        //dependancyChasePlayerSequence.AddChild(isNotAttacking);
+        dependancyChasePlayerSequence.AddChild(isAlert);
         dependancyChasePlayer.AddChild(dependancyChasePlayerSequence);
-
-        //DepSequence chasePlayer = new DepSequence("Chase player", dependancyChasePlayer, agent);
 
         Leaf isIAttack = new Leaf("Do I Attack", IsINextAttacker);
         Leaf isCooldownOff = new Leaf("Is Attack Cooldown off", IsAttackCooldownOff);
-        Sequence chasePlayer = new Sequence("Chase player");
+        DepSequence chasePlayer = new DepSequence("Chase player", dependancyChasePlayer, agent);
 
         Selector findPlayerTarget = new Selector("Find Player target");
         findPlayerTarget.AddChild(isPlayerTarget);
