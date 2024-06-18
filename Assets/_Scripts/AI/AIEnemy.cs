@@ -123,7 +123,12 @@ public class AIEnemy : AIAgent
         shouldAttack.AddChild(isCloseToTarget);
         shouldAttack.AddChild(attackPlayer);
 
-        iAttack.AddChild(shouldAttack); 
+        Sequence standAfterAttack = new Sequence("Stand after attack");
+        standAfterAttack.AddChild(isAttacking);
+        shouldAttack.AddChild(isCloseToTarget);
+
+        iAttack.AddChild(shouldAttack);
+        iAttack.AddChild(standAfterAttack);
         iAttack.AddChild(keepDistance);
 
         chasePlayer.AddChild(findPlayerTarget);
@@ -254,7 +259,6 @@ public class AIEnemy : AIAgent
     {
         base.ResetTarget();
         currentIdleTarget = null;
-        CombatManager.RemoveFromCombat(this);
 
         return Node.Status.SUCCESS;
     }
@@ -277,7 +281,6 @@ public class AIEnemy : AIAgent
         targetState = TargetState.None;
 
         animator.SetBool("Attacking", true);
-        CombatManager.EnemyAttacked(this);
         return Node.Status.SUCCESS;
     }
     private Node.Status EvadeBack()
@@ -423,6 +426,7 @@ public class AIEnemy : AIAgent
     public void AnimationEvent_AttackImpact()
     {
         timeOfLastAttack = Time.time;
+        CombatManager.EnemyAttacked(this);
         Speed = walkSpeed;
         Health playerHealth = PlayerInteraction.Instance.Health;
         float distance = Vector3.Distance(transform.position, playerHealth.transform.position);
@@ -457,8 +461,12 @@ public class AIEnemy : AIAgent
     }
     private void OnDeath()
     {
-        Destroy(gameObject);
+        CombatManager.RemoveFromCombat(this);
+        gameObject.SetActive(false);
         enabled = false;
+
+        if (List.Contains(this)) List.Remove(this);
+        if (lastPlayerSeenTransform) Destroy(lastPlayerSeenTransform.gameObject);
     }
     private void OnDestroy()
     {

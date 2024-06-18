@@ -47,6 +47,14 @@ public class Health : MonoBehaviour
     {
         onDie += onDieAction;
     }
+    public void DesignFromOnDamage(Action<Vector3> onDamageAction)
+    {
+        onDamage -= onDamageAction;
+    }
+    public void DesignFromOnDie(Action onDieAction)
+    {
+        onDie -= onDieAction;
+    }
     private void Call_OnDamage(Vector3 direction)
     {
         if (onDamage != null) onDamage(direction);

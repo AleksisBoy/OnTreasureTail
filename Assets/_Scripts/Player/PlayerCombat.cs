@@ -25,6 +25,9 @@ public class PlayerCombat : PlayerSubinteraction
     [SerializeField] private float restoreAgilityTimer = 1f;
     [SerializeField] private float restoreAgilityModifier = 10f;
 
+    private int enemyLockedIndex = 0;
+    private List<AIEnemy> enemiesAround = new List<AIEnemy>();
+
     private float agility = 100f;
     private float lastAgilityUse = 0f;
     private float lastAttackTime = 0f;
@@ -79,7 +82,15 @@ public class PlayerCombat : PlayerSubinteraction
     }
     public void SetTarget(AIEnemy target)
     {
+        if (this.target)
+        {
+            this.target.Health.DesignFromOnDie(SwitchEnemyLocked);
+        }
         this.target = target;
+        if (this.target)
+        {
+            this.target.Health.AssignOnDie(SwitchEnemyLocked);
+        }
     }
     private void ResetAgility()
     {
@@ -124,34 +135,90 @@ public class PlayerCombat : PlayerSubinteraction
         {
             ToggleCombatLock();
         }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            CombatManager.PrintOut();
+        }
     }
     private void ToggleCombatLock()
     {
-        if (target == null)
+        if (enemiesAround.Count == 0)
         {
-            StartCombat();
+            UpdateEnemiesAround();
+            if (enemiesAround.Count > 0) StartCombat();
+            else EndCombat();
         }
         else
         {
-            EndCombat();
+            SwitchEnemyLocked();
         }
     }
 
     private void StartCombat()
     {
-        List<AIEnemy> enemiesAround = CombatManager.GetEnemiesInRadius(transform.position, combatLockRadius);
         if (enemiesAround.Count == 0) return;
 
         animator.SetBool("CombatLocked", true);
-        AIEnemy enemy = enemiesAround[0];
-        SetTarget(enemy);
-        playerCamera.LockCameraOn(enemy.transform);
+        enemyLockedIndex = 0;
+        AIEnemy enemyToLockOn = enemiesAround[enemyLockedIndex];
+        SetTarget(enemyToLockOn);
+        playerCamera.LockCameraOn(enemyToLockOn.transform);
     }
     private void EndCombat()
     {
+        enemiesAround.Clear();
         animator?.SetBool("CombatLocked", false);
         SetTarget(null);
         playerCamera?.UnlockCameraFromTarget();
+    }
+    private void UpdateEnemiesAround()
+    {
+        enemiesAround = CombatManager.GetEnemiesInRadius(transform.position, combatLockRadius);
+    }
+    private void UpdateEnemiesAroundWithNew()
+    {
+        List<AIEnemy> enemiesAroundNew = CombatManager.GetEnemiesInRadius(transform.position, combatLockRadius);
+        foreach(AIEnemy enemy in enemiesAroundNew) 
+        {
+            if (!enemiesAround.Contains(enemy))
+            {
+                enemiesAround.Add(enemy);
+            }
+        }
+    }
+    private void UpdateEnemiesAroundOfDestroyed()
+    {
+        List<AIEnemy> enemiesToRemove = new List<AIEnemy>();
+        foreach(AIEnemy enemy in enemiesAround)
+        {
+            if(enemy.Health.IsDead())
+            {
+                enemiesToRemove.Add(enemy);
+            }
+        }
+        foreach(AIEnemy enemy in enemiesToRemove)
+        {
+            enemiesAround.Remove(enemy);
+        }
+    }
+    private void SwitchEnemyLocked()
+    {
+        Debug.Log("Switch enemy locked");
+        UpdateEnemiesAroundOfDestroyed();
+        UpdateEnemiesAroundWithNew();
+        if(enemiesAround.Count == 0)
+        {
+            EndCombat();
+            return;
+        }
+        enemyLockedIndex++;
+        if (enemyLockedIndex >= enemiesAround.Count)
+        {
+            enemyLockedIndex = 0;
+        }
+        AIEnemy enemyToLockOn = enemiesAround[enemyLockedIndex];
+        SetTarget(enemyToLockOn);
+        playerCamera.LockCameraOn(enemyToLockOn.transform);
     }
     public void AnimationEvent_AttackImpact()
     {

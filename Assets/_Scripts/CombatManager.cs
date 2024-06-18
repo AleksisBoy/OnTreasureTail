@@ -9,19 +9,21 @@ public static class CombatManager
     private static Action CombatStarted;
     private static Action CombatEnded;
     public static HashSet<AIEnemy> InCombat { get; private set; } = new HashSet<AIEnemy>();
-    public static Queue<AIEnemy> AttackQueue { get; private set; } = new Queue<AIEnemy>();
+    private static List<AIEnemy> AttackQueue { get; set; } = new List<AIEnemy>();
     public static void Clear()
     {
         Ongoing = false;
         CombatStarted = null;
         CombatEnded = null;
         InCombat.Clear();
+        AttackQueue.Clear();
     }
     public static void AddInCombat(AIEnemy enemy)
     {
-        if(InCombat.Contains(enemy)) return;
+        if (InCombat.Contains(enemy)) return;
         InCombat.Add(enemy);
-        AttackQueue.Enqueue(enemy);
+
+        if (!AttackQueue.Contains(enemy)) AttackQueue.Add(enemy);
 
         CheckCombatState();
     }
@@ -29,6 +31,8 @@ public static class CombatManager
     {
         if(!InCombat.Contains(enemy)) return;
         InCombat.Remove(enemy);
+
+        if (AttackQueue.Contains(enemy)) AttackQueue.Remove(enemy);
 
         CheckCombatState();
     }
@@ -47,19 +51,29 @@ public static class CombatManager
     }
     public static bool EnemyAttacksNext(AIEnemy enemy)
     {
-        if (AttackQueue.TryPeek(out AIEnemy enemyAI))
+        if (AttackQueue.Count == 0)
         {
-            return enemy == enemyAI;
+            throw new Exception("NOTHING IN ATTACK QUEUE");
         }
-        return false;
+
+        return enemy == AttackQueue[0];
     }
     public static void EnemyAttacked(AIEnemy enemy)
     {
         if (EnemyAttacksNext(enemy))
         {
-            AttackQueue.Dequeue();
-            AttackQueue.Enqueue(enemy);
+            AttackQueue.RemoveAt(0);
+            AttackQueue.Add(enemy);
         }
+    }
+    public static void PrintOut()
+    {
+        string print = string.Empty;
+        foreach(AIEnemy enemy in AttackQueue)
+        {
+            print += enemy.name + " / ";
+        }
+        Debug.Log(print);
     }
     public static List<AIEnemy> GetEnemiesInRadius(Vector3 position, float radius)
     {

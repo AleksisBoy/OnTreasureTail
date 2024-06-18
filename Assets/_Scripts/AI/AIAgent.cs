@@ -50,7 +50,6 @@ public class AIAgent : MonoBehaviour
         {
             if (value < 0f) value = 0f;
             agent.speed = value;
-            Debug.Log("Speed set " + value);
             animator.SetFloat("Speed", agent.speed);
         }
     }
@@ -92,7 +91,6 @@ public class AIAgent : MonoBehaviour
     // Leaf Setters
     protected Node.Status SetTarget(Transform newTarget)
     {
-        Debug.Log("Target set to " + newTarget);
         targetOffset = Vector3.zero;
         if (newTarget == null)
         {
