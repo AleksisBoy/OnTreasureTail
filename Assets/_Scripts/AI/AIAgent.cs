@@ -11,6 +11,7 @@ public class AIAgent : MonoBehaviour
     [SerializeField] protected Animator animator = null;
     [SerializeField] protected float walkSpeed = 4f;
     [SerializeField] private float rotationSpeed = 10f;
+    [SerializeField] private float targetLerpSpeed = 3f;
     [SerializeField] protected float closeDistance = 2f;
     [Range(-1f, 1f)]
     [SerializeField] private float canSeeRange = 1f;
@@ -22,6 +23,8 @@ public class AIAgent : MonoBehaviour
 
     protected BehaviourTree tree;
     protected Transform target = null;
+    protected Transform targetPoint = null;
+    protected Vector3 targetOffset = Vector3.zero;
     protected Node.Status status = Node.Status.RUNNING;
     protected AIState state = AIState.IDLE;
     protected enum AIState
@@ -47,11 +50,14 @@ public class AIAgent : MonoBehaviour
         {
             if (value < 0f) value = 0f;
             agent.speed = value;
+            Debug.Log("Speed set " + value);
             animator.SetFloat("Speed", agent.speed);
         }
     }
     protected virtual void Awake()
     {
+        targetPoint = new GameObject(name + "_TargetPoint").transform;
+        targetPoint.position = transform.position;
         Speed = walkSpeed;
         updateTime *= UnityEngine.Random.Range(0.8f, 1.2f);
         tree = new BehaviourTree();
@@ -64,14 +70,15 @@ public class AIAgent : MonoBehaviour
     {
         if (!target) return;
 
-        agent.SetDestination(target.position);
+        targetPoint.position = target.position + targetOffset;
+        agent.SetDestination(targetPoint.position);
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation((target.position - transform.position).normalized, Vector3.up), rotationSpeed * Time.fixedDeltaTime);
     }
     protected virtual void Update()
     {
         if (targetState != TargetState.InProcess) return;
 
-        if (target && agent.path.corners.Length > 1)
+        if (agent.path.corners.Length > 1)
         {
             transform.position += (agent.path.corners[1] - transform.position).normalized * Speed * Time.deltaTime;
         }
@@ -85,6 +92,8 @@ public class AIAgent : MonoBehaviour
     // Leaf Setters
     protected Node.Status SetTarget(Transform newTarget)
     {
+        Debug.Log("Target set to " + newTarget);
+        targetOffset = Vector3.zero;
         if (newTarget == null)
         {
             target = null;
@@ -192,7 +201,7 @@ public class AIAgent : MonoBehaviour
         }
         return Node.Status.RUNNING;
     }
-    private void OnDrawGizmosSelected()
+    protected virtual void OnDrawGizmosSelected()
     {
         // draw look distance
         Gizmos.color = Color.red;

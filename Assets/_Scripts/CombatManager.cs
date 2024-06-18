@@ -9,6 +9,7 @@ public static class CombatManager
     private static Action CombatStarted;
     private static Action CombatEnded;
     public static HashSet<AIEnemy> InCombat { get; private set; } = new HashSet<AIEnemy>();
+    public static Queue<AIEnemy> AttackQueue { get; private set; } = new Queue<AIEnemy>();
     public static void Clear()
     {
         Ongoing = false;
@@ -20,6 +21,7 @@ public static class CombatManager
     {
         if(InCombat.Contains(enemy)) return;
         InCombat.Add(enemy);
+        AttackQueue.Enqueue(enemy);
 
         CheckCombatState();
     }
@@ -41,6 +43,22 @@ public static class CombatManager
         {
             Call_CombatEnded();
             Ongoing = false;
+        }
+    }
+    public static bool EnemyAttacksNext(AIEnemy enemy)
+    {
+        if (AttackQueue.TryPeek(out AIEnemy enemyAI))
+        {
+            return enemy == enemyAI;
+        }
+        return false;
+    }
+    public static void EnemyAttacked(AIEnemy enemy)
+    {
+        if (EnemyAttacksNext(enemy))
+        {
+            AttackQueue.Dequeue();
+            AttackQueue.Enqueue(enemy);
         }
     }
     public static List<AIEnemy> GetEnemiesInRadius(Vector3 position, float radius)

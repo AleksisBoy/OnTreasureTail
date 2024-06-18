@@ -9,10 +9,11 @@ public class AIEnemy : AIAgent
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float cooldown = 2f;
     [SerializeField] private float alertTimer = 15f;
-    [SerializeField] private float investigatingSpeed = 2f;
+    [SerializeField] private float slowSpeed = 1f;
     [SerializeField] private float evadeSpeed = 4f;
     [SerializeField] private float evadeDuration = 0.3f;
     [SerializeField] private float evadeCooldown = 3f;
+    [SerializeField] private float keepingDistance = 3f;
 
     private float timeOfLastAttack = 0f;
     private bool alerted = false;
@@ -102,15 +103,35 @@ public class AIEnemy : AIAgent
         dependancyChasePlayerSequence.AddChild(canSeePlayer);
         dependancyChasePlayer.AddChild(dependancyChasePlayerSequence);
 
-        DepSequence chasePlayer = new DepSequence("Chase player", dependancyChasePlayer, agent);
+        //DepSequence chasePlayer = new DepSequence("Chase player", dependancyChasePlayer, agent);
+
+        Leaf isIAttack = new Leaf("Do I Attack", IsINextAttacker);
+        Leaf isCooldownOff = new Leaf("Is Attack Cooldown off", IsAttackCooldownOff);
+        Sequence chasePlayer = new Sequence("Chase player");
 
         Selector findPlayerTarget = new Selector("Find Player target");
         findPlayerTarget.AddChild(isPlayerTarget);
         findPlayerTarget.AddChild(setPlayerTarget);
 
+        Selector iAttack = new Selector("I AttacK?");
+        Leaf keepDistance = new Leaf("Keep distance", KeepDistance);
+        Sequence shouldAttack = new Sequence("Should attack");
+
+        shouldAttack.AddChild(isIAttack);
+        shouldAttack.AddChild(isCooldownOff);
+        shouldAttack.AddChild(isNotAttacking);
+        shouldAttack.AddChild(isCloseToTarget);
+        shouldAttack.AddChild(attackPlayer);
+
+        iAttack.AddChild(shouldAttack); 
+        iAttack.AddChild(keepDistance);
+
         chasePlayer.AddChild(findPlayerTarget);
-        chasePlayer.AddChild(isCloseToTarget);
-        chasePlayer.AddChild(attackPlayer);
+        chasePlayer.AddChild(iAttack);
+        // keep distance
+        // I Attack?
+        //chasePlayer.AddChild(isCloseToTarget);
+        //chasePlayer.AddChild(attackPlayer);
 
         // Go to last seen player position
         Leaf isLastSeenTarget = new Leaf("Is Last seen target", IsLastSeenPlayerTarget);
@@ -143,23 +164,31 @@ public class AIEnemy : AIAgent
         Leaf isPlayerClose = new Leaf("Is player Close", IsPlayerClose);
         Leaf evadeBack = new Leaf("Evade back", EvadeBack);
 
-        BehaviourTree evadeAttackCondition = new BehaviourTree();
-        Sequence evadeAttackConditions = new Sequence("Evade conditions");
-        evadeAttackConditions.AddChild(isPlayerAttacking);
-        evadeAttackConditions.AddChild(isPlayerClose);
-        evadeAttackCondition.AddChild(evadeAttackConditions);
+        //BehaviourTree evadeAttackCondition = new BehaviourTree();
+        //Sequence evadeAttackConditions = new Sequence("Evade conditions");
+        //evadeAttackConditions.AddChild(isPlayerAttacking);
+        //evadeAttackConditions.AddChild(isPlayerClose);
+        //evadeAttackCondition.AddChild(evadeAttackConditions);
 
-        DepSequence evadeAttack = new DepSequence("Evade Attack", evadeAttackCondition, agent);
+        Sequence evadeAttack = new Sequence("Evade Attack");
 
+        evadeAttack.AddChild(isPlayerAttacking);
+        evadeAttack.AddChild(isPlayerClose);
         evadeAttack.AddChild(evadeBack);
+        
+        // Keep distance
+
 
         // Enemy Behaviour
         Selector behaveEnemy = new Selector("Behave Like Enemy");
-        behaveEnemy.AddChild(evadeAttack);
-        behaveEnemy.AddChild(chasePlayer);
-        behaveEnemy.AddChild(checkLastSeenPosition);
+        Selector behaveCombat = new Selector("Combat Behaviour");
+
+        behaveCombat.AddChild(evadeAttack);
+        behaveCombat.AddChild(chasePlayer);
+        behaveCombat.AddChild(checkLastSeenPosition);
+
+        behaveEnemy.AddChild(behaveCombat);
         behaveEnemy.AddChild(beIdle);
-        //behaveEnemy.AddChild(resetTarget);
 
         tree.AddChild(behaveEnemy);
 
@@ -235,7 +264,7 @@ public class AIEnemy : AIAgent
         lastPlayerSeenTransform.position += new Vector3(randomPoint.x, 0f, randomPoint.y);
         if(target == lastPlayerSeenTransform)
         {
-            Speed = investigatingSpeed;
+            Speed = slowSpeed;
             targetState = TargetState.InProcess;
         }
         // adjust to terrain height
@@ -244,10 +273,11 @@ public class AIEnemy : AIAgent
     private Node.Status AttackPlayer()
     {
         if (Time.time - timeOfLastAttack < cooldown) return Node.Status.FAILURE;
-        timeOfLastAttack = Time.time;
+        //timeOfLastAttack = Time.time;
         targetState = TargetState.None;
 
         animator.SetBool("Attacking", true);
+        CombatManager.EnemyAttacked(this);
         return Node.Status.SUCCESS;
     }
     private Node.Status EvadeBack()
@@ -356,10 +386,31 @@ public class AIEnemy : AIAgent
     {
         return PlayerInteraction.Instance.IsAttacking() ? Node.Status.SUCCESS : Node.Status.FAILURE;
     }
+    private Node.Status IsINextAttacker()
+    {
+        return CombatManager.EnemyAttacksNext(this) ? Node.Status.SUCCESS : Node.Status.FAILURE;
+    }
+    private Node.Status IsAttackCooldownOff()
+    {
+        return (Time.time - timeOfLastAttack < cooldown) ? Node.Status.FAILURE : Node.Status.SUCCESS;
+    }
+    private Node.Status KeepDistance()
+    {
+        if(target == null) return Node.Status.FAILURE;
+
+        Vector3 direction = target.position - transform.position;
+        direction.y = 0f;
+        direction.Normalize();
+        targetOffset = -direction * keepingDistance;
+        Speed = slowSpeed;
+        targetState = TargetState.InProcess;
+        return Node.Status.SUCCESS;
+    }
     private bool IsEvading()
     {
         return evading;
     }
+
     protected override bool Prebehave()
     {
         seePlayer = SeePlayerState.DidNotCheck;
@@ -371,6 +422,7 @@ public class AIEnemy : AIAgent
     // Animation
     public void AnimationEvent_AttackImpact()
     {
+        timeOfLastAttack = Time.time;
         Speed = walkSpeed;
         Health playerHealth = PlayerInteraction.Instance.Health;
         float distance = Vector3.Distance(transform.position, playerHealth.transform.position);
@@ -397,7 +449,11 @@ public class AIEnemy : AIAgent
         transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
         targetState = TargetState.None;
         animator.SetBool("Knockback", true);
-        animator.SetBool("Attacking", false);
+        if (animator.GetBool("Attacking"))
+        {
+            animator.SetBool("Attacking", false);
+            timeOfLastAttack = Time.time - cooldown;
+        }
     }
     private void OnDeath()
     {
@@ -408,5 +464,12 @@ public class AIEnemy : AIAgent
     {
         if (List.Contains(this)) List.Remove(this);
         if (lastPlayerSeenTransform) Destroy(lastPlayerSeenTransform.gameObject);
+    }
+    protected override void OnDrawGizmosSelected()
+    {
+        base.OnDrawGizmosSelected();
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, keepingDistance);
     }
 }

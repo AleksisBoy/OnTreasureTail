@@ -129,6 +129,7 @@ MonoBehaviour:
   animator: {fileID: 2117941874729622629}
   walkSpeed: 2
   rotationSpeed: 10
+  targetLerpSpeed: 3
   closeDistance: 1.4
   canSeeRange: 0.26
   lookDistance: 10
@@ -145,6 +146,7 @@ MonoBehaviour:
   evadeSpeed: 4
   evadeDuration: 0.3
   evadeCooldown: 3
+  keepingDistance: 3
 --- !u!114 &9212902254359428834
 MonoBehaviour:
   m_ObjectHideFlags: 0

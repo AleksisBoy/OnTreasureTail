@@ -1721,6 +1721,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2293517323852219060, guid: 981ee39fffc647e44a92d93925b09b50,
         type: 3}
+      propertyPath: cooldown
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2293517323852219060, guid: 981ee39fffc647e44a92d93925b09b50,
+        type: 3}
       propertyPath: idleTargets.Array.data[0]
       value: 
       objectReference: {fileID: 704673567}
