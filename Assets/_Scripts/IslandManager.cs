@@ -166,6 +166,14 @@ public class IslandManager : MonoBehaviour
         }
         return closestInteractable;
     }
+    public Vector3 GetPositionWithTerrainHeight(Vector3 position)
+    {
+        return new Vector3(position.x, GetHeightAt(position), position.z);
+    }
+    public float GetHeightAt(Vector3 position)
+    {
+        return Terrain.SampleHeight(position) + Terrain.transform.position.y;
+    }
     public void AddInfo(InfoSO newInfo)
     {
         if (info.Contains(newInfo))

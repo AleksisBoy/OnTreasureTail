@@ -459,23 +459,33 @@ public class AIEnemy : AIAgent
     }
     private void OnDeath()
     {
-        CombatManager.RemoveFromCombat(this);
-        gameObject.SetActive(false);
+        ClearFromStatic();
         enabled = false;
+        agent.enabled = false;
+        if(TryGetComponent<Collider>(out Collider coll)) coll.enabled = false;
+        animator.SetLayerWeight(0, 0f);
+        animator.SetLayerWeight(1, 1f);
+        animator.SetTrigger("DeathRepeat");
+        transform.position = IslandManager.Instance.GetPositionWithTerrainHeight(transform.position);
+        transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, transform.eulerAngles.z); 
+        StopAllCoroutines();
 
-        if (List.Contains(this)) List.Remove(this);
         if (lastPlayerSeenTransform) Destroy(lastPlayerSeenTransform.gameObject);
+    }
+    private void ClearFromStatic()
+    {
+        CombatManager.RemoveFromCombat(this);
+        if (List.Contains(this)) List.Remove(this);
     }
     private void OnDestroy()
     {
-        if (List.Contains(this)) List.Remove(this);
-        if (lastPlayerSeenTransform) Destroy(lastPlayerSeenTransform.gameObject);
+        ClearFromStatic();
     }
     protected override void OnDrawGizmosSelected()
     {
         base.OnDrawGizmosSelected();
 
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, keepingDistance);
     }
 }

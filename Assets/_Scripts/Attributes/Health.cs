@@ -1,11 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private UnityEvent onDeathEvent = null;
 
     private float hp = 0f;
     public float Value => hp;
@@ -26,19 +26,26 @@ public class Health : MonoBehaviour
 
         if (hp <= 0f)
         {
-            float overdamage = Math.Abs(hp);
-            hp = 0f;
-            Call_OnDie();
+            Die();
         }
     }
     public void Heal(float perc)
     {
         hp = Mathf.Clamp(hp + maxHealth * perc, 0, maxHealth);
     }
+    private void Die()
+    {
+        float overdamage = Math.Abs(hp);
+        hp = 0f;
+        Call_OnDie();
+        onDeathEvent.Invoke();
+    }
+    // Getters
     public bool IsDead()
     {
         return hp <= 0f;
     }
+    // Action Calls
     public void AssignOnDamage(Action<Vector3> onDamageAction)
     {
         onDamage += onDamageAction;
