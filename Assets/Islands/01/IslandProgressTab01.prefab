@@ -920,6 +920,16 @@ PrefabInstance:
         of the island. On the<br>               side, there is a               with
         \r\n               . It reveales how to open the<br>               . "
       objectReference: {fileID: 0}
+    - target: {fileID: 5863199913628254122, guid: e01a791092b908b4ca254748a87388a3,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 633.0357
+      objectReference: {fileID: 0}
+    - target: {fileID: 5863199913628254122, guid: e01a791092b908b4ca254748a87388a3,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 527.6786
+      objectReference: {fileID: 0}
     - target: {fileID: 6120025147446300423, guid: e01a791092b908b4ca254748a87388a3,
         type: 3}
       propertyPath: gapTexts.Array.size

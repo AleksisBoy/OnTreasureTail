@@ -106,4 +106,16 @@ public class PlayerCamera : MonoBehaviour
 
         transform.position = cameraTarget.transform.position + direction * distanceToTarget;
     }
+
+    // Getters
+    public Vector3 GetDirectionFromInput(float horizontalInput, float verticalInput)
+    {
+        Vector3 cameraDirection = transform.TransformDirection(new Vector3(horizontalInput, 0f, verticalInput));
+        cameraDirection.y = 0f;
+        return cameraDirection.normalized;
+    }
+    public Vector3 GetDirectionFlat()
+    {
+        return TailUtil.PositionFlatNormalized(transform.forward);
+    }
 }

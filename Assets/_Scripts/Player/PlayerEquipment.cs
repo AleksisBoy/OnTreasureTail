@@ -37,9 +37,13 @@ public class PlayerEquipment : MonoBehaviour
         {
             EquipToggle(inventory[0]);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             EquipToggle(inventory[1]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            EquipToggle(inventory[2]);
         }
     }
     public void Equip(ItemTail item)
@@ -75,15 +79,21 @@ public class PlayerEquipment : MonoBehaviour
         }
         return false;
     }
+    private int GetFreeSlot()
+    {
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if (inventory[i] == null) return i;
+        }
+        return -1;
+    }
     public bool TryAdd(ItemTail item)
     {
-        for(int i = 0; i < inventory.Length; i++)
+        int slot = GetFreeSlot();
+        if (slot > -1)
         {
-            if (inventory[i] == null)
-            {
-                Add(item, i);
-                return true;
-            }
+            Add(item, slot);
+            return true;
         }
         return false;   
     }
@@ -99,7 +109,18 @@ public class PlayerEquipment : MonoBehaviour
         {
             if (inventory[i] == null || inventory[i].meshObject != null) continue;
 
-            inventory[i].meshObject = Instantiate(inventory[i].MeshPrefab, inventoryAnchors[i]);
+            inventory[i].meshObject = Instantiate(inventory[i].MeshPrefab);
+            Transform inventoryParent;
+            if (i >= inventoryAnchors.Length)
+            {
+                inventoryParent = transform;
+                inventory[i].meshObject.SetActive(false);
+            }
+            else
+            {
+                inventoryParent = inventoryAnchors[i];
+            }
+            inventory[i].meshObject.transform.SetParent(inventoryParent, false);
             inventory[i].meshObject.layer = InternalSettings.Get.PlayerMask;
             foreach(Transform child in inventory[i].meshObject.transform)
             {
@@ -117,7 +138,8 @@ public class PlayerEquipment : MonoBehaviour
                 return;
             }
         }
-        Debug.LogError("Nowhere to put back " + item.name);
+        item.meshObject.transform.SetParent(transform, false);
+        item.meshObject.SetActive(false);
     }
 
     // Action

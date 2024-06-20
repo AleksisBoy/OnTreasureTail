@@ -753,6 +753,7 @@ GameObject:
   - component: {fileID: 3225385572864564303}
   - component: {fileID: 4054690041552130729}
   - component: {fileID: 8766013707428227383}
+  - component: {fileID: 3309028816621867054}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -791,6 +792,7 @@ MonoBehaviour:
   playerRadius: 0.25
   rightFootTransform: {fileID: 2134272088151737126}
   leftFootTransform: {fileID: 5256461730489730430}
+  footstepCooldown: 0.1
   walkSpeed: 3
   runSpeed: 5
   rotationSpeed: 15
@@ -898,6 +900,7 @@ MonoBehaviour:
   subinteractions:
   - {fileID: 3225385572864564303}
   - {fileID: 8766013707428227383}
+  - {fileID: 3309028816621867054}
   equipment: {fileID: 8868799578893869142}
   playerHealth: {fileID: 4054690041552130729}
 --- !u!114 &8868799578893869142
@@ -912,10 +915,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e72d490fbabfccc4f825fffaa884b089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventorySize: 2
+  inventorySize: 3
   starterItems:
   - {fileID: 11400000, guid: adf21e34a5e406a44b9abdf1494505eb, type: 2}
   - {fileID: 11400000, guid: cd9402dbd4e4d3d469faf61d85e6238c, type: 2}
+  - {fileID: 11400000, guid: 408d9e7faf92dbf4ebf35c4af9e0be5d, type: 2}
   inventoryAnchors:
   - {fileID: 8688708049746453848}
   - {fileID: 2029030394179718271}
@@ -950,6 +954,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  onDeathEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8766013707428227383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -971,6 +978,7 @@ MonoBehaviour:
   attackInput: 102
   attackDamage: 30
   attackCooldown: 0.3
+  attackRadius: 1.5
   attackAnimations: 2
   evadeSpeed: 3
   evadeDistance: 10
@@ -980,6 +988,22 @@ MonoBehaviour:
   evadeAgility: 20
   restoreAgilityTimer: 1
   restoreAgilityModifier: 25
+--- !u!114 &3309028816621867054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6416394642961204579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4863764557afd2441bc827664923d700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemDependantName: Compass
+  animatorLayerIndex: 5
+  onCompassWalkSpeed: 1.5
+  onCompassSprintWalkSpeed: 2
 --- !u!1 &7499727931088559446
 GameObject:
   m_ObjectHideFlags: 0

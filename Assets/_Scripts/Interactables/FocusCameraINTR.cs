@@ -62,7 +62,7 @@ public class FocusCameraINTR : Interactable, IInteractable, ITailable
         align += Time.deltaTime / alignTime;
         if (align < 1f) return;
 
-        AlignToTarget();
+        AlignToTarget(); 
     }
 
     private void AlignToTarget()

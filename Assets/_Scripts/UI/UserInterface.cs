@@ -10,6 +10,7 @@ public class UserInterface : MonoBehaviour
     [SerializeField] private IslandProgressPanel progressPanel = null;
     [SerializeField] private RectTransform combatLockUI = null;
     [SerializeField] private ObjectInteractionBox interactionBox = null;
+    [SerializeField] private CompassUI compassUI = null;
 
     private Transform combatLockTarget = null;
     private RectTransform RT { get { return (RectTransform)transform; } }
@@ -22,6 +23,10 @@ public class UserInterface : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+    }
+    private void Start()
+    {
+        ShowCompassUI(false);
     }
     private void Update()
     {
@@ -54,5 +59,9 @@ public class UserInterface : MonoBehaviour
     {
         ObjectInteractionBox.Text = text;
         UIManager.Open(interactionBox);
+    }
+    public void ShowCompassUI(bool state)
+    {
+        compassUI.gameObject.SetActive(state);
     }
 }

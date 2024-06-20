@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private Terrain terrain;
     private PlayerCombat combat;
     private PlayerCamera playerCamera;
+    private PlayerCompass playerCompass;
 
     private bool sloping = false; 
     private bool grounded = false; 
@@ -70,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("InputY", verticalInput);
         bool inCombat = combat.InCombat();
 
-        Vector3 cameraDirection = GetCameraDirectionFromInput(horizontalInput, verticalInput);
+        Vector3 cameraDirection = playerCamera.GetDirectionFromInput(horizontalInput, verticalInput);
         RotationInput(cameraDirection, horizontalInput, verticalInput, inCombat);
 
         if (inCombat)
@@ -299,12 +300,6 @@ public class PlayerMovement : MonoBehaviour
         lastFootstepTime = Time.time;
     }
     // Getters
-    public Vector3 GetCameraDirectionFromInput(float horizontalInput, float verticalInput)
-    {
-        Vector3 cameraDirection = playerCamera.transform.TransformDirection(new Vector3(horizontalInput, 0f, verticalInput));
-        cameraDirection.y = 0f;
-        return cameraDirection.normalized;
-    }
     private float GetCurrentSpeedInput()
     {
         // Setting current speed depending on grounded
@@ -313,6 +308,10 @@ public class PlayerMovement : MonoBehaviour
         if (combat.InCombat())
         {
             currentSpeed = sprinting ? combat.SprintSpeed : combat.Speed;
+        }
+        else if (playerCompass.OnCompass())
+        {
+            currentSpeed = sprinting ? playerCompass.SprintSpeed : playerCompass.WalkSpeed;
         }
         else if (grounded)
         {
@@ -333,6 +332,10 @@ public class PlayerMovement : MonoBehaviour
     public void SetCombat(PlayerCombat combat)
     {
         this.combat = combat;
+    }
+    public void SetCompass(PlayerCompass compass)
+    {
+        playerCompass = compass;
     }
 
     // Animation
