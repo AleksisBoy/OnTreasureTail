@@ -32,16 +32,6 @@ public class UserInterface : MonoBehaviour
     {
         UpdateCombatLockUIPosition();
     }
-    private void UpdateCombatLockUIPosition()
-    {
-        if (!combatLockTarget) return;
-
-        combatLockUI.position = RectTransformUtility.WorldToScreenPoint(PlayerCamera.Instance.Current, combatLockTarget.position);
-    }
-    public void Button_ProgressToggle()
-    {
-        UIManager.Toggle(progressPanel);
-    }
     public void GainInfoAt(string infoText, Vector2 mousePos)
     {
         InfoPopup popup = Instantiate(infoGainedPrefab, transform);
@@ -50,16 +40,30 @@ public class UserInterface : MonoBehaviour
         popup.RT.localPosition = localPos;
         popup.SetPopup(infoText, (RectTransform)buttonProgress.transform);
     }
+    // Combat lock ui
+    private void UpdateCombatLockUIPosition()
+    {
+        if (!combatLockTarget) return;
+
+        combatLockUI.position = RectTransformUtility.WorldToScreenPoint(PlayerCamera.Instance.Current, combatLockTarget.position);
+    }
     public void SetCombatLockTarget(Transform target)
     {
         combatLockTarget = target;
         if (combatLockUI) combatLockUI.gameObject.SetActive(target ? true : false);
     }
+    // Button calls
+    public void Button_ProgressToggle()
+    {
+        UIManager.Toggle(progressPanel);
+    }
+    // Interaction box
     public void SetInteractionBox(string text)
     {
         ObjectInteractionBox.Text = text;
         UIManager.Open(interactionBox);
     }
+    // Compass UI
     public void ShowCompassUI(bool state)
     {
         compassUI.gameObject.SetActive(state);

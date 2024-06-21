@@ -48,7 +48,7 @@ public class NoteTextInfo : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
     }
     private void Start()
     {
-        background.color = !clicked ? InternalSettings.Get.InfoActiveColor : InternalSettings.Get.InfoGainedColor;
+        background.color = !clicked ? InternalSettings.InfoActiveColor : InternalSettings.InfoGainedColor;
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -60,11 +60,11 @@ public class NoteTextInfo : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        background.color = InternalSettings.Get.SelectedInfoColor;
+        background.color = InternalSettings.SelectedInfoColor;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        background.color = !clicked ? InternalSettings.Get.InfoActiveColor : InternalSettings.Get.InfoGainedColor;
+        background.color = !clicked ? InternalSettings.InfoActiveColor : InternalSettings.InfoGainedColor;
     }
 }

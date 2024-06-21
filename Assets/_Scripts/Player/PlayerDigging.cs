@@ -60,7 +60,7 @@ public class PlayerDigging : PlayerSubinteraction
     private void DigInFront()
     {
         Vector3 diggingPos = transform.position + transform.forward * diggingForwardModifier;
-        Collider[] colls = Physics.OverlapSphere(diggingPos, diggingRadius, InternalSettings.Get.EnvironmentMask);
+        Collider[] colls = Physics.OverlapSphere(diggingPos, diggingRadius, InternalSettings.EnvironmentMask);
         if (colls.Length > 0)
         {
             Debug.Log("Blocking digging");

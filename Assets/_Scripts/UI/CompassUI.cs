@@ -13,7 +13,7 @@ public class CompassUI : MonoBehaviour
     }
     private void Update()
     {
-        Vector3 direction = playerCamera.GetDirectionFlat();
+        Vector3 direction = playerCamera.GetForwardDirectionFlat();
         Quaternion lookRotation = Quaternion.LookRotation(direction, new Vector3(1f, 0f, 0f));
         pole.eulerAngles = new Vector3(0f, 0f, lookRotation.eulerAngles.y);
     }

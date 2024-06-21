@@ -55,13 +55,13 @@ public class ProgressPiece : MonoBehaviour
         switch (status)
         {
             case Status.NotAcquired:
-                statusText.text = InternalSettings.Get.StatusText_NotAcquired; break;
+                statusText.text = InternalSettings.StatusText_NotAcquired; break;
             case Status.EmptyGaps:
-                statusText.text = InternalSettings.Get.StatusText_EmptyGaps; break;
+                statusText.text = InternalSettings.StatusText_EmptyGaps; break;
             case Status.CompletedWrong:
-                statusText.text = InternalSettings.Get.StatusText_CompletedWrong; break;
+                statusText.text = InternalSettings.StatusText_CompletedWrong; break;
             case Status.CompletedCorrect:
-                statusText.text = InternalSettings.Get.StatusText_CompletedCorrect; break;
+                statusText.text = InternalSettings.StatusText_CompletedCorrect; break;
             default:
                 statusText.text = "STATUS TEXT NOT SET"; break;
         }

@@ -18,7 +18,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump")]
     [SerializeField] private float jumpSpeed = 5f; 
     [SerializeField] private float jumpDistance = 2f; 
-    [SerializeField] private float jumpHeight = 1.5f; 
+    [SerializeField] private float jumpHeight = 1.5f;
+    [SerializeField] private float jumpCooldown = 1.5f;
     [SerializeField] private AnimationCurve jumpCurve = null;
     [Header("Swimming")]
     [SerializeField] private float swimSpeed = 3f;
@@ -37,9 +38,11 @@ public class PlayerMovement : MonoBehaviour
     private bool evading = false;
 
     private float process = 0f; 
-    private Vector3 lastPosition = Vector3.zero;
     public float velocityFloat = 0f;
+
     private float lastFootstepTime = 0f;
+    private Vector3 lastPosition = Vector3.zero;
+    private float lastJumpTime = 0f;
     public bool Grounded => grounded;
     public void Set(Terrain terrain, Animator animator, PlayerCamera playerCamera)
     {
@@ -159,9 +162,14 @@ public class PlayerMovement : MonoBehaviour
     private bool JumpInput()
     {
         // add in air slight movement
-        if (Input.GetKeyDown(KeyCode.Space) && !jumping && grounded && velocityFloat > 0f)
+        if (!jumping 
+            && grounded 
+            && velocityFloat > 0f
+            && Time.time - lastJumpTime > jumpCooldown 
+            && Input.GetKeyDown(KeyCode.Space))
         {
             jumping = true;
+            lastJumpTime = Time.time;
             process = 0f;
             // check for collision
             Vector3 direction = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
@@ -174,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                Collider[] colls = Physics.OverlapSphere(jumpFinalPosition, playerRadius, InternalSettings.Get.EnvironmentMask);
+                Collider[] colls = Physics.OverlapSphere(jumpFinalPosition, playerRadius, InternalSettings.EnvironmentMask);
                 if (colls.Length > 0)
                 {
                     Debug.Log("jumped on obstacle");
@@ -246,7 +254,7 @@ public class PlayerMovement : MonoBehaviour
         // Update new position with collision check
         Vector3 directionToDesired = (desiredPosition - transform.position).normalized;
         float distanceToDesired = Vector3.Distance(transform.position, desiredPosition);
-        if (Physics.SphereCast(transform.position + new Vector3(0f, playerRadius, 0f), playerRadius, directionToDesired, out RaycastHit mainHit, distanceToDesired, InternalSettings.Get.CollisionMask))
+        if (Physics.SphereCast(transform.position + new Vector3(0f, playerRadius, 0f), playerRadius, directionToDesired, out RaycastHit mainHit, distanceToDesired, InternalSettings.CollisionMask))
         {
             // Get the value that indicates the facing to the collision (0 - facing in front, 1 - facing sideways)
             float dot = 1f + Vector3.Dot(directionToDesired, mainHit.normal);
@@ -263,7 +271,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 sideOffset = wallDirection * dot * glideModifier;
 
             // Check if side movement does not hit other obstacles
-            if (Physics.SphereCast(transform.position + collisionOffset, playerRadius, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.Get.CollisionMask))
+            if (Physics.SphereCast(transform.position + collisionOffset, playerRadius, wallDirection, out RaycastHit sideHit, sideOffset.magnitude, InternalSettings.CollisionMask))
             {
                 // Do not move if there is an obstacle to the side
                 desiredPosition = transform.position;
@@ -289,12 +297,12 @@ public class PlayerMovement : MonoBehaviour
         if (Time.time - lastFootstepTime < footstepCooldown) return;
         // check if the grounf is suitable for creating footstep
 
-        if (!Physics.Raycast(footTransform.position, Vector3.down, out RaycastHit hit, 10f, InternalSettings.Get.TerrainMask)) return;
+        if (!Physics.Raycast(footTransform.position, Vector3.down, out RaycastHit hit, 10f, InternalSettings.TerrainMask)) return;
 
         Vector3 groundPosition = TailUtil.PositionFlat(footTransform.position);
         groundPosition.y = terrain.SampleHeight(groundPosition) + terrain.transform.position.y;
 
-        GameObject footstep = ObjectPoolingManager.GetObject(InternalSettings.Get.FootStepPrefab, groundPosition, Quaternion.identity);
+        GameObject footstep = ObjectPoolingManager.GetObject(InternalSettings.FootStepPrefab, groundPosition, Quaternion.identity);
 
         footstep.transform.up = hit.normal;
         lastFootstepTime = Time.time;

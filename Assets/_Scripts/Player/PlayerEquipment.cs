@@ -121,10 +121,10 @@ public class PlayerEquipment : MonoBehaviour
                 inventoryParent = inventoryAnchors[i];
             }
             inventory[i].meshObject.transform.SetParent(inventoryParent, false);
-            inventory[i].meshObject.layer = InternalSettings.Get.PlayerMask;
+            inventory[i].meshObject.layer = InternalSettings.PlayerMask;
             foreach(Transform child in inventory[i].meshObject.transform)
             {
-                child.gameObject.layer = InternalSettings.Get.PlayerMask;
+                child.gameObject.layer = InternalSettings.PlayerMask;
             }
         }
     }

@@ -25,8 +25,13 @@ public class InternalSettings : MonoBehaviour
     [Header("Misc")]
     [SerializeField] private GameObject footStepPrefab = null;
     [SerializeField] private GameObject diggedNothingPrefab = null;
+    [SerializeField] private float objectInspectionMoveSpeed = 2f;
+    [SerializeField] private float objectInspectionSensitivity = 0.5f;
     [Header("Debug")]
     [SerializeField] private GUIStyle debugStyle = null;
+
+    private Vector2 lastMousePosition = Vector3.zero;
+    private Vector2 mouseDelta = Vector3.zero;
 
     public static InternalSettings Get { get; private set; } = null;
     private void Awake()
@@ -39,30 +44,43 @@ public class InternalSettings : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
     }
-    public LayerMask FocusedCameraMask => focusedCameraMask;
-    public LayerMask DefaultCameraMask => defaultCameraMask;
-    public LayerMask EnvironmentMask => environmentMask;
-    public LayerMask CollisionMask => collisionMask;
-    public LayerMask TerrainMask => terrainMask;
-    public LayerMask WalkableMask => walkableMask;
-    public LayerMask PlayerMask => LayerMask.NameToLayer("Player");
+    private void Start()
+    {
+        lastMousePosition = Input.mousePosition;
+    }
+    public static LayerMask FocusedCameraMask => Get.focusedCameraMask;
+    public static LayerMask DefaultCameraMask => Get.defaultCameraMask;
+    public static LayerMask EnvironmentMask => Get.environmentMask;
+    public static LayerMask CollisionMask => Get.collisionMask;
+    public static LayerMask TerrainMask => Get.terrainMask;
+    public static LayerMask WalkableMask => Get.walkableMask;
+    public static LayerMask PlayerMask => LayerMask.NameToLayer("Player");
 
 
-    public Color SelectedCellColor => selectedCellColor;
-    public Color DefaultCellColor => defaultCellColor;
+    public static Color SelectedCellColor => Get.selectedCellColor;
+    public static Color DefaultCellColor => Get.defaultCellColor;
 
-    public Color InfoActiveColor => infoActiveColor;
-    public Color InfoGainedColor => infoGainedColor;
-    public Color SelectedInfoColor => selectedInfoColor;
+    public static Color InfoActiveColor => Get.infoActiveColor;
+    public static Color InfoGainedColor => Get.infoGainedColor;
+    public static Color SelectedInfoColor => Get.selectedInfoColor;
 
-    public string StatusText_NotAcquired => statusNotAcquired;
-    public string StatusText_EmptyGaps => statusEmptyGaps;
-    public string StatusText_CompletedWrong => statusCompletedWrong;
-    public string StatusText_CompletedCorrect => statusCompletedCorrect;
+    public static string StatusText_NotAcquired => Get.statusNotAcquired;
+    public static string StatusText_EmptyGaps => Get.statusEmptyGaps;
+    public static string StatusText_CompletedWrong => Get.statusCompletedWrong;
+    public static string StatusText_CompletedCorrect => Get.statusCompletedCorrect;
 
-    public GameObject FootStepPrefab => footStepPrefab;
-    public GameObject DiggedNothingPrefab => diggedNothingPrefab;
+    public static GameObject FootStepPrefab => Get.footStepPrefab;
+    public static GameObject DiggedNothingPrefab => Get.diggedNothingPrefab;
 
+    public static float ObjectInspectionMoveSpeed => Get.objectInspectionMoveSpeed;
+    public static float ObjectInspectionSensitivity => Get.objectInspectionSensitivity;
+    public static Vector2 MouseDelta => Get.mouseDelta;
+
+    private void Update()
+    {
+        mouseDelta = (Vector2)Input.mousePosition - lastMousePosition;
+        lastMousePosition = Input.mousePosition;
+    }
     // Debug
     public GUIStyle DebugStyle => debugStyle;
 

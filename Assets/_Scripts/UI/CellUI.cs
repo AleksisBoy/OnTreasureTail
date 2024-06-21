@@ -20,10 +20,10 @@ public class CellUI : MonoBehaviour
     }
     public void Select()
     {
-        cellImage.color = InternalSettings.Get.SelectedCellColor;
+        cellImage.color = InternalSettings.SelectedCellColor;
     }
     public void Unselect()
     {
-        cellImage.color = InternalSettings.Get.DefaultCellColor;
+        cellImage.color = InternalSettings.DefaultCellColor;
     }
 }

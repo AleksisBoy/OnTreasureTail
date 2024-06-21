@@ -804,6 +804,7 @@ MonoBehaviour:
   jumpSpeed: 3.2
   jumpDistance: 7
   jumpHeight: 1.5
+  jumpCooldown: 0.5
   jumpCurve:
     serializedVersion: 2
     m_Curve:

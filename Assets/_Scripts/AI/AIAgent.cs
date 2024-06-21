@@ -148,7 +148,7 @@ public class AIAgent : MonoBehaviour
 
         if (dot >= canSeeRange)
         {
-            if (!Physics.Raycast(transform.position + eyeOffset, directionToTarget, lookDistance, InternalSettings.Get.EnvironmentMask))
+            if (!Physics.Raycast(transform.position + eyeOffset, directionToTarget, lookDistance, InternalSettings.EnvironmentMask))
             {
                 return Node.Status.SUCCESS;
             }

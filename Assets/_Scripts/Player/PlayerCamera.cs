@@ -93,7 +93,6 @@ public class PlayerCamera : MonoBehaviour
         float mouseZoom = -Input.mouseScrollDelta.y;
         if (mouseZoom != 0f)
         {
-            Debug.Log(mouseZoom);
             DistanceToTarget += mouseZoom * zoomSensitivity;
         }
     }
@@ -114,8 +113,21 @@ public class PlayerCamera : MonoBehaviour
         cameraDirection.y = 0f;
         return cameraDirection.normalized;
     }
-    public Vector3 GetDirectionFlat()
+    public Vector3 GetForwardDirectionFlat()
     {
         return TailUtil.PositionFlatNormalized(transform.forward);
+    }
+    public Vector3 GetRightDirectionFlat()
+    {
+        return TailUtil.PositionFlatNormalized(transform.right);
+    }
+
+    public Vector3 FocusCamera_GetForwardDirectionFlat()
+    {
+        return TailUtil.PositionFlatNormalized(focusCamera.transform.forward);
+    }
+    public Vector3 FocusCamera_GetRightDirectionFlat()
+    {
+        return TailUtil.PositionFlatNormalized(focusCamera.transform.right);
     }
 }

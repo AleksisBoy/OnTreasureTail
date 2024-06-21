@@ -79,7 +79,7 @@ public class FocusCameraINTR : Interactable, IInteractable, ITailable
         else
         {
             // on aligned to focus object
-            focusCamera.cullingMask = InternalSettings.Get.FocusedCameraMask;
+            focusCamera.cullingMask = InternalSettings.FocusedCameraMask;
             onFocused?.Invoke();
         }
         alignTarget = null;
@@ -143,7 +143,7 @@ public class FocusCameraINTR : Interactable, IInteractable, ITailable
 
     public void Close()
     {
-        focusCamera.cullingMask = InternalSettings.Get.DefaultCameraMask;
+        focusCamera.cullingMask = InternalSettings.DefaultCameraMask;
         alignTarget = PlayerInteraction.Instance.PlayerCamera.transform;
         initialPosition = focusCamera.transform.position;
         initialRotation = focusCamera.transform.rotation;

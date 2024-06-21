@@ -5,14 +5,12 @@ using UnityEngine;
 // TODO: 
 // -Walkable areas
 // -Check people's belongings like in golden idol. make it like an unknown magic that player would possess
-// it source in the beginning is unknown but later with more info u get u will know that an artifact from isla prudera
-// froze everyone who was involved in the search for it. 
+// it source in the beginning is unknown but later with more info u get u will know that an artifact from isla
+// prudera froze everyone who was involved in the search for it. 
 // -To have other living people on islands with whom u can talk. It would be people from the Warrick's fleet that
 // did not get cursed.
-// !-Footsteps >>
 // -Water splashes
 // -Fog of war
-// distance to camera target setter
 public class IslandManager : MonoBehaviour
 {
     [SerializeField] private Terrain islandTerrain = null;
@@ -44,6 +42,7 @@ public class IslandManager : MonoBehaviour
         }
         UIManager.Clear();
         CombatManager.Clear();
+        ObjectInspection.Clear();
 
         TerrainDataSetup();
     }
@@ -97,7 +96,7 @@ public class IslandManager : MonoBehaviour
         // Create object on nothing digged
         if (!diggedBuried)
         {
-            GameObject diggedNothing = ObjectPoolingManager.GetObject(InternalSettings.Get.DiggedNothingPrefab, diggedPosition, Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f));
+            GameObject diggedNothing = ObjectPoolingManager.GetObject(InternalSettings.DiggedNothingPrefab, diggedPosition, Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f));
         }
     }
 
