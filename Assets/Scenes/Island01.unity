@@ -7526,6 +7526,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyFocused01
       objectReference: {fileID: 0}
+    - target: {fileID: 3579379650231408851, guid: d9cd66830d96713468ba2bb2be52a21e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5371546584597830677, guid: d9cd66830d96713468ba2bb2be52a21e,
         type: 3}
       propertyPath: idleTargets.Array.size
@@ -9693,7 +9698,7 @@ PrefabInstance:
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 91.7
+      value: 55.86
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
@@ -9703,7 +9708,7 @@ PrefabInstance:
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 78.55
+      value: 63.01
       objectReference: {fileID: 0}
     - target: {fileID: 3280456123625704996, guid: 8f9356cd88e18ea44949aa6ac463dac8,
         type: 3}
